@@ -1,0 +1,1 @@
+signtool.exe sign /a /n "uvnc bvba" /v /t http://timestamp.verisign.com/scripts/timstamp.dll "$(OutDir)$(TargetName)$(TargetExt)"
