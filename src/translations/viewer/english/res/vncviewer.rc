@@ -1,0 +1,1034 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Korean (Korea) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_FINGER              CURSOR                  "Finger.cur"
+IDC_CURSOR1             CURSOR                  "cursorsel.cur"
+IDC_DOTCURSOR           CURSOR                  "cursor1.cur"
+IDC_NOCURSOR            CURSOR                  "nocursor.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_TRAY                ICON                    "idr_tray.ico"
+IDI_NET                 ICON                    "B46.ico"
+IDI_MAINICON            ICON                    "vncviewer.ico"
+IDI_FILE                ICON                    "file.ico"
+IDI_DIR                 ICON                    "dir.ico"
+IDI_DRIVE               ICON                    "drive.ico"
+IDR_TRAY_DISABLED       ICON                    "idr_tray_disabled.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_TRAYMENU MENU
+BEGIN
+    POPUP "t"
+    BEGIN
+        MENUITEM "새 연결",                        ID_NEWCONN
+        MENUITEM "기본 연결 설정...",                 IDC_OPTIONBUTTON
+        MENUITEM SEPARATOR
+        MENUITEM "런 리모트 정보",                    IDD_APP_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Toggle Listen Mode (On/Off)", ID_LISTEN_MODE
+        MENUITEM "트레이아이콘 닫기",                   ID_CLOSEAPP
+    END
+END
+
+IDR_tbMENU MENU
+BEGIN
+    POPUP "Rightclick menu for FullScreenCaption"
+    BEGIN
+        MENUITEM "복원",                          IDC_NULL
+        MENUITEM "최소화",                         IDC_NULL
+        MENUITEM SEPARATOR
+        MENUITEM "닫기",                          IDC_NULL
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OPTIONDIALOG DIALOGEX 0, 0, 323, 217
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION " Connection Options..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "포맷 및 인코딩",IDC_STATIC,4,2,150,160
+    CONTROL         "자동으로 최적의 설정",IDC_AUTODETECT,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,10,12,136,12
+    GROUPBOX        "",IDC_STATIC,9,22,72,86
+    CONTROL         "ZRLE",IDC_ZRLERADIO,"Button",BS_AUTORADIOBUTTON,12,30,31,10
+    CONTROL         "Tight",IDC_TIGHTRADIO,"Button",BS_AUTORADIOBUTTON,48,30,29,10
+    CONTROL         "Zlib (+xor)",IDC_ZLIBRADIO,"Button",BS_AUTORADIOBUTTON,12,41,47,10
+    CONTROL         "ZlibHex",IDC_ZLIBHEXRADIO,"Button",BS_AUTORADIOBUTTON,12,52,55,10
+    CONTROL         "Hextile",IDC_HEXTILERADIO,"Button",BS_AUTORADIOBUTTON,12,62,37,10
+    CONTROL         "RRE",IDC_RRERADIO,"Button",BS_AUTORADIOBUTTON,12,73,29,10
+    CONTROL         "CoRRE",IDC_CORRERADIO,"Button",BS_AUTORADIOBUTTON,41,73,38,10
+    CONTROL         "Raw",IDC_RAWRADIO,"Button",BS_AUTORADIOBUTTON,12,83,29,10
+    CONTROL         "Ultra",IDC_ULTRA,"Button",BS_AUTORADIOBUTTON,41,83,29,10
+    CONTROL         "ZYWRLE",IDC_ZYWRLERADIO,"Button",BS_AUTORADIOBUTTON,12,94,47,10
+    GROUPBOX        "",IDC_STATIC,84,22,65,86,WS_GROUP
+    CONTROL         "Full Colors",IDC_FULLCOLORS_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,89,30,48,10
+    CONTROL         "256 Colors",IDC_256COLORS_RADIO,"Button",BS_AUTORADIOBUTTON,89,41,49,10
+    CONTROL         "64 Colors",IDC_64COLORS_RADIO,"Button",BS_AUTORADIOBUTTON,89,52,45,10
+    CONTROL         "8 Colors",IDC_8COLORS_RADIO,"Button",BS_AUTORADIOBUTTON,89,63,41,10
+    CONTROL         "8 Dark Colors",IDC_8GREYCOLORS_RADIO,"Button",BS_AUTORADIOBUTTON,89,74,54,10
+    CONTROL         "4 Grey Colors",IDC_4GREYCOLORS_RADIO,"Button",BS_AUTORADIOBUTTON,89,84,58,10
+    CONTROL         "Black && White",IDC_2GREYCOLORS_RADIO,"Button",BS_AUTORADIOBUTTON,89,95,57,10
+    CONTROL         "Use CopyRect encoding",ID_SESSION_SET_CRECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,114,96,10
+    CONTROL         "Use Cache Encoding",ID_SESSION_SET_CACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,124,90,10
+    CONTROL         "Zip/Tight Compression:",IDC_ALLOW_COMPRESSLEVEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,134,87,10
+    EDITTEXT        IDC_COMPRESSLEVEL,113,133,14,12,ES_AUTOHSCROLL
+    CONTROL         "Jpeg (Tight) - Quality:",IDC_ALLOW_JPEG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,145,84,10
+    EDITTEXT        IDC_QUALITYLEVEL,113,146,14,12,ES_AUTOHSCROLL
+    GROUPBOX        "기타",IDC_STATIC,4,164,150,49
+    CONTROL         "Share the Server",IDC_SHARED,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,10,176,71,10
+    CONTROL         "Deiconify on Bell",IDC_BELLDEICONIFY,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,10,188,137,8
+    CONTROL         "클립보드 전송 비활성화",IDC_DISABLECLIPBOARD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,198,138,10
+    GROUPBOX        "마우스 와 키보드 설정",IDC_STATIC,159,2,159,85
+    CONTROL         "애뮬레이터 3 버튼 (2버튼 클릭과 함께)",IDC_EMULATECHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,15,151,10
+    CONTROL         "마우스 버튼 좌우 변경",ID_SESSION_SWAPMOUSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,27,126,10
+    CONTROL         "원격지 커서를 추적합니다",IDC_CSHAPE_ENABLE_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,165,52,144,10
+    CONTROL         "마우스 커서를 원격서버로 대체",IDC_CSHAPE_DISABLE_RADIO,"Button",BS_AUTORADIOBUTTON,165,63,147,10
+    CONTROL         "원격지 커서 보이지 않기",IDC_CSHAPE_IGNORE_RADIO,"Button",BS_AUTORADIOBUTTON,165,74,142,10
+    GROUPBOX        "화면",IDC_STATIC,159,90,159,77
+    CONTROL         "툴바 버튼 보이기",IDC_SHOWTOOLBAR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,102,76,10
+    CONTROL         "보기 전용(입력은 무시됨)",IDC_VIEWONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,113,129,10
+    CONTROL         "전체화면 모드",IDC_FULLSCREEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,125,114,8
+    LTEXT           "화면 비율 :",IDC_STATIC,165,139,47,8
+    CONTROL         "자동",IDC_SCALING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,139,36,10
+    COMBOBOX        IDC_SCALE_CB,272,137,30,117,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "서버 화면 대비 비율 :",IDC_STATIC,165,152,76,8
+    EDITTEXT        IDC_SERVER_SCALE,271,153,14,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "확인",IDOK,214,202,50,14
+    PUSHBUTTON      "취소",IDCANCEL,269,202,50,14
+    EDITTEXT        IDC_SCALE_NUM,276,102,15,12,ES_AUTOHSCROLL | ES_NUMBER | NOT WS_VISIBLE
+    CTEXT           "%",IDC_STATIC,303,140,8,8,0,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_SCALE_DEN,294,102,14,12,ES_AUTOHSCROLL | ES_NUMBER | NOT WS_VISIBLE
+    LTEXT           "1  /",IDC_STATIC,253,153,12,8
+    LTEXT           "by",IDC_STATIC,259,139,10,8
+    CONTROL         "Do not display the sponsor advertisement",IDC_CHECK1,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,163,187,145,10
+    EDITTEXT        IDC_SERVER_RECON,159,170,16,12,ES_AUTOHSCROLL
+    LTEXT           "회 연결 재시도 함",IDC_STATIC,180,171,143,11
+    CONTROL         "일본식 키보드 사용",IDC_JAPKEYBOARD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,166,39,78,10
+END
+
+IDD_FILETRANSFER_DLG DIALOGEX 0, 0, 555, 414
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "파일 전송"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,251,23,59,14,NOT WS_VISIBLE
+    PUSHBUTTON      "닫기",IDCANCEL,248,339,60,14
+    PUSHBUTTON      "보내기 >>",IDC_UPLOAD_B,248,103,60,14,BS_CENTER | BS_FLAT
+    PUSHBUTTON      "<< 가져오기",IDC_DOWNLOAD_B,248,121,60,14,BS_CENTER | BS_FLAT
+    CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",WS_BORDER,45,388,410,9
+    CTEXT           "내 컴퓨터",IDC_LM_STATIC,105,3,94,13,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "전송중지",IDC_ABORT_B,248,141,60,14,BS_FLAT | NOT WS_VISIBLE
+    CONTROL         "",IDC_CURR_LOCAL,"RICHEDIT",TCS_VERTICAL | TCS_RAGGEDRIGHT,3,17,238,12,WS_EX_STATICEDGE
+    CONTROL         "",IDC_CURR_REMOTE,"RICHEDIT",TCS_VERTICAL | TCS_RAGGEDRIGHT,314,17,238,12,WS_EX_STATICEDGE
+    PUSHBUTTON      "Local Drives List",IDC_LOCAL_ROOT_B,263,1,40,9,BS_FLAT | NOT WS_VISIBLE
+    PUSHBUTTON      "Remote Drives List",IDC_REMOTE_ROOT_B,263,10,36,9,BS_FLAT | NOT WS_VISIBLE
+    CONTROL         "List2",IDC_LOCAL_FILELIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_AUTOARRANGE | WS_BORDER | WS_TABSTOP,3,31,238,324
+    CONTROL         "List3",IDC_REMOTE_FILELIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_AUTOARRANGE | WS_BORDER | WS_TABSTOP,314,31,238,324
+    COMBOBOX        IDC_LOCAL_DRIVECB,3,3,98,171,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_REMOTE_DRIVECB,314,3,98,172,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "\\",IDC_LOCAL_ROOTB,204,3,17,12
+    PUSHBUTTON      "..",IDC_LOCAL_UPB,224,3,17,12
+    CONTROL         "",IDC_LOCAL_STATUS,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,3,359,238,10,WS_EX_STATICEDGE
+    CONTROL         "",IDC_REMOTE_STATUS,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,314,359,238,10,WS_EX_STATICEDGE
+    PUSHBUTTON      "\\",IDC_REMOTE_ROOTB,514,3,17,12
+    PUSHBUTTON      "..",IDC_REMOTE_UPB,534,3,17,12
+    LTEXT           "",IDC_GLOBAL_STATUS,484,388,65,8,0,WS_EX_RIGHT
+    LTEXT           "진행율 :",IDC_PR_STATIC,4,388,32,8
+    COMBOBOX        IDC_HISTORY_CB,45,372,507,71,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "내역 :",IDC_HS_STATIC,4,374,26,8
+    CTEXT           "원격지 컴퓨터",IDC_RM_STATIC,415,3,95,13,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "파일삭제",IDC_DELETE_B,248,203,60,14,BS_FLAT
+    PUSHBUTTON      "새폴더 생성",IDC_NEWFOLDER_B,248,221,60,14,BS_FLAT
+    PUSHBUTTON      "최소화",IDC_HIDE_B,248,321,60,14
+    LTEXT           "",IDC_PERCENT,459,388,17,8
+    PUSHBUTTON      "이름 변경",IDC_RENAME_B,248,239,60,14,BS_FLAT
+END
+
+IDD_SESSION_DLG DIALOGEX 0, 0, 245, 208
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "런 리모트"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    COMBOBOX        IDC_HOSTNAME_EDIT,76,4,120,66,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "연결",IDOK,200,33,40,26
+    PUSHBUTTON      "닫기",IDCANCEL,200,64,40,14
+    PUSHBUTTON      "설정...",IDC_OPTIONBUTTON,200,113,40,14
+    CONTROL         IDB_VNC32,IDC_STATIC,"Static",SS_BITMAP,3,2,24,24
+    LTEXT           "( host:display or host::port )",IDC_STATIC,83,19,103,8
+    GROUPBOX        "빠른 설정",IDC_STATIC,4,29,191,108
+    GROUPBOX        "",IDC_STATIC,4,136,237,42
+    CONTROL         "플러그인 사용",IDC_PLUGIN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,147,66,10
+    COMBOBOX        IDC_PLUGINS_COMBO,78,145,118,55,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "설정",IDC_PLUGIN_BUTTON,200,145,36,12
+    CONTROL         "AUTO          (Auto select best settings)",IDC_DYNAMIC,
+                    "Button",BS_AUTORADIOBUTTON,12,42,177,10
+    CONTROL         "ULTRA        (>2Mbit/s) - Experimental",IDC_ULTRA_LAN_RB,
+                    "Button",BS_AUTORADIOBUTTON,12,53,176,10
+    CONTROL         "LAN             (> 1Mbit/s) - Max Colors",IDC_LAN_RB,
+                    "Button",BS_AUTORADIOBUTTON,12,64,176,10
+    CONTROL         "MEDIUM     (128 - 256Kbit/s) - 256 Colors",IDC_MEDIUM_RB,
+                    "Button",BS_AUTORADIOBUTTON,12,75,153,10
+    CONTROL         "MODEM      (19 - 128Kbit/s) - 64 Colors",IDC_MODEM_RB,
+                    "Button",BS_AUTORADIOBUTTON,12,86,148,10
+    CONTROL         "SLOW         (< 19kKbit/s) - 8 Colors",IDC_SLOW_RB,
+                    "Button",BS_AUTORADIOBUTTON,12,97,128,10
+    CONTROL         "MANUAL     ( Use options button )",IDC_MANUAL,"Button",BS_AUTORADIOBUTTON,12,108,123,10
+    CONTROL         "View Only",IDC_VIEWONLY_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,123,47,10
+    PUSHBUTTON      "...",IDC_LOADPROFILE_B,200,4,16,13
+    CONTROL         "Auto Scaling",IDC_AUTOSCALING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,63,123,59,10
+    LTEXT           "원격 컴퓨터:",IDC_STATIC,29,7,46,8
+    CONTROL         "프록시설정",IDC_PROXY_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,161,66,10
+    EDITTEXT        IDC_PROXY_EDIT,78,160,117,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "설정 되돌리기",IDC_DELETE,152,187,84,13,BS_MULTILINE
+    CONTROL         "현재 설정 저장하기",IDC_SETDEFAULT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,190,128,10
+    GROUPBOX        "",IDC_STATIC,4,179,237,25
+    CONTROL         "Confirm Exit",IDC_EXIT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,124,123,53,10
+END
+
+IDD_SERVINFO_DLG DIALOG 0, 0, 224, 170
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RFB Server information"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,167,149,50,14
+    EDITTEXT        IDC_SERVINFO_EDIT,7,7,210,134,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY
+END
+
+IDD_AUTH_DIALOG DIALOG 101, 66, 214, 63
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION " Ultr@VNC Authentication"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDD_USER_NAME,118,6,82,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PASSWD_EDIT,118,22,82,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Log On",IDOK,89,42,54,15
+    PUSHBUTTON      "Cancel",IDCANCEL,149,42,50,15
+    RTEXT           "Username:",IDC_STATIC,58,10,57,8
+    RTEXT           "Password:",IDC_STATIC,58,26,57,8
+    CONTROL         ID_BUTTON_SEP,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE | SS_SUNKEN,8,10,48,42
+END
+
+IDD_AUTH_DIALOG2 DIALOG 101, 66, 214, 113
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION " Ultr@VNC Authentication - Unsecure Transmission"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "With the current UltraVNC server version, the password you provide is not transferred securely, except if you are using the encryption DSMPlugin.\r\nPlease update the UltraVNC server on the remote computer to v1.0.2 for secure password transmission.",IDC_STATIC,8,6,196,44
+    EDITTEXT        IDD_USER_NAME,118,57,82,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PASSWD_EDIT,118,73,82,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Log On",IDOK,89,92,54,15
+    PUSHBUTTON      "Cancel",IDCANCEL,150,92,50,15
+    RTEXT           "Username:",IDC_STATIC,58,60,57,8
+    RTEXT           "Password:",IDC_STATIC,58,76,57,8
+    CONTROL         ID_BUTTON_SEP,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE | SS_SUNKEN,8,60,48,42
+END
+
+IDD_CUSTUM_KEY DIALOGEX 0, 0, 224, 53
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "사용자 정의키 보내기(테스트)"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Send",IDOK,167,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,167,32,50,14
+    EDITTEXT        IDC_CUSTOM_KEY,100,7,51,14,ES_AUTOHSCROLL
+    CONTROL         "ALT GR",IDC_ALTGR,"Button",BS_AUTORADIOBUTTON,54,26,38,9
+    CONTROL         "CTRL",IDC_STRG,"Button",BS_AUTORADIOBUTTON,100,26,35,9
+    CONTROL         "ALT",IDC_ALT,"Button",BS_AUTORADIOBUTTON,54,37,26,9
+    CONTROL         "NORMAL",IDC_NORMAL,"Button",BS_AUTORADIOBUTTON,100,37,45,9
+    LTEXT           "KeyCode (10진수) :",IDC_STATIC,7,9,87,12
+END
+
+IDD_STATUS DIALOGEX 0, 0, 198, 129
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "연결 상태"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "닫기",IDCLOSE,140,114,50,14
+    GROUPBOX        "연결정보",IDC_STATIC,4,0,186,68
+    GROUPBOX        "트래픽",IDC_STATIC,4,69,186,42
+    LTEXT           "포트:",IDC_STATIC,13,23,52,9
+    LTEXT           "보낸 바이트",IDC_STATIC,7,82,63,9
+    RTEXT           "받은 바이트",IDC_STATIC,117,82,68,9
+    RTEXT           "Sent",IDC_SEND,6,98,64,9
+    RTEXT           "Received",IDC_RECEIVED,113,98,72,9
+    RTEXT           "Port Number",IDC_PORT,96,23,89,9
+    ICON            IDI_NET,IDC_STATIC,89,78,20,20
+    CONTROL         IDB_BITMAP3,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,71,86,13,1,WS_EX_TRANSPARENT
+    CONTROL         IDB_BITMAP3,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,109,86,13,1,WS_EX_TRANSPARENT
+    CONTROL         IDB_BITMAP2,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,105,98,1,10,WS_EX_TRANSPARENT
+    LTEXT           "서버:",IDC_STATIC,13,12,64,9
+    RTEXT           "Server Name",IDC_VNCSERVER,94,12,91,9
+    LTEXT           "상태:",IDC_STATIC,13,34,52,9
+    RTEXT           "Connection closed",IDC_STATUS,44,34,141,9
+    PUSHBUTTON      "취소",IDQUIT,5,114,50,14
+    LTEXT           "전송속도:",IDC_STATIC,13,56,64,8
+    RTEXT           "123",IDC_SPEED,81,56,62,8
+    RTEXT           "kbit/s",IDC_STATIC,147,56,38,8
+    RTEXT           "",IDC_ENCODER,65,45,120,8
+    LTEXT           "Encoder:",IDC_STATIC,13,45,63,8
+END
+
+IDD_AUTH_DIALOG1 DIALOG 101, 66, 234, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "VNC Authentication"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_PASSWD_EDIT,136,13,82,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Log On",IDOK,108,37,54,15
+    PUSHBUTTON      "Cancel",IDCANCEL,168,37,50,15
+    RTEXT           "Password:",-1,65,16,61,8
+    CONTROL         ID_BUTTON_SEP,-1,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,6,6,50,42
+END
+
+IDD_FTPARAM_DLG DIALOG 0, 0, 241, 60
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION
+CAPTION "FT Param Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_FTPARAM_EDIT,10,21,224,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,128,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,184,42,50,14
+    LTEXT           "FT Param comment. Please enter blah blah blah...",IDC_FTPARAMCOMMENT,9,7,225,8
+END
+
+IDD_TEXTCHAT_DLG DIALOGEX 0, 0, 307, 175
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "채팅하기"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_INPUTAREA_EDIT,4,136,255,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | NOT WS_BORDER | WS_VSCROLL,WS_EX_STATICEDGE
+    PUSHBUTTON      "닫기",IDCANCEL,264,161,39,12
+    CONTROL         "",IDC_CHATAREA_EDIT,"RICHEDIT",TCS_HOTTRACK | TCS_RAGGEDRIGHT | TCS_FOCUSONBUTTONDOWN | TCS_MULTISELECT | WS_VSCROLL | WS_TABSTOP,3,3,300,130,WS_EX_STATICEDGE
+    PUSHBUTTON      "전송",IDC_SEND_B,264,135,39,14,BS_CENTER | BS_MULTILINE
+    DEFPUSHBUTTON   "",IDOK,299,0,8,6,NOT WS_VISIBLE
+    PUSHBUTTON      "최소화",IDC_HIDE_B,264,149,39,13
+END
+
+IDD_APP_ABOUT DIALOGEX 0, 0, 289, 156
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RunRemote 상담원용"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,8,137,62,14
+    CONTROL         ID_BUTTON_SEP,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,8,7,62,54
+    LTEXT           "UltraVNC Win32 Viewer 1.0.5",IDC_STATIC,86,6,197,11
+    LTEXT           "For more Information and Links please visit: \nhttp://ultravnc.sf.net",IDC_STATIC,86,133,197,19
+    LTEXT           "Copyright ⓒ 2002-2005 Ultr@VNC Team\nCopyright ⓒ 2001-2002 Sam - eSVNC \nCopyright ⓒ 1999-2002 Rudi D. V. - VdaccVNC \nCopyright ⓒ 1999-2002 Const. Kaplinsky - TightVNC \nCopyright ⓒ 2002 RealVNC Ltd. - RealVNC\n",IDC_STATIC,86,30,200,40
+    LTEXT           "Built:",IDC_STATIC,87,17,15,10
+    LTEXT           "BuildTime",IDC_BUILDTIME,120,17,98,10
+    LTEXT           "Copyright ⓒ 2002 VNC QuickDesk\nCopyright ⓒ 1999-2002 Tridia Corporation - TridiaVNC \nCopyright ⓒ 1994-2001 AT&&T Laboratories Cambridge/Olivetti Research Ltd. - VNC",IDC_STATIC,86,70,203,33
+    LTEXT           "Copyright ⓒ 1990-2002 Info-ZIP\nCopyright ⓒ 1996-2002 Markus Franz Xaver Johannes Oberhumer - Mini LZO library",IDC_STATIC,85,102,198,24
+END
+
+IDD_FTCONFIRM_DLG DIALOG 0, 0, 178, 86
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "Yes",IDC_YES_B,4,65,39,14
+    PUSHBUTTON      "No",IDC_NO_B,92,65,40,14
+    LTEXT           "Confirm message here",IDC_FTPCONFIRMCOMMENT,4,8,163,53
+    PUSHBUTTON      "Yes for All",IDC_YESALL_B,46,65,40,14
+    PUSHBUTTON      "No for all",IDC_NOALL_B,135,65,39,14
+END
+
+IDD_APP_MESSAGE1 DIALOGEX 0, 0, 246, 118
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RunRemote 알림"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "닫기",IDOK,181,87,56,14
+    LTEXT           "BuildTime",IDC_BUILDTIME,9,11,228,49
+    GROUPBOX        "정보",IDC_STATIC,3,1,242,63,BS_CENTER
+    CTEXT           "UltraVnc 1.0.5",IDC_STATIC,193,105,51,12
+    PUSHBUTTON      "",IDC_BUTTON1,3,66,170,47,BS_BITMAP
+END
+
+IDD_APP_MESSAGE2 DIALOGEX 0, 0, 246, 167
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RunRemote 알림"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "닫기",IDOK,181,135,56,14
+    LTEXT           "BuildTime",IDC_BUILDTIME,9,11,228,49
+    PUSHBUTTON      "",IDC_BUTTON2,4,66,170,47,BS_BITMAP
+    GROUPBOX        "정보",IDC_STATIC,3,1,242,63,BS_CENTER
+    CTEXT           "UltraVnc 1.0.5",IDC_STATIC,193,153,51,12
+    PUSHBUTTON      "",IDC_BUTTON1,4,114,170,47,BS_BITMAP
+    CTEXT           "광고\n 바로가기",IDC_STATIC,175,79,36,21
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_OPTIONDIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 318
+        VERTGUIDE, 164
+        HORZGUIDE, 168
+    END
+
+    IDD_FILETRANSFER_DLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 505
+        VERTGUIDE, 215
+        VERTGUIDE, 274
+        VERTGUIDE, 278
+        VERTGUIDE, 486
+        BOTTOMMARGIN, 260
+    END
+
+    IDD_SESSION_DLG, DIALOG
+    BEGIN
+        VERTGUIDE, 10
+        VERTGUIDE, 232
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 204
+        HORZGUIDE, 17
+    END
+
+    IDD_SERVINFO_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 217
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 163
+    END
+
+    IDD_AUTH_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 209
+        VERTGUIDE, 8
+        VERTGUIDE, 43
+        VERTGUIDE, 56
+        VERTGUIDE, 58
+        VERTGUIDE, 81
+        VERTGUIDE, 115
+        VERTGUIDE, 118
+        VERTGUIDE, 190
+        BOTTOMMARGIN, 58
+        HORZGUIDE, 20
+        HORZGUIDE, 36
+        HORZGUIDE, 52
+        HORZGUIDE, 57
+    END
+
+    IDD_AUTH_DIALOG2, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 92
+    END
+
+    IDD_CUSTUM_KEY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 217
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 46
+    END
+
+    IDD_STATUS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 191
+        VERTGUIDE, 185
+        VERTGUIDE, 190
+        TOPMARGIN, 7
+    END
+
+    IDD_AUTH_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 229
+        VERTGUIDE, 6
+        VERTGUIDE, 43
+        VERTGUIDE, 49
+        VERTGUIDE, 65
+        VERTGUIDE, 81
+        VERTGUIDE, 108
+        VERTGUIDE, 118
+        VERTGUIDE, 218
+        BOTTOMMARGIN, 53
+        HORZGUIDE, 25
+        HORZGUIDE, 27
+        HORZGUIDE, 36
+        HORZGUIDE, 52
+        HORZGUIDE, 57
+    END
+
+    IDD_FTPARAM_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 234
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 53
+    END
+
+    IDD_TEXTCHAT_DLG, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 164
+    END
+
+    IDD_APP_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 86
+        VERTGUIDE, 94
+        VERTGUIDE, 108
+        VERTGUIDE, 283
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 124
+        HORZGUIDE, 29
+    END
+
+    IDD_FTCONFIRM_DLG, DIALOG
+    BEGIN
+    END
+
+    IDD_APP_MESSAGE1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 86
+        VERTGUIDE, 94
+        VERTGUIDE, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 111
+        HORZGUIDE, 29
+    END
+
+    IDD_APP_MESSAGE2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 86
+        VERTGUIDE, 94
+        VERTGUIDE, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 160
+        HORZGUIDE, 29
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_SESSION_DLG DLGINIT
+BEGIN
+    IDC_HOSTNAME_EDIT, 0x403, 1, 0
+"\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP2             BITMAP                  "hoch.bmp"
+IDB_BITMAP3             BITMAP                  "quer.bmp"
+IDB_STAT_BACK           BITMAP                  "stat\\back.bmp"
+IDB_STAT_BOTH           BITMAP                  "stat\\both.bmp"
+IDB_STAT_FRONT          BITMAP                  "stat\\front.bmp"
+IDB_STAT_NONE           BITMAP                  "stat\\none.bmp"
+IDB_VNC64               BITMAP                  "vnc64.BMP"
+IDB_CLOSE               BITMAP                  "stat\\closeup.bmp"
+IDB_MAXIMIZE            BITMAP                  "stat\\maximizeup.bmp"
+IDB_MINIMIZE            BITMAP                  "stat\\minimizeup.bmp"
+IDB_PINDOWN             BITMAP                  "stat\\pindown.bmp"
+IDB_PINUP               BITMAP                  "stat\\pinup.bmp"
+IDB_VNC32               BITMAP                  "vnc32.BMP"
+IDB_BITMAPsx            BITMAP                  "Tango_sx.bmp"
+IDB_BITMAPl             BITMAP                  "Tango_l.bmp"
+IDB_BITMAPlx            BITMAP                  "Tango_lx.bmp"
+IDB_BITMAPs             BITMAP                  "Tango_s.bmp"
+IDB_BITMAP14            BITMAP                  "l2.bmp"
+IDB_BITMAP13            BITMAP                  "l1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,4,914
+ PRODUCTVERSION 1,0,4,914
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x2dL
+#else
+ FILEFLAGS 0x2cL
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "powered by UltraVNC Viewer"
+            VALUE "CompanyName", "Runsoft"
+            VALUE "FileDescription", "Run Remote powered by UltraVNC Viewer"
+            VALUE "FileVersion", "1.0.5"
+            VALUE "InternalName", "VNCViewer"
+            VALUE "LegalCopyright", "Copyright ⓒ 2008 UltraVNC team members"
+            VALUE "OriginalFilename", "VNCViewer.exe"
+            VALUE "PrivateBuild", "105"
+            VALUE "ProductName", "Run Remote Desktop Viewer"
+            VALUE "ProductVersion", "1.0.5"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_TRAY                "런 리모트 대기중"
+END
+
+STRINGTABLE
+BEGIN
+    ID_CLOSEDAEMON          "수신되는 접속 대기요청을 중단함"
+    ID_SHOWWINDOW           "연결창 보기"
+    ID_NEWCONN              "수동 연결 설정"
+    ID_BUTTON_CAD           "원격컴퓨터에 CTRL+ALT+DEL 보내기"
+    ID_BUTTON_FTRANS        "파일전송"
+END
+
+STRINGTABLE
+BEGIN
+    ID_BUTTON_DINPUT        "버튼 비활성"
+    ID_BUTTON_DBUTTON       "마우스 와 키보드 비활성화"
+    ID_BUTTON_SW            "프로그램 선택"
+    ID_BUTTON_DESKTOP       "바탕화면 선택"
+    IDS_WARNING             "알림: 대화창은 암호화 되지 않으니 비밀유지가 필요한 대화는 접속창에 있는 채팅하기를 이용해주시기 바랍니다.\n\n"
+    IDS_A1                  "뷰어의 시스템 트레이를 사용하지 않음"
+    IDS_A2                  "런 리모트 정보"
+    IDS_A3                  "데몬 생성중 에러 발생:\n\r"
+    IDS_A4                  "이미 실행 중입니다. 종료 후 다시 실행바랍니다."
+    IDS_A5                  "오류 발생"
+    IDS_B1                  "통신 초기화 오류 발생"
+    IDS_B2                  "용량초과!"
+    IDS_B3                  "런 리모트 오류"
+END
+
+STRINGTABLE
+BEGIN
+    IDC_OPTIONBUTTON        "새로운 연결에 사용되는 옵션을 설정한다"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_C1                  "클립보드 열기 실패\n"
+    IDS_C2                  "클립보드가 비어있습니다\n"
+    IDS_C3                  "클립보드가 닫혀있습니다\n"
+    IDS_D1                  "파라메터 오류"
+    IDS_D2                  "스케일값 오류 - 일반 스케일값으로 재설정함"
+    IDS_D3                  "포트 오류"
+    IDS_D4                  "스케일값이 정해지지 않았습니다"
+    IDS_D5                  "스케일 값 지정 오류"
+    IDS_D6                  "시간초과 값이 없습니다"
+    IDS_D7                  "잘못된 시간초과 값입니다"
+    IDS_D8                  "No fuzz specified"
+    IDS_D9                  "Invalid fuzz specified"
+    IDS_D10                 "지연값이 지정되지 않았습니다"
+    IDS_D11                 "지연값 설정이 잘못되었습니다"
+    IDS_D12                 "로그 보기 설정 오류"
+    IDS_D13                 "로그 보기 설정값이 잘못되었습니다"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_D14                 "로그파일이 지정되지 않았습니다."
+    IDS_D15                 "로그파일이 잘못 지정되었습니다."
+    IDS_D16                 "설정 파일이 없습니다."
+    IDS_D17                 "설정파일을 읽을수 없습니다."
+    IDS_D18                 "인코딩을 지정하지 않았습니다."
+    IDS_D19                 "인코딩이 잘못 되었습니다."
+    IDS_D20                 "압축 수준(level) 값을 지정하지 않았습니다."
+    IDS_D21                 "압축 수준(level) 이 잘못되었습니다."
+    IDS_D22                 "이미지 품질 수준(level)을 지정하지 않았습니다."
+    IDS_D23                 "이미지 품질 수준(level)을 잘못 지정했습니다."
+    IDS_D24                 "패스워드 설정안함"
+    IDS_D25                 "No serverscale denominator specified"
+    IDS_D26                 "No quick option number specified"
+    IDS_D27                 "No DSM plugin specified ('PluginName.dsm')"
+    IDS_D28                 "잘못된 서버 주소."
+    IDS_E1                  "DLL 읽기 오류 (RICHED32.DLL)!"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_E2                  "Rich Edit Dll 읽는중"
+    IDS_F1                  "플러그인을 불러오지 못했습니다.\n\r파일에 무결성을 확인하시기 바랍니다."
+    IDS_F3                  "플러그인 활성화"
+    IDS_F4                  "비밀번호가 없습니다"
+    IDS_F5                  "플러그인을 불러오지 못했습니다.\n\r정확한 이름으로 설정되었는지 확인 바랍니다."
+    IDS_F6                  "플러그인 읽는 중..."
+    IDS_F7                  "The Plugin cannot be Initialized.\n\rPlease check its name integrity."
+    IDS_F8                  "지정된 VNC 서버가 잘못되었습니다.\n\r서버 형식을 확인 바랍니다."
+    IDS_F10                 "연결 설정"
+    IDS_F11                 "플러그인 발견하지 못함..."
+    IDS_G1                  "소켓(Flasher) 생성중 에러 발생"
+    IDS_G2                  "소켓(Flasher) 바인딩 중 에러 발생"
+    IDS_G3                  "Error when Flasher tries to listen"
+    IDS_H1                  " > 경고: 원격컴퓨터 파일전송 꺼져있음"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_H2                  " > 경고: 내컴퓨터 파일전송 꺼져있음"
+    IDS_H3                  "파일 전송 권한이 거부되었습니다: 사용하지 않거나 알 수없는 사용자 또는 버전 호환성 문제"
+    IDS_H4                  "연결됨..."
+    IDS_H5                  "사용자에 의해 전송이 중단됨"
+    IDS_H6                  "전송 완료"
+    IDS_H7                  "사용자에 의해 전송이 중단됨"
+    IDS_H8                  " > 로컬 디렉토리를 찾는 중. 잠시 기다려주십시오..."
+    IDS_H9                  " > 오류 : 내컴퓨터 드라이브에 존재하지 않습니다."
+    IDS_H10                 " > 오류 : 원격지 드라이브에 존재하지 않습니다."
+    IDS_H11                 " > 원격지 디렉토리를 찾는 중. 잠시 기다려주십시오..."
+    IDS_H12                 " 오류: 파일"
+    IDS_H13                 " 원격 시스템에 액세스 할 수 없습니다"
+    IDS_H14                 " 오류 : 내 컴퓨터에 사용 가능한 공간이 부족함"
+    IDS_H15                 "파일 다운로드 중"
+    IDS_H16                 "내컴퓨터에 파일을 생성할 수 없습니다"
+    IDS_H17                 "파일"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_H18                 "다운로드 성공..."
+    IDS_H19                 "오류 : 파일전송"
+    IDS_H20                 "원격컴퓨터 에서 실패함. 취소됨."
+    IDS_H21                 "오류: 파일을 읽는데 문제 발생"
+    IDS_H22                 "파일 전송중"
+    IDS_H23                 "오류:      파일을 액세스 문제"
+    IDS_H24                 "원격지 컴퓨터에 파일 생성 오류 발생"
+    IDS_H25                 "오류: -> 해당 파일"
+    IDS_H26                 "잠겨있거나 원격컴퓨터 디스크 공간이 부족함"
+    IDS_H27                 "성공적으로 전송함..."
+    IDS_H28                 "내 컴퓨터 에서 실패함. 취소됨"
+    IDS_H29                 "폴더를 생성할 수 없습니다."
+    IDS_H30                 "원격지 컴퓨터"
+    IDS_H31                 "폴더"
+    IDS_H32                 "원격 컴퓨터에 생성되었습니다"
+    IDS_H33                 "해당 파일을 삭제할 수 없습니다"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_H34                 "원격지 컴퓨터에서 이미 삭제되었습니다"
+    IDS_H35                 "파일전송"
+    IDS_H36                 "연결됨"
+    IDS_H37                 "연결중 잠시만 기다려주세요..."
+    IDS_H38                 "원격지 컴퓨터에 이미 존재합니다.\n\n덮어쓰기로 계속 진행하시겠습니까?\n"
+    IDS_H39                 "파일전송 경고"
+    IDS_H40                 "파일(개)/폴더(개) 전송하기위해 선택됨"
+    IDS_H41                 "전송을 시작함. 보내는 중..."
+    IDS_H42                 "파일(개)/폴더(개) 원격지 컴퓨터"
+    IDS_H43                 "내 컴퓨터에 이미 존재합니다.\n\n덮어쓰기로 계속 진행하시겠습니까?\n"
+    IDS_H44                 "전송을 시작함. 다운로드 중..."
+    IDS_H45                 "파일(개)/폴더(개) - 원격지 컴퓨터 "
+    IDS_H46                 "삭제할 파일을 선택하세요. \n삭제는 한개파일만 가능합니다."
+    IDS_H47                 "파일 삭제 경고"
+    IDS_H48                 "내 컴퓨터 파일을 삭제합니다"
+    IDS_H49                 "내 컴퓨터 파일을 삭제할수 없습니다"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_H50                 "삭제되었습니다"
+    IDS_H51                 "정말로 원격지 컴퓨터 파일을 삭제하시겠습니까?"
+    IDS_H52                 "새로 생성할 내 컴퓨터 폴더이름을 입력 해주세요:"
+    IDS_H53                 "내 컴퓨터에 폴더 생성을 할수없습니다"
+    IDS_H54                 "내 컴퓨터 폴더"
+    IDS_H55                 "생성되었습니다"
+    IDS_H56                 "새로 생성할 원격지 컴퓨터 폴더이름을 입력 해주세요:"
+    IDS_H57                 "파일 전송"
+    IDS_I1                  "데몬 소켓 생성 오류"
+    IDS_I2                  "데몬 소켓 바인딩 오류"
+    IDS_I3                  "데몬 수신 할 때 오류"
+    IDS_J1                  "전체 화면 모드를 종료하려면 Ctrl-ESC 또는 ESC 키를 사용하고 \n\r 메뉴를 보시려면 뷰어에 작업 표시 줄 아이콘을 마우스 오른쪽 버튼으로 클릭합니다."
+    IDS_J2                  "전체 화면 모드"
+    IDS_K2                  "저장중 오류 발생"
+    IDS_K1                  "잘못된 파일명입니다"
+    IDS_K3                  "이 파일에 암호를 저장 하시겠습니까?\n\r (예) 파일에 암호를 저장하면 안전하지 않은 것입니다."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_K4                  "보안경고"
+    IDS_K5                  "파일에서 호스트 이름을 읽기 오류"
+    IDS_K6                  "구성 파일 오류"
+    IDS_K7                  "파일에서 포트 번호를 읽기 오류"
+    IDS_L1                  "알수없음"
+    IDS_L2                  "Ctrl+Alt+Del 보내기"
+    IDS_L3                  "전화면 보기 전환 (On/Off)"
+    IDS_L4                  "연결 설정 보기..."
+    IDS_L5                  "화면 새로고침"
+    IDS_L6                  "'시작' 버튼 (Ctrl+Esc) 보내기"
+    IDS_L7                  "사용자 정의 키 보내기"
+    IDS_L8                  "원격상태 화면 보기"
+    IDS_L9                  "연결 중료"
+    IDS_L10                 "툴바 버튼 감추기"
+    IDS_L11                 "고객 화면을 고객이 안보이도록 설정함 (On/Off)"
+    IDS_L12                 "파일전송 하기..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_L13                 "주 화면 선택"
+    IDS_L14                 "듀얼모니터지원/모니터변경"
+    IDS_L15                 "채팅 화면 열기..."
+    IDS_L16                 "파일전송... \tCtrl+Alt+F7"
+    IDS_L17                 "채팅... \tCtrl+Alt+F8"
+    IDS_L18                 "툴바 보기 \tCtrl+Alt+F9"
+    IDS_L19                 "원격입력 비활성/모니터"
+    IDS_L20                 "원격입력 활성화/모니터 "
+    IDS_L21                 "연결 &설정... \tCtrl+Alt+F6"
+    IDS_L22                 "연결 &정보"
+    IDS_L23                 "화면 요청 &새로고침"
+    IDS_L24                 "&전체화면 \tCtrl+Alt+F12"
+    IDS_L25                 "&화면 비율 자동조절 \tCtrl+Alt+F10"
+    IDS_L26                 "&화면크기 반으로 \tCtrl+Alt+F11"
+    IDS_L27                 "&Fuzzy 화면"
+    IDS_L28                 "&일반화면 \tCtrl+F11"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_L29                 "&전체 색상"
+    IDS_L30                 "&256  색상"
+    IDS_L31                 "Ctrl+Alt+Del 보내기 \tCtrl+Alt+F4"
+    IDS_L32                 "Ctrl+Esc 키 보내기 (시작 메뉴)"
+    IDS_L33                 "컨트롤(Ctrl)키 누르기"
+    IDS_L34                 "컨트롤(Ctrl)키 때기"
+    IDS_L35                 "알트킬(Alt)키 누르기"
+    IDS_L36                 "알트킬(Alt)키 때기"
+    IDS_L37                 "새로운 연결..."
+    IDS_L38                 "연결 정조 저장 \tCtrl+Alt+F5"
+    IDS_L39                 "&정보 런 리모트..."
+    IDS_L40                 "데몬 종료"
+    IDS_L41                 "플러그인을 설정할수 없음"
+    IDS_L42                 "사용자 취소됨"
+    IDS_L43                 "연결중 ..."
+    IDS_L44                 "소켓 생성 오류 발생 !"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_L45                 "서버 주소 조회중 ..."
+    IDS_L46                 "서버 주소 읽기 실패 !"
+    IDS_L47                 "서버로 연결 중 ..."
+    IDS_L48                 "서버 연결 실패함 !"
+    IDS_L49                 "연결됨"
+    IDS_L50                 "연결 종료중 오류 발생(Nagle)"
+    IDS_L51                 "죄송합니다. - 이 서버는 더 이상 지원되지 않는\n\r이전 인증 방식을 사용하고 있습니다."
+    IDS_L52                 "프로토콜 버전 오류"
+    IDS_L53                 "비밀번호가 비었습니다"
+    IDS_L54                 "인증 취소됨"
+    IDS_L55                 "비밀번호 허용됨"
+    IDS_L56                 "잘못된 비밀번호입니다"
+    IDS_L57                 "런 리모트 인증 실패!"
+    IDS_L58                 "런 리모트 인증 실패 - 과도한 인증 시도!"
+    IDS_L59                 "알수없는 인증 오류입니다!"
+    IDS_L60                 "알수없는 인증 스키마입니다!"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_L61                 "화면 초기화중 오류 발생."
+    IDS_L62                 "잠시만 기다려 주세요 - 화면 초기화 중입니다..."
+    IDS_L63                 "알수없는 색상 메시지 수신!\n"
+    IDS_L64                 "알수없는 메시지 수신!\n"
+    IDS_L65                 "WriteExact: DSMPlugin-RestoreBuffer Alloc Error."
+    IDS_L66                 "WriteExact: DSMPlugin-RestoreBuffer Error."
+    IDS_L67                 "연결이 종료되었습니다"
+    IDS_L68                 "WriteExact: DSMPlugin-TransformBuffer Error."
+    IDS_L69                 "대기중 소켓 에러 발생."
+    IDS_L70                 "메모리가 부족합니다(네트워크)."
+    IDS_L71                 "메모리가 부족합니다.(zlib)"
+    IDS_L72                 "런 리모트 상태..."
+    IDS_L73                 "런 리모트 상태"
+    IDS_L74                 "연결 없음"
+    IDS_L75                 "정말로 종료하시겠습니까?"
+    IDS_L76                 "런 리모트 종료 중..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_L77                 "연결하신 원격지는 파일전송을 지원하지 않습니다!"
+    IDS_L78                 "사용할 수 없는 기능입니다"
+    IDS_L79                 "파일전송창이 이미 열려있습니다 !"
+    IDS_L80                 "파일 전송 경고"
+    IDS_L81                 "연결하신 원격지는 채팅서비스를 지원하지 않습니다 !"
+    IDS_L82                 "사용할수 없는 기능입니다"
+    IDS_L83                 "채팅창이 이미 열려있습니다 !"
+    IDS_L84                 "채팅하기 경고"
+    IDS_L85                 "파일 전송 창을 먼저 닫아주세요"
+    IDS_L86                 "채팅하기 창을 먼저 닫아주세요"
+    IDS_L87                 "설정 창을 먼저 닫아주세요"
+    IDS_L88                 "경고"
+    IDS_L89                 "프로토콜 버전 확인 ..."
+    IDS_L90                 "비밀번호 요청"
+    IDS_L91                 "연결 실패함"
+    IDS_L92                 "인증 필요하지 않음"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_H58                 "파일(개)/폴더(개)"
+    IDS_H59                 "폴더 압축해제중"
+    IDS_H60                 "수신 처리. 잠시 기다려주십시오 ..."
+    IDS_H61                 "원격지 폴더"
+    IDS_H62                 "원격지 컴퓨터 압축 오류 (Zip32.dll이 존재합니까?)"
+    IDS_H63                 "중지됨."
+    IDS_H64                 "폴더 압축"
+    IDS_H65                 "전송. 잠시 기다려주십시오..."
+    IDS_H66                 "내 컴퓨터 폴더"
+    IDS_H67                 "압축 성공."
+    IDS_H68                 "내 컴퓨터 압축 오류 (Zip32.dll이 존재합니까?)"
+    IDS_H69                 "전송 중지됨."
+    IDS_H70                 "보내기 성공."
+    IDS_H71                 "원격지 컴퓨터 폴더"
+    IDS_H72                 "이미 존재합니다.\n\n 해당 파일 뿐만 아니라 모든 파일 및 하위 폴더를 덮어 쓰기 하시겠습니까?"
+    IDS_H73                 "내 컴퓨터 폴더"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_M1                  "하나의 파일 또는 디렉터리를 한개씩만 이름변경을 할 수 있습니다"
+    IDS_M2                  "파일 & 폴더 이름 변경 경고"
+    IDS_M3                  "파일 & 폴더 이름변경"
+    IDS_M4                  "새로운 이름을 입력하세요:"
+    IDS_M5                  "오류: 실패 원인 : "
+    IDS_M6                  "내 컴퓨터 이름 변경됨"
+    IDS_M7                  "to"
+    IDS_M8                  "원격지 이름 변경됨"
+    IDS_H94                 "폴더 삭제 경고"
+    IDS_H95                 "내 컴퓨터 폴더를 삭제 하시겠습니까?"
+    IDS_H96                 "원격지 컴퓨터 폴더를 삭제 하시겠습니까?"
+    IDS_H97                 "내 컴퓨터 폴더를 삭제할 수 없습니다"
+    IDS_H98                 "원격지 폴더를 삭제할 수 없습니다"
+    IDS_H99                 "폴더를 삭제할 수 없습니다"
+    IDS_H100                "새 폴더 생성"
+    IDS_L93                 "보기 전용... \tAlt+Ctrl+F3"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_H101                "폴더 전송 경고"
+    IDS_H102                "그 이름의 파일이나 폴더가 이미 존재합니다."
+    IDS_L94                 "서버 연결이 종료됨"
+END
+
+#endif    // Korean (Korea) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,632 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 한국어(대한민국) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_FINGER              CURSOR                  "res\\Finger.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// JAVACLASS
+//
+
+IDR_FTPFRAME_CLASS      JAVACLASS               "res\\FTPFrame.class"
+IDR_AUTHPANEL_CLASS     JAVACLASS               "res\\AuthPanel.class"
+IDR_CLIPBOARDFRAME_CLASS JAVACLASS               "res\\clipboardFrame.class"
+IDR_OPTIONSFRAME_CLASS  JAVACLASS               "res\\optionsFrame.class"
+IDR_RFBPROTO_CLASS      JAVACLASS               "res\\rfbProto.class"
+IDR_VNCCANVAS_CLASS     JAVACLASS               "res\\vncCanvas.class"
+IDR_VNCVIEWER_CLASS     JAVACLASS               "res\\vncviewer.class"
+IDR_BUTTONPANEL_CLASS   JAVACLASS               "res\\ButtonPanel.class"
+IDR_DESCIPHER_CLASS     JAVACLASS               "res\\DesCipher.class"
+IDR_RECFRAME_CLASS      JAVACLASS               "res\\RecordingFrame.class"
+IDR_SESSIONREC_CLASS    JAVACLASS               "res\\SessionRecorder.class"
+IDR_DH_CLASS            JAVACLASS               "res\\dh.class"
+IDR_FTPFRAMESTRCOMP_CLASS JAVACLASS               "res\\ftpframe$strcomp.class"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TEXTCHAT_DLG DIALOGEX 0, 0, 308, 177
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_THICKFRAME
+CAPTION " 대화하기 - runRemote VNC"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_INPUTAREA_EDIT,4,135,255,39,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | NOT WS_BORDER | WS_VSCROLL,WS_EX_STATICEDGE
+    PUSHBUTTON      "보내기",IDC_SEND_B,264,135,39,16,BS_MULTILINE
+    PUSHBUTTON      "최소화",IDC_HIDE_B,264,153,39,11
+    PUSHBUTTON      "닫기",IDCANCEL,264,164,39,11
+    CONTROL         "",IDC_CHATAREA_EDIT,"RICHEDIT",TCS_HOTTRACK | TCS_RAGGEDRIGHT | TCS_FOCUSONBUTTONDOWN | TCS_MULTISELECT | WS_VSCROLL | WS_TABSTOP,4,4,300,122,WS_EX_STATICEDGE
+    PUSHBUTTON      "",IDOK,303,0,6,6,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC_SPLIT,5,127,298,8,SS_NOTIFY
+END
+
+IDD_LIST_DLG DIALOGEX 0, 0, 164, 116
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION " List of Clients - UltraVNC"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,106,94,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,106,78,50,14,NOT WS_VISIBLE
+    LTEXT           " Currently Connected Clients :",IDC_STATIC,5,4,105,8
+    LISTBOX         IDC_VIEWERS_LISTBOX,7,16,91,93,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    PUSHBUTTON      "Kill Client",IDC_KILL_B,106,17,50,14
+    PUSHBUTTON      "Chat with ???Client",IDC_TEXTCHAT_B,106,35,50,22,BS_MULTILINE
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 282, 158
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION " runRemote VNC 정보"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,8,135,54,16
+    CONTROL         139,IDC_VNCLOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,53,46,WS_EX_TRANSPARENT
+    LTEXT           "runRemote VNC Win32 Server 1.0.5",IDC_VERSION,73,5,195,11
+    LTEXT           "Copyright ⓒ 2002-2005 Ultr@VNC Team\nCopyright ⓒ 2001-2002 Sam - eSVNC \nCopyright ⓒ 1999-2002 Rudi D. V. - VdaccVNC \nCopyright ⓒ 2001 Harakan Software - PalmVNC\nCopyright ⓒ 1999-2002 Const. Kaplinsky - TightVNC \n",IDC_NAME,74,27,202,41
+    LTEXT           "For more Information and Links please visit: \nhttp://www.runremote.net",IDC_WWW,74,135,141,19
+    LTEXT           "Build:",IDC_BUILDTEXT,74,16,20,10
+    LTEXT           "BuildTime",IDC_BUILDTIME,97,16,92,10
+    LTEXT           "Copyright ⓒ 2002 RealVNC Ltd. - RealVNC\nCopyright ⓒ 1999-2002 Tridia Corporation - TridiaVNC \nCopyright ⓒ 1994-2001 AT&&T Laboratories Cambridge/Olivetti Research Ltd. - VNC",IDC_STATIC,74,67,203,32
+    LTEXT           "Copyright ⓒ 1990-2002 Info-ZIP\nCopyright ⓒ 1996-2002 Markus Franz Xaver Johannes Oberhumer - Mini LZO library",IDC_STATIC,74,99,200,27
+END
+
+IDD_OUTGOING_CONN DIALOG 0, 0, 243, 78
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Initiate Outgoing Connection (Add New Client)"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,193,30,46,14
+    PUSHBUTTON      "Cancel",IDCANCEL,193,48,46,14
+    EDITTEXT        IDC_HOSTNAME_EDIT,55,6,130,14,ES_AUTOHSCROLL
+    RTEXT           "Host Name:",IDC_HOSTNAME_STATIC,7,6,43,14,SS_CENTERIMAGE
+    CTEXT           "(NB:Host must be running VNCviewer in 'listen' mode)",IDC_NOTE_STATIC,0,48,178,11,SS_CENTERIMAGE
+    EDITTEXT        IDC_IDCODE,55,29,130,14,ES_AUTOHSCROLL
+    LTEXT           "If ID is used, Host=repetaer ip address",IDC_STATIC,6,61,125,9
+    LTEXT           "ID code",IDC_STATIC,17,33,27,8
+END
+
+IDD_ACCEPT_CONN DIALOG 0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Accept WinVNC Connection?"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&Accept",IDACCEPT,7,74,53,14
+    PUSHBUTTON      "&Reject",IDREJECT,130,74,49,14
+    CTEXT           "WinVNC has received an incoming connection from",IDC_STATIC_TEXT1,7,7,172,17,SS_CENTERIMAGE
+    CTEXT           "<unknown host>",IDC_ACCEPT_IP,7,30,172,16,SS_CENTERIMAGE
+    CTEXT           "Do you wish to Accept or Reject the connection?",IDC_STATIC_TEXT,7,50,172,15,SS_CENTERIMAGE
+    CTEXT           "AutoReject:",IDC_ACCEPT_TIMEOUT,60,74,70,14,SS_CENTERIMAGE
+END
+
+IDD_PROPERTIES DIALOGEX 0, 0, 224, 172
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION " Ultr@VNC Server Property Page"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "&Cancel",IDCANCEL,177,154,41,14
+    DEFPUSHBUTTON   "&OK",IDOK,81,154,44,14
+    GROUPBOX        "화면 업데이트 및 제어",IDC_UPDATE_BORDER,6,2,214,94
+    CONTROL         "Poll Full Screen ( Ultra Fast )",IDC_POLL_FULLSCREEN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,13,112,13
+    CONTROL         "Poll Console Windows Only",IDC_CONSOLE_ONLY,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,117,26,99,15
+    CONTROL         "Poll Foreground Window",IDC_POLL_FOREGROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,28,95,9
+    CONTROL         "Poll Window Under Cursor",IDC_POLL_UNDER_CURSOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,37,95,16
+    CONTROL         "Poll On Event Only",IDC_ONEVENT_ONLY,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,117,39,78,12
+    PUSHBUTTON      "&Apply",IDC_APPLY,130,154,43,14
+    CONTROL         "Video Hook Driver",IDC_DRIVER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,68,74,10
+    CONTROL         "System HookDll",IDC_HOOK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,56,66,10
+    CONTROL         "Low Accuracy ( Turbo Speed )",IDC_TURBOMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,81,112,10
+    PUSHBUTTON      "Check the Video Hook Driver",IDC_CHECKDRIVER,92,67,121,11
+    CONTROL         "Share only the Server Window Named :",IDC_SINGLE_WINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,113,188,10
+    EDITTEXT        IDC_NAME_APPLI,14,127,195,13,ES_AUTOHSCROLL
+    GROUPBOX        "Single Window Sharing",IDC_STATIC,5,100,214,47,BS_LEFT
+END
+
+IDD_PROPERTIES1 DIALOGEX 0, 0, 390, 285
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION " Ultr@VNC Server Property Page"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "접속 정보",IDC_CONNECT_BORDER,5,3,132,116,BS_LEFT
+    CONTROL         "Socket Connections 허용",IDC_CONNECT_SOCK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,112,11
+    LTEXT           "화면 번호 또는 사용하는 포트:",IDC_DISPLAY_NO_LABEL,11,28,116,9,SS_CENTERIMAGE
+    CONTROL         "화면",IDC_SPECDISPLAY,"Button",BS_AUTORADIOBUTTON,11,41,35,10
+    EDITTEXT        IDC_DISPLAYNO,66,41,29,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "자동",IDC_AUTO_DISPLAY_NO,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,102,39,35,13
+    CONTROL         "포트",IDC_SPECPORT,"Button",BS_AUTORADIOBUTTON,11,54,30,10
+    CONTROL         "자동",IDC_PORTNO_AUTO,"Button",BS_AUTORADIOBUTTON,101,54,31,9
+    RTEXT           "메인:",IDC_STATIC,45,55,20,8
+    EDITTEXT        IDC_PORTRFB,66,53,29,12,ES_AUTOHSCROLL
+    RTEXT           "Http:",IDC_STATIC,36,67,27,8
+    EDITTEXT        IDC_PORTHTTP,66,65,29,12,ES_AUTOHSCROLL
+    CONTROL         "JavaViewer 켜기 (Http Connect)",IDC_CONNECT_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,80,122,10
+    CONTROL         "루프백 연결을 허용",IDC_ALLOWLOOPBACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,91,105,10
+    CONTROL         "루프백만 허용",IDC_LOOPBACKONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,102,59,10
+    GROUPBOX        "인증 설정",IDC_STATIC,6,122,210,77,BS_LEFT
+    LTEXT           "암호 설정:",IDC_PASSWORD_LABEL,12,135,50,11,SS_CENTERIMAGE
+    EDITTEXT        IDC_PASSWORD,66,135,74,13,ES_PASSWORD | ES_AUTOHSCROLL
+    CONTROL         "Require MS Logon  (User/Pass./Domain)",IDC_MSLOGON_CHECKD,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,153,146,10
+    CONTROL         "New MS Logon (supports multiple domains)",IDC_NEW_MSLOGON,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,164,153,11
+    PUSHBUTTON      "Configure MS Logon Groups",IDC_MSLOGON,13,179,195,12
+    GROUPBOX        "파일 전송 설정",IDC_STATIC,6,202,210,25
+    CONTROL         "사용함",IDC_FILETRANSFER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,213,38,10
+    CONTROL         "사용자 위장 (서비스 설치시)",IDC_FTUSERIMPERSONATION_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,213,133,10
+    GROUPBOX        "플러그인 설정",IDC_STATIC,5,230,211,32,BS_LEFT
+    CONTROL         "사용 :",IDC_PLUGIN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,244,31,10
+    COMBOBOX        IDC_PLUGINS_COMBO,45,242,129,86,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "설정",IDC_PLUGIN_BUTTON,179,242,29,12
+    GROUPBOX        "상담원 원격 접속해제시",IDC_LOCKSETTINGS,142,3,104,52,BS_LEFT
+    CONTROL         "아무것도 안함",IDC_LOCKSETTING_NOTHING,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,146,15,80,12
+    CONTROL         "화면 잠금 (W2K)",IDC_LOCKSETTING_LOCK,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,146,26,96,13
+    CONTROL         "로그오프 처리",IDC_LOCKSETTING_LOGOFF,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,146,39,80,11
+    GROUPBOX        "키보드 && 마우스 설정",IDC_STATIC,142,59,103,60,BS_LEFT
+    CONTROL         "상담원 입력 허용안함",IDC_DISABLE_INPUTS,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,150,70,92,11
+    CONTROL         "내PC 입력 허용안함",IDC_DISABLE_LOCAL_INPUTS,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,150,82,83,12
+    GROUPBOX        "들어오는 연결에 대한 질의",IDC_STATIC,250,3,136,53,BS_LEFT
+    CONTROL         "Display Query Window",IDQUERY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,257,15,86,10
+    LTEXT           "시간제한:",IDC_STATIC,275,29,28,8
+    EDITTEXT        IDQUERYTIMEOUT,308,27,19,12,ES_AUTOHSCROLL
+    LTEXT           "초",IDC_STATIC,330,29,29,8
+    LTEXT           "기본 액션:",IDC_STATIC,257,43,47,8
+    CONTROL         "거절",IDC_DREFUSE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,307,43,32,10
+    CONTROL         "허용",IDC_DACCEPT,"Button",BS_AUTORADIOBUTTON,346,43,37,10
+    GROUPBOX        "다중 연결 설정",IDC_STATIC,250,59,136,60,BS_LEFT
+    CONTROL         "기존에 연결들을 모두 끊음",IDC_MV1,"Button",BS_AUTORADIOBUTTON | WS_GROUP,255,71,127,10
+    CONTROL         "기존의 연결을 유지함",IDC_MV2,"Button",BS_AUTORADIOBUTTON,255,81,104,10
+    CONTROL         "새로운 연결을 거부함",IDC_MV3,"Button",BS_AUTORADIOBUTTON,255,92,103,9
+    CONTROL         "모든 신규 연결을 거부함",IDC_MV4,"Button",BS_AUTORADIOBUTTON,255,103,102,10
+    GROUPBOX        "기타 설정.",IDC_STATIC,221,122,165,106,BS_LEFT
+    CONTROL         "바탕화면 제거",IDC_REMOVE_WALLPAPER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,140,134,10
+    CONTROL         "뷰어의 요청에 빈 모니터를 사용",IDC_BLANK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,150,128,10
+    CONTROL         "알파 블렌딩 모니터 빈화면 사용",IDC_ALPHABLACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,160,142,10
+    CONTROL         "알파블랜딩을 캡쳐함",IDC_ALPHA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,170,99,10
+    CONTROL         "트레이 아이콘 제거",IDC_DISABLETRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,180,84,10
+    CONTROL         "트레이아이콘 메뉴사용안함",IDC_ALLOWEDITCLIENTS,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,228,190,141,10
+    CONTROL         "Forbid the user to close down WinVNC",IDC_ALLOWSHUTDOWN,
+                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,228,200,143,10
+    CONTROL         "WinVNC.log 파일에 로그 남기기",IDC_LOG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,240,123,10
+    LTEXT           "Default Server Screen Scale:",IDC_STATIC,237,212,92,8
+    LTEXT           "1 / ",IDC_STATIC,335,213,12,8
+    EDITTEXT        IDC_SCALE,350,211,12,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "확인",IDOK,32,266,43,14
+    PUSHBUTTON      "적용",IDC_APPLY,81,266,43,14
+    PUSHBUTTON      "취소",IDCANCEL,129,266,44,14
+    RTEXT           "N°",IDC_STATIC,53,42,9,8
+    CONTROL         "윈도우 Aero 제거 (Vista)",IDC_REMOVE_Aero,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,130,142,10
+    CONTROL         "일본식",IDC_JAP_INPUTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,95,89,10
+    GROUPBOX        "로그 설정",IDC_STATIC,221,231,165,49
+    EDITTEXT        IDC_EDIT_PATH,250,263,133,14,ES_AUTOHSCROLL
+    CONTROL         "비디오 캡쳐",IDC_VIDEO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,228,251,66,10
+    LTEXT           "경로:",IDC_STATIC,229,265,20,8
+    PUSHBUTTON      "avi encoder정리",IDC_CLEAR,297,251,75,11
+END
+
+IDD_ABOUT1 DIALOGEX 0, 0, 286, 222
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION " Info"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,210,204,54,16
+    CONTROL         153,IDC_VNCLOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,269,199,WS_EX_TRANSPARENT
+END
+
+IDD_MSLOGON DIALOG 0, 0, 186, 166
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MS logon setup"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,77,148,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,132,148,50,14
+    EDITTEXT        IDC_GROUP1,21,19,93,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_GROUP2,21,36,93,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_GROUP3,21,53,93,13,ES_AUTOHSCROLL
+    CONTROL         "",IDC_CHECKG1L,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,127,20,13,10
+    CONTROL         "",IDC_CHECKG2L,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,127,38,16,8
+    CONTROL         "",IDC_CHECKG3L,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,127,56,16,8
+    CONTROL         "",IDC_CHECKG1D,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,153,22,16,8
+    CONTROL         "",IDC_CHECKG2D,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,153,38,16,8
+    CONTROL         "",IDC_CHECKG3D,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,153,56,16,8
+    LTEXT           "Local",IDC_STATIC,127,8,18,8
+    LTEXT           "Domain",IDC_STATIC,153,8,25,8
+    LTEXT           "Group",IDC_STATIC,23,8,20,8
+    LTEXT           "1",IDC_STATIC,11,22,8,8
+    LTEXT           "2",IDC_STATIC,11,38,8,8
+    LTEXT           "3",IDC_STATIC,11,56,8,8
+    LTEXT           "Group 1, 2 = Full Access       Group 3 = Read Only",IDC_STATIC,16,88,162,8
+    LTEXT           "Must be run as a Service on NT4, W2K\nCan be run as a Service or Application on XP, W2003\nLocal admins have always access.\nFor NT4 and W2K in Application mode you need to add the Local Admin Group.",IDC_STATIC,8,100,174,41
+    GROUPBOX        "",IDC_STATIC,5,0,178,74
+    GROUPBOX        "Rules",IDC_STATIC,5,77,178,68
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_TEXTCHAT_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 303
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 172
+    END
+
+    IDD_LIST_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 157
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 109
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 275
+        VERTGUIDE, 80
+        VERTGUIDE, 90
+        VERTGUIDE, 100
+        VERTGUIDE, 120
+        TOPMARGIN, 5
+        HORZGUIDE, 9
+        HORZGUIDE, 20
+        HORZGUIDE, 30
+        HORZGUIDE, 40
+        HORZGUIDE, 50
+        HORZGUIDE, 60
+        HORZGUIDE, 70
+        HORZGUIDE, 80
+        HORZGUIDE, 90
+        HORZGUIDE, 100
+    END
+
+    IDD_OUTGOING_CONN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 236
+        VERTGUIDE, 50
+        VERTGUIDE, 55
+        VERTGUIDE, 185
+        VERTGUIDE, 190
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 71
+        HORZGUIDE, 20
+        HORZGUIDE, 49
+    END
+
+    IDD_ACCEPT_CONN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        VERTGUIDE, 60
+        VERTGUIDE, 130
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+        HORZGUIDE, 24
+        HORZGUIDE, 30
+        HORZGUIDE, 46
+        HORZGUIDE, 50
+        HORZGUIDE, 65
+        HORZGUIDE, 74
+    END
+
+    IDD_PROPERTIES, DIALOG
+    BEGIN
+        VERTGUIDE, 14
+    END
+
+    IDD_PROPERTIES1, DIALOG
+    BEGIN
+        VERTGUIDE, 150
+        VERTGUIDE, 257
+        BOTTOMMARGIN, 280
+        HORZGUIDE, 270
+    END
+
+    IDD_ABOUT1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 282
+        VERTGUIDE, 80
+        VERTGUIDE, 90
+        VERTGUIDE, 100
+        VERTGUIDE, 120
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 158
+        HORZGUIDE, 9
+        HORZGUIDE, 20
+        HORZGUIDE, 30
+        HORZGUIDE, 40
+        HORZGUIDE, 50
+        HORZGUIDE, 60
+        HORZGUIDE, 70
+        HORZGUIDE, 80
+        HORZGUIDE, 90
+        HORZGUIDE, 100
+    END
+
+    IDD_MSLOGON, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 182
+        VERTGUIDE, 17
+        VERTGUIDE, 110
+        VERTGUIDE, 123
+        VERTGUIDE, 149
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 162
+        HORZGUIDE, 46
+        HORZGUIDE, 66
+        HORZGUIDE, 88
+        HORZGUIDE, 105
+        HORZGUIDE, 164
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,90,0
+ PRODUCTVERSION 1,0,90,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x2dL
+#else
+ FILEFLAGS 0x2cL
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "runRemote Server"
+            VALUE "CompanyName", "RunSoft"
+            VALUE "FileDescription", "VNC server for Win32"
+            VALUE "FileVersion", "1.0.5"
+            VALUE "InternalName", "WinVNC"
+            VALUE "LegalCopyright", "Copyright ⓒ 2008 UltraVnc"
+            VALUE "LegalTrademarks", "VNC"
+            VALUE "OriginalFilename", "WinVNC.exe"
+            VALUE "PrivateBuild", "105"
+            VALUE "ProductName", "runRemote with UltraVNC"
+            VALUE "ProductVersion", "1.0.5"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_TRAYMENU MENU
+BEGIN
+    POPUP "tray"
+    BEGIN
+        MENUITEM "runRemote VNC 란?(&A)",        ID_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "관리자 설정(&A)",                  ID_ADMIN_PROPERTIES
+        MENUITEM "설정(&P)",                      ID_PROPERTIES
+        MENUITEM SEPARATOR
+        MENUITEM "연결 추가하기(&A)",                 ID_OUTGOING_CONN
+        MENUITEM "접속한 모든 연결 제거(&K)",            ID_KILLCLIENTS
+        MENUITEM SEPARATOR
+        MENUITEM "접속한 연결 목록(&L)",               ID_LISTCLIENTS
+        MENUITEM SEPARATOR
+        MENUITEM "서비스 설치",                      ID_RUNASSERVICE
+        MENUITEM "서비스 제거",                      ID_UNINSTALL_SERVICE
+        MENUITEM "서비스 중지",                      ID_CLOSE_SERVICE
+        MENUITEM "서비스 시작 (설치 먼저 해야합니다)",        ID_START_SERVICE
+        MENUITEM SEPARATOR
+        MENUITEM "닫기 - runRemote VNC 연결(&C)",   ID_CLOSE
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// JAVAARCHIVE
+//
+
+IDR_VNCVIEWER_JAR       JAVAARCHIVE             "res\\vncviewer.jar"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_WINVNC              ICON                    "res\\world3a.ico"
+IDI_FLASH               ICON                    "res\\icon2.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_LOGO64              BITMAP                  "res\\vnc-1.bmp"
+IDB_BITMAP3             BITMAP                  "res\\runas.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDI_WINVNC              "runRemote VNC"
+    IDS_WARNING             "알림 : 이 대화창은 암호화 되지 않으니 비밀유지가 필요한 대화는 접속창에 있는 채팅하기를 이용해주시기 바랍니다."
+END
+
+STRINGTABLE
+BEGIN
+    ID_FAILED_INIT          "통신 초기화에 실패하였습니다."
+    ID_WINVNC_USAGE         "runRemote VNC 사용법"
+    ID_ANOTHER_INST         "이미 실행중입니다."
+    ID_NO_EXIST_INST        "WinVNC의 기존 인스턴스는 접속 할 수 없습니다."
+    ID_UNABLE_INST          "서비스를 설치할수 없습니다."
+    ID_SCM_NOT_HERE         "서비스 매니저에 연결할 수 없습니다 - WinVNC 서비스가 설치되지 않은것 같습니다"
+    ID_SERV_NOT_REG         "runRemote VNC 서비스를 등록 할 수 없습니다"
+    ID_SERV_FAIL_ST         "runRemote VNC 서비스 시작하는데 실패하였습니다."
+END
+
+STRINGTABLE
+BEGIN
+    ID_SERV_CT_MISS         "서비스 제어 관리자가 연결할 수 없습니다 - runRemote VNC 서비스가 등록되지 않았습니다"
+    ID_SERV_OLD_REG         "runRemote VNC 서비스가 이미 등록되었습니다"
+    ID_SERVHELP_UNAB        "경고 : ServiceHelper 후크 글로벌 사용자 특정 레지스트리 설정을 설치할 수 없음은로드되지 않습니다"
+    ID_SERV_CT_UNREG        "서비스 제어 관리자에 연결할 수 없습니다 - runRemote VNC 서비스는 등록하지 않았습니다"
+    ID_SERV_NOT_UNRG        "runRemote VNC 서비스는 등록해제 할수 없습니다."
+    ID_SERV_NCONTACT        "runRemote VNC 서비스는 접속할수 없습니다."
+    ID_SERVHELP_NREM        "WARNING:The ServiceHelper hook entry could not be removed from the registry"
+    ID_SERV_NOT_STOP        "runRemote VNC 서비스는 중지될수 없습니다"
+    ID_SERV_MK_UNREG        "runRemote VNC 서비스가 이미 등록되지 않을것으로 표시됩니다."
+    ID_SERV_NT_FOUND        "runRemote VNC 서비스를 찾을수 없다"
+    ID_WINVNC_ERROR         "runRemote 에러"
+    ID_WINVNC_WARNIN        "runRemote 경고"
+    ID_PLUGIN_LOADIN        "풀로그인 로딩중"
+    ID_NO_PASSWD_NO_OVERRIDE_ERR 
+                            "암호가 설정되어 있지 않은 및이 시스템은 자신의 설정에서 사용자를 방지하기 위해 사전 구성되었습니다. \n 당신은 제대로 runRemote VNC를 구성하는 시스템 관리자에게 문의해야합니다."
+    ID_NO_PASSWD_NO_OVERRIDE_WARN 
+                            "경고 :이 기계는 인증받지 않은 연결을 승인하고 인증을 활성화하는 것을 방지 할 수 있도록 사전 구성되어 있습니다."
+    ID_NO_PASSWD_NO_LOGON_WARN 
+                            "경고 :이 기계는 기본 암호 설정이 없습니다. runRemote VNC 하나를 입력 할 수 있도록 대화 상자는 이제 기본 속성을 발표 할 예정이다."
+END
+
+STRINGTABLE
+BEGIN
+    ID_NO_OVERRIDE_ERR      "이 기계는 개별 사용자에 의해 오버라이드 (override) 할 수 없습니다 WinVNC 기본 설정으로 사전 구성되어 있습니다.미리 설정은 시스템 관리자에 의해 수정 될 수있습니다."
+    ID_NO_CURRENT_USER_ERR  "현재 사용자 WinVNC 설정은 현재 불가능합니다."
+    ID_CANNOT_EDIT_DEFAULT_PREFS 
+                            "당신은 기본 로컬 runRemote VNC 설정을 편집 할 수있는 충분한 권한이 없습니다"
+    ID_NO_PASSWORD_WARN     "경고 : 암호를 설정하지 않고 runRemote VNC를 실행하면 위험한 보안 위험입니다!\n암호를 설정까지 runRemote VNC는 들어오는 연결을 허용하지 않습니다."
+    ID_PLUGIN_NOT_LOAD      "플러그인을로드 할 수 없습니다. 무결성을 확인하시기 바랍니다."
+    ID_MB1                  "MB1"
+    ID_WVNC                 "runRemote"
+    ID_AUTHAD_NOT_FO        "당신은 MS-로그온을 선택하지만, authad.dll는 당신에게 설치를 found.Check되지 않았습니다"
+    ID_WARNING              "경고"
+    ID_AUTH_NOT_FO          "당신은 MS-로그온을 선택하지만, auth.dll는 당신에게 설치를 found.Check되지 않았습니다"
+    ID_DESKTOP_BITBLT_ROOT  "vncDesktop는 :  runRemote VNC를 지원하지 않는 그래픽 장치 드라이버와 함께 사용할 수 없습니다"
+    ID_DESKTOP_BITBLT_MEM   "vncDesktop : GetDIBits runRemote VNC를 지원하지 않는 메모리 장치는이 그래픽 장치 드라이버와 함께 사용할 수 없습니다"
+    ID_DESKTOP_PLANAR_NOTC  "vncDesktop : current display is PLANAR, not CHUNKY!\nWinVNC cannot be used with this graphics device driver"
+    ID_FAILED_CONNECT_LISTING_VIEW "runRemote VNC 고객용 어플에 연결하지 못했습니다"
+    ID_OUTGOING_CONNECTION  "외부 연결"
+    ID_UNABLE_PROC_MSLOGON  "MS logon 처리를 할수없습니다."
+END
+
+STRINGTABLE
+BEGIN
+    ID_RICHED32_UNLOAD      "Rich Edit를 열수없습니다 (RICHED32.DLL)"
+    ID_RICHED32_DLL_LD      "Rich Edit Dll 읽는중"
+    ID_SERV_SUCCESS_INST    "runRemote VNC서비스는 설치되어 서비스가 지금 시작됩니다, 자동으로 이 시스템을 재설정 후 다음 번 실행됩니다"
+    ID_SERV_SUCCESS_REG     "성공적으로 서비스를 등록 runRemote VNC 서비스는 제어판에서 시작 될 수 있으며, 자동으로 이 시스템을 재설정 후 다음 번 실행됩니다"
+    ID_SERV_SUCCESS_UNREG   "runRemote VNC 서비스가 등록되었습니다"
+    ID_ULTRAVNC_TEXTCHAT    "채팅을 지원하지 않는 버전입니다"
+    ID_ULTRAVNC_WARNING     "runRemote 경고"
+    ID_NO_PLUGIN_DETECT     "플러그인 발견하지 못함..."
+    ID_CHAT_WITH_S_ULTRAVNC "<%s> 님과 대화 - runRemote"
+    ID_CURRENT_USER_PROP    "runRemote : 현재 사용자 설정"
+    ID_DEFAULT_SYST_PROP    "runRemote : 기본 로컬 사용자 설정"
+    ID_AUTOREJECT_U         "자동 거절:%u"
+    ID_AUTOACCEPT_U         "자동 수락:%u"
+    ID_CADERROR             "Ctrl-alt-del 할 권한이 없습니다."
+    ID_CADERRORFILE         "파일 cad.exe은 runRemote VNC같은 폴더에서 찾을 수 없습니다"
+    ID_CADPERMISSION        "cad.exe 거부 권한이 runRemote VNC는 ""프로그램 파일""에 설치해야합니다 다른 특별한 치사한 권한은 거부됩니다."
+END
+
+#endif    // 한국어(대한민국) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 영어(영국) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 영어(영국) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
