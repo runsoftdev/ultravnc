@@ -1115,6 +1115,7 @@ void ClientConnection::RebuildToolbar(HWND hwnd)
 
 void ClientConnection::GTGBS_CreateToolbar()
 {
+#ifndef _DEBUG
 	RECT clr;
 	WNDCLASS wndclass;
 
@@ -1168,59 +1169,11 @@ void ClientConnection::GTGBS_CreateToolbar()
 	else
 		CreateButtons(true,m_fServerKnowsFileTransfer);
 	//////////////////////////////////////////////////
+#endif // DEBUG
 	RECT r;
 
 	GetClientRect(m_hwndTBwin,&r);
-	m_TrafficMonitor = CreateWindowEx(WS_EX_NOPARENTNOTIFY | WS_EX_CLIENTEDGE,
-											"Static",
-											NULL,
-											WS_CHILD | WS_VISIBLE ,
-											clr.right - clr.left-45,
-											((r.bottom-r.top) / 2) - 8,
-											35,
-											22,
-											m_hwndTBwin,
-											NULL,
-											m_pApp->m_instance,
-											NULL);
-
-	m_bitmapNONE = LoadImage(m_pApp->m_instance,MAKEINTRESOURCE(IDB_STAT_NONE),IMAGE_BITMAP,22,20,LR_SHARED);
-	m_bitmapFRONT = LoadImage(m_pApp->m_instance,MAKEINTRESOURCE(IDB_STAT_FRONT),IMAGE_BITMAP,22,20,LR_SHARED);
-	m_bitmapBACK= LoadImage(m_pApp->m_instance,MAKEINTRESOURCE(IDB_STAT_BACK),IMAGE_BITMAP,22,20,LR_SHARED);
-	HDC hdc = GetDC(m_TrafficMonitor);
-	HDC hdcBits;
-	hdcBits = CreateCompatibleDC(hdc);
-	HGDIOBJ hbrOld = SelectObject(hdcBits,m_bitmapNONE);
-	BitBlt(hdc,0,0,22,22,hdcBits,0,0,SRCCOPY);
-	SelectObject(hdcBits,hbrOld);
-	DeleteDC(hdcBits);
-	ReleaseDC(m_TrafficMonitor,hdc);
-
-	///////////////////////////////////////////////////
-	m_logo_wnd = CreateWindow(
-									"combobox",
-									"",
-									WS_CHILD | WS_VISIBLE | WS_TABSTOP|CBS_SIMPLE | CBS_AUTOHSCROLL | WS_VSCROLL,
-									clr.right - clr.left-45-70,
-									4,
-									70,
-									28,
-									m_hwndTBwin,
-									(HMENU)9999,
-									m_pApp->m_instance,
-									NULL);
-	m_button_wnd = CreateWindow(
-									"button",
-									"",
-									WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-									clr.right - clr.left-45-70-200,
-									4,
-									20,
-									20,
-									m_hwndTBwin,
-									(HMENU)9998,
-									m_pApp->m_instance,
-									NULL);
+		
 	TCHAR valname[256];
 	MRU *m_pMRU;
 	m_pMRU = new MRU(SESSION_MRU_KEY_NAME,26);
@@ -1235,7 +1188,10 @@ void ClientConnection::GTGBS_CreateToolbar()
         int pos = SendMessage(m_logo_wnd, CB_ADDSTRING, 0, (LPARAM) valname);
     }
     SendMessage(m_logo_wnd, CB_SETCURSEL, 0, 0);
-	if (m_pMRU) delete m_pMRU;
+	if (m_pMRU) delete m_pMRU; 
+
+
+
 }
 //////////////////////////////////////////////////////////
 
@@ -1324,21 +1280,22 @@ void ClientConnection::CreateDisplay()
 		m_hPalette = CreatePalette(plp);
 	}
 
+#ifdef _DEBUG
 	// Add stuff to System menu
 	HMENU hsysmenu = GetSystemMenu(m_hwndMain, FALSE);
 	if (!m_opts.m_restricted) {
 		// Modif sf@2002
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
-		AppendMenu(hsysmenu, MF_STRING, ID_FILETRANSFER,	sz_L16);
-		AppendMenu(hsysmenu, MF_STRING, ID_TEXTCHAT,	sz_L17);
+		AppendMenu(hsysmenu, MF_STRING, ID_FILETRANSFER, sz_L16);
+		AppendMenu(hsysmenu, MF_STRING, ID_TEXTCHAT, sz_L17);
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
-		AppendMenu(hsysmenu, MF_STRING, ID_DBUTTON,	sz_L18);
+		AppendMenu(hsysmenu, MF_STRING, ID_DBUTTON, sz_L18);
 		// AppendMenu(hsysmenu, MF_STRING, ID_BUTTON,	_T("Show Toolbar Buttons"));
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
-		AppendMenu(hsysmenu, MF_STRING, ID_DINPUT,	sz_L19); // disable remote input
-		AppendMenu(hsysmenu, MF_STRING, ID_INPUT,	sz_L20); // enable remote input
+		AppendMenu(hsysmenu, MF_STRING, ID_DINPUT, sz_L19); // disable remote input
+		AppendMenu(hsysmenu, MF_STRING, ID_INPUT, sz_L20); // enable remote input
 		// this seems logically placed here
-		AppendMenu(hsysmenu, MF_STRING, ID_VIEWONLYTOGGLE,	sz_L93); // Todo: translate
+		AppendMenu(hsysmenu, MF_STRING, ID_VIEWONLYTOGGLE, sz_L93); // Todo: translate
 
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
 
@@ -1348,63 +1305,63 @@ void ClientConnection::CreateDisplay()
 
 		m_hPopupMenuClipboard = CreatePopupMenu();
 		{
-			AppendMenu(m_hPopupMenuClipboard, MF_STRING, ID_ENABLE_CLIPBOARD,		"Enable Automatic Synchronization");
+			AppendMenu(m_hPopupMenuClipboard, MF_STRING, ID_ENABLE_CLIPBOARD, "Enable Automatic Synchronization");
 			AppendMenu(m_hPopupMenuClipboard, MF_SEPARATOR, NULL, NULL);
 
 			m_hPopupMenuClipboardFormats = CreatePopupMenu();
 			{
-				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_TEXT,		"Text (Unicode)");
-				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_RTF,		"Rich Text (RTF)");
-				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_HTML,		"HTML");
-				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_DIB,		"Image (Send or Request only)");
+				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_TEXT, "Text (Unicode)");
+				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_RTF, "Rich Text (RTF)");
+				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_HTML, "HTML");
+				AppendMenu(m_hPopupMenuClipboardFormats, MF_STRING, ID_CLIPBOARD_DIB, "Image (Send or Request only)");
 			}
 			AppendMenu(m_hPopupMenuClipboard, MF_POPUP, (UINT_PTR)m_hPopupMenuClipboardFormats, "Automatically Synchronized Formats");
 			AppendMenu(m_hPopupMenuClipboard, MF_SEPARATOR, NULL, NULL);
-			AppendMenu(m_hPopupMenuClipboard, MF_STRING, ID_CLIPBOARD_SEND,		"Send All Formats Now...");
-			AppendMenu(m_hPopupMenuClipboard, MF_STRING, ID_CLIPBOARD_RECV,		"Request All Formats Now...");
+			AppendMenu(m_hPopupMenuClipboard, MF_STRING, ID_CLIPBOARD_SEND, "Send All Formats Now...");
+			AppendMenu(m_hPopupMenuClipboard, MF_STRING, ID_CLIPBOARD_RECV, "Request All Formats Now...");
 		}
 		AppendMenu(hsysmenu, MF_POPUP, (UINT_PTR)m_hPopupMenuClipboard, "Clipboard");
 
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
 		m_hPopupMenuDisplay = CreatePopupMenu();
 		{
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_FULLSCREEN,		sz_L24);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_FULLSCREEN, sz_L24);
 			AppendMenu(m_hPopupMenuDisplay, MF_SEPARATOR, NULL, NULL);
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_AUTOSCALING,		sz_L25);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_AUTOSCALING, sz_L25);
 			// Modif sf@2002
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_HALFSCREEN,		sz_L26);
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_FUZZYSCREEN,		sz_L27);
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_NORMALSCREEN2,	sz_L28);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_HALFSCREEN, sz_L26);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_FUZZYSCREEN, sz_L27);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_NORMALSCREEN2, sz_L28);
 			AppendMenu(m_hPopupMenuDisplay, MF_SEPARATOR, NULL, NULL);
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_MAXCOLORS,		sz_L29);
-			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_256COLORS,		sz_L30);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_MAXCOLORS, sz_L29);
+			AppendMenu(m_hPopupMenuDisplay, MF_STRING, ID_256COLORS, sz_L30);
 		}
 		AppendMenu(hsysmenu, MF_POPUP, (UINT_PTR)m_hPopupMenuDisplay, "Display");
 
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
 		m_hPopupMenuKeyboard = CreatePopupMenu();
 		{
- 			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLALTDEL,	sz_L31);
-			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLESC,		sz_L32);
-			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLDOWN,	sz_L33);
-			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLUP,		sz_L34);
-			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_ALTDOWN,	sz_L35);
-			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_ALTUP,		sz_L36);
+			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLALTDEL, sz_L31);
+			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLESC, sz_L32);
+			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLDOWN, sz_L33);
+			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_CTLUP, sz_L34);
+			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_ALTDOWN, sz_L35);
+			AppendMenu(m_hPopupMenuKeyboard, MF_STRING, ID_CONN_ALTUP, sz_L36);
 		}
 		AppendMenu(hsysmenu, MF_POPUP, (UINT_PTR)m_hPopupMenuKeyboard, "Keyboard");
 
 		// group connection options together
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
-		AppendMenu(hsysmenu, MF_STRING, IDC_OPTIONBUTTON,	sz_L21);
-		AppendMenu(hsysmenu, MF_STRING, ID_CONN_ABOUT,		sz_L22);
-		AppendMenu(hsysmenu, MF_STRING, ID_REQUEST_REFRESH,	sz_L23);
+		AppendMenu(hsysmenu, MF_STRING, IDC_OPTIONBUTTON, sz_L21);
+		AppendMenu(hsysmenu, MF_STRING, ID_CONN_ABOUT, sz_L22);
+		AppendMenu(hsysmenu, MF_STRING, ID_REQUEST_REFRESH, sz_L23);
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
-		AppendMenu(hsysmenu, MF_STRING, ID_NEWCONN,			sz_L37);
+		AppendMenu(hsysmenu, MF_STRING, ID_NEWCONN, sz_L37);
 		AppendMenu(hsysmenu, MF_STRING | (m_serverInitiated ? MF_GRAYED : 0),
-			ID_CONN_SAVE_AS,	sz_L38);
+			ID_CONN_SAVE_AS, sz_L38);
 	}
-    AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(hsysmenu, MF_STRING, IDD_APP_ABOUT,		sz_L39);
+	AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(hsysmenu, MF_STRING, IDD_APP_ABOUT, sz_L39);
 	if (m_opts.m_listening) {
 		AppendMenu(hsysmenu, MF_SEPARATOR, NULL, NULL);
 		AppendMenu(hsysmenu, MF_STRING, ID_CLOSEDAEMON, sz_L40);
@@ -1416,11 +1373,16 @@ void ClientConnection::CreateDisplay()
 	UpdateMenuItems();
 
 	// adzm - 2010-07 - Fix clipboard hangs - we don't do this immediately anymore
-	//WatchClipboard();
+	//WatchClipboard();  
+#endif // DEBUG
+
 
 	//Added by: Lars Werner (http://lars.werner.no)
-	if(TitleBar.GetSafeHwnd()==NULL)
+	if (TitleBar.GetSafeHwnd() == NULL) {
 		TitleBar.Create(m_pApp->m_instance, m_hwndMain);
+		MenuBar.Create(m_pApp->m_instance, m_hwndMain);
+		MenuBar.DisplayWindow(TRUE);
+	}
 }
 
 // adzm - 2010-07 - Fix clipboard hangs
@@ -2380,10 +2342,12 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 
 			//adzm 2009-07-19 - Auto-accept the connection if it is unencrypted if that option is specified
 			if (!m_opts.m_fAutoAcceptNoDSM) {
-				int returnvalue=MessageBox(m_hwndMain, "암호화 플러그인을 사용중이십니다. 그러나 현재 연결이 암호화되지 않은 상태입니다! 계속 하시겠습니까?", "안전하지 않는 연결 수락", MB_YESNO | MB_ICONEXCLAMATION | MB_TOPMOST);
+				int returnvalue=MessageBox(m_hwndMain, 
+					"암호화 플러그인을 사용중이십니다. 그러나 현재 연결이 암호화되지 않은 상태입니다! 계속 하시겠습니까?", 
+					"안전하지 않는 연결 수락", MB_YESNO | MB_ICONEXCLAMATION | MB_TOPMOST);
 				if (returnvalue==IDNO)
 				{
-					throw WarningException("연결을 거부하셨습니다.");
+					throw WarningException("연결이 취소 되었습니다.");
 				}
 			}
 		}
@@ -3035,7 +2999,7 @@ void ClientConnection::AuthSCPrompt()
 {
 	if (m_minorVersion < 7) {
 		vnclog.Print(0, _T("Invalid auth continue response for protocol version.\n"));
-		throw ErrorException("Invalid auth continue response");
+		throw ErrorException("프로토콜 버전이 달라서 더이상 연결을 진행할수 없습니다.");
 	}
 	/// SHOW Messagebox
 	int size;
@@ -3044,7 +3008,7 @@ void ClientConnection::AuthSCPrompt()
 	//block
 	if (size<0 || size >1024)
 	{
-		throw WarningException("버퍼가 너무 큽니다, ");
+		throw WarningException("메모리 버퍼가 너무 큽니다, ");
 		if (size<0) size=0;
 		if (size>1024) size=1024;
 	}
@@ -6379,7 +6343,7 @@ void ClientConnection::ReadNewFBSize(rfbFramebufferUpdateRectHeader *pfburh)
 BYTE* ClientConnection::TransformBuffer(BYTE* pDataBuffer, int nDataLen, int* pnTransformedDataLen)
 {
 	if (m_pPluginInterface) {
-		return m_pPluginInterface->TransformBuffer(pDataBuffer, nDataLen, pnTransformedDataLen);
+			return m_pPluginInterface->TransformBuffer(pDataBuffer, nDataLen, pnTransformedDataLen);
 	} else {
 		return m_pDSMPlugin->TransformBuffer(pDataBuffer, nDataLen, pnTransformedDataLen);
 	}

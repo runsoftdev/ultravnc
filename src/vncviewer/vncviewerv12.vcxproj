@@ -708,6 +708,7 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\installer64</Command>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="TitleBar.cpp" />
     <ClCompile Include="vncauth.c">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -802,6 +803,7 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\installer64</Command>
     <ClInclude Include="SessionDialog.h" />
     <ClInclude Include="stdhdrs.h" />
     <ClInclude Include="TextChat.h" />
+    <ClInclude Include="TitleBar.h" />
     <ClInclude Include="vncauth.h" />
     <ClInclude Include="VNCOptions.h" />
     <ClInclude Include="vnctouch.h" />

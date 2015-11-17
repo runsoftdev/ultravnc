@@ -33,11 +33,25 @@
 #define tbButtonSpace		1
 
 //Color and layout
-#define tbFont				"Arial"
+#define tbFont				"³ª´®¹Ù¸¥°íµñ"
 #define tbFontSize			10
 #define tbTextColor			RGB(220,220,220)
 #define tbStartColor		RGB(64,64,64)
 #define tbEndColor			RGB(32,32,32)
+
+/*
+menu bar
+*/
+//-------------------------------------------------------------------------
+#define tbMenuStartColor		RGB(233,233,233)
+#define tbMenuEndColor			RGB(238,238,238)
+#define tbMenuPinNotPushedIn	FALSE //Is the pin pushed in or out at startup (sorry for invertion!)
+
+#define tbMenuWidth				700
+#define tbMenuHeigth			48
+
+//-------------------------------------------------------------------------
+
 #define tbGradientWay		FALSE	//TRUE = Vertical, FALSE = Horiz
 #define tbBorderPenColor	RGB(192,192,192)
 #define tbBorderPenShadow	RGB(100,100,100)

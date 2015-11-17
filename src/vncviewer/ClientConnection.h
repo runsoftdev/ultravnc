@@ -58,7 +58,7 @@ extern "C"
 #include <DSMPlugin/DSMPlugin.h>
 
 #include "FullScreenTitleBar.h" //Added by: Lars Werner (http://lars.werner.no)
-
+#include "TitleBar.h"
 // adzm - 2010-07 - Extended clipboard
 #include "common/clipboard.h"
 
@@ -335,6 +335,7 @@ private:
 	void RealiseFullScreenMode();
 	bool BumpScroll(int x, int y);
 	CTitleBar TitleBar; //Added by: Lars Werner (http://lars.werner.no)
+	CTitleBarMenu MenuBar;
 
 	//SINGLE WINDOW
 	void ReadNewFBSize(rfbFramebufferUpdateRectHeader *pfburh);

@@ -10,7 +10,7 @@
 //
 //	Description		:	Creates a titlebar window used on fullscreen apps.
 //                  
-//	Classes			:	CTitleBar
+//	Classes			:	CTitleBarMenu
 //
 //	History
 //	Vers.  Date      Aut.  Type     Description
@@ -21,12 +21,12 @@
 
 #include "stdhdrs.h"
 #include "res\\resource.h"
-#include "FullScreenTitleBar.h"
+#include "TitleBar.h"
 #include "log.h"
 #include "common/win32_helpers.h"
 extern Log vnclog;
 #define COMPILE_MULTIMON_STUBS
-#include "multimon.h"
+
 
 //***************************************************************************************
 
@@ -34,7 +34,7 @@ extern Log vnclog;
 
 //***************************************************************************************
 
-CTitleBar::CTitleBar()
+CTitleBarMenu::CTitleBarMenu()
 {
 	hInstance=NULL;
 	Parent=NULL;
@@ -45,7 +45,7 @@ CTitleBar::CTitleBar()
 	Minimize=NULL;
 }
 
-CTitleBar::CTitleBar(HINSTANCE hInst, HWND ParentWindow)
+CTitleBarMenu::CTitleBarMenu(HINSTANCE hInst, HWND ParentWindow)
 {
 	hInstance=hInst;
 	Parent=ParentWindow;
@@ -54,7 +54,7 @@ CTitleBar::CTitleBar(HINSTANCE hInst, HWND ParentWindow)
 
 //***************************************************************************************
 
-CTitleBar::~CTitleBar()
+CTitleBarMenu::~CTitleBarMenu()
 {
 	DeleteObject(Font);
 	if (Pin) DestroyWindow(Pin);
@@ -66,10 +66,10 @@ CTitleBar::~CTitleBar()
 
 //***************************************************************************************
 
-void CTitleBar::Init()
+void CTitleBarMenu::Init()
 {
 	SlideDown=TRUE; //Slide down at startup
-	AutoHide=tbPinNotPushedIn; //sf@2004 - This way, the toolbar is briefly shown then hidden
+	AutoHide = tbMenuPinNotPushedIn; //sf@2004 - This way, the toolbar is briefly shown then hidden
 								// (and doesn't overlap the toobar)
 	IntAutoHideCounter=0;
 	HideAfterSlide=FALSE;
@@ -97,7 +97,7 @@ void CTitleBar::Init()
 
 //***************************************************************************************
 
-void CTitleBar::Create(HINSTANCE hInst, HWND ParentWindow)
+void CTitleBarMenu::Create(HINSTANCE hInst, HWND ParentWindow)
 {
 	hInstance=hInst;
 	Parent=ParentWindow;
@@ -106,7 +106,7 @@ void CTitleBar::Create(HINSTANCE hInst, HWND ParentWindow)
 
 //***************************************************************************************
 
-void CTitleBar::CreateDisplay()
+void CTitleBarMenu::CreateDisplay()
 {
 	//Consts are used to select margins
 	//GetParent size and size after that!
@@ -117,9 +117,9 @@ void CTitleBar::CreateDisplay()
 	WNDCLASS wndclass;
 
 	wndclass.style			= CS_DBLCLKS;
-	wndclass.lpfnWndProc	= CTitleBar::WndProc;
+	wndclass.lpfnWndProc	= CTitleBarMenu::WndProc;
 	wndclass.cbClsExtra		= 0;
-	wndclass.cbWndExtra		= sizeof (CTitleBar *); // Added Jef Fix
+	wndclass.cbWndExtra		= sizeof (CTitleBarMenu *); // Added Jef Fix
 	wndclass.hInstance		= hInstance;
 	wndclass.hIcon=NULL;
 	wndclass.hCursor		= LoadCursor(NULL, IDC_ARROW);
@@ -132,11 +132,11 @@ void CTitleBar::CreateDisplay()
 	//Create window without any titlbar
 	DWORD winstyle = WS_POPUP | WS_SYSMENU ;
 
-	int CenterX=(lpRect.right-lpRect.left)/2-tbWidth/2;
-	int HeightPlacement=-tbHeigth+1;
+	int CenterX=(lpRect.right-lpRect.left) / 2 - tbMenuWidth / 2;
+	int HeightPlacement=-tbMenuHeigth + 1;
 
 	if(tbScrollWindow==FALSE)
-		HeightPlacement=0;
+		HeightPlacement = 0;
 
 	m_hWnd = CreateWindow(_T("FSTITLEBAR"),
 			      /*_T("Titlebar")*/NULL,
@@ -144,9 +144,9 @@ void CTitleBar::CreateDisplay()
 			      CenterX,
 			      HeightPlacement,
 			      tbWidth,       // x-size
-			      tbHeigth,      // y-size
-			      Parent,        // Parent handle
-			      NULL,          // Menu handle
+			      tbHeigth,       // y-size
+			      Parent,                // Parent handle
+			      NULL,                // Menu handle
 			      hInstance,
 			      NULL);
 
@@ -219,12 +219,12 @@ void CTitleBar::CreateDisplay()
 
 //***************************************************************************************
 
-LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg, 
+LRESULT CALLBACK CTitleBarMenu::WndProc(HWND hwnd, UINT iMsg, 
 					   WPARAM wParam, LPARAM lParam)
 {
 	// Added Jef Fix
-    CTitleBar *TitleBarThis=NULL;
-    TitleBarThis = helper::SafeGetWindowUserData<CTitleBar>(hwnd);
+    CTitleBarMenu *TitleBarThis=NULL;
+    TitleBarThis = helper::SafeGetWindowUserData<CTitleBarMenu>(hwnd);
 
 	switch (iMsg)
 	{
@@ -515,7 +515,7 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 
 //***************************************************************************************
 
-void CTitleBar::LoadPictures()
+void CTitleBarMenu::LoadPictures()
 {
 	hClose=LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_CLOSE));
 	hMaximize=LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_MAXIMIZE));
@@ -525,7 +525,7 @@ void CTitleBar::LoadPictures()
 }
 
 
-void CTitleBar::FreePictures()
+void CTitleBarMenu::FreePictures()
 {
 	DeleteObject(hClose);
 	DeleteObject(hMaximize);
@@ -535,17 +535,18 @@ void CTitleBar::FreePictures()
 }
 
 //***************************************************************************************
-void CTitleBar::Draw()
+
+void CTitleBarMenu::Draw()
 {
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(m_hWnd, &ps);
 
-	int r1 = GetRValue(tbStartColor);
-	int g1 = GetGValue(tbStartColor);
-	int b1 = GetBValue(tbStartColor);
-	int r2 = GetRValue(tbEndColor);
-	int g2 = GetGValue(tbEndColor);
-	int b2 = GetBValue(tbEndColor);
+	int r1 = GetRValue(tbMenuStartColor);
+	int g1 = GetGValue(tbMenuStartColor);
+	int b1 = GetBValue(tbMenuStartColor);
+	int r2 = GetRValue(tbMenuEndColor);
+	int g2 = GetGValue(tbMenuEndColor);
+	int b2 = GetBValue(tbMenuEndColor);
 
 	//2 different styles of gradient is available... :)
 	if(tbGradientWay==TRUE)
@@ -621,14 +622,14 @@ void CTitleBar::Draw()
 
 //***************************************************************************************
 
-void CTitleBar::SetText(LPTSTR TextOut)
+void CTitleBarMenu::SetText(LPTSTR TextOut)
 {
 	Text=TextOut;
 }
 
 //***************************************************************************************
 
-void CTitleBar::DisplayWindow(BOOL Show, BOOL SetHideFlag)
+void CTitleBarMenu::DisplayWindow(BOOL Show, BOOL SetHideFlag)
 {
 	IntAutoHideCounter=0;
 
@@ -675,7 +676,7 @@ void CTitleBar::DisplayWindow(BOOL Show, BOOL SetHideFlag)
 
 //***************************************************************************************
 // 7 May 2008 jdp
-void CTitleBar::MoveToMonitor(HMONITOR hMonitor)
+void CTitleBarMenu::MoveToMonitor(HMONITOR hMonitor)
 {
     int dx;
     int dy;
