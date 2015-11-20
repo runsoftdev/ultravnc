@@ -39,7 +39,7 @@ extern HANDLE hEvent;
 static char service_path[MAX_PATH];
 void monitor_sessions();
 void Restore_after_reboot();
-char service_name[256]="uvnc_service";
+char service_name[256]="uvnc_support_service";
 char *app_name = "RunRemote";
 void disconnect_remote_sessions();
 char cmdtext[256];
@@ -54,8 +54,7 @@ bool IsWin2000()
     if (OSversion.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
         if (OSversion.dwMajorVersion==5 && OSversion.dwMinorVersion==0)
-            return true; 
-						
+            return true;						
     }
 
     return false;
