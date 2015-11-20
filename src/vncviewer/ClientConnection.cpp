@@ -450,6 +450,8 @@ void ClientConnection::Init(VNCviewerApp *pApp)
 	m_button_wnd=NULL;
 	// m_ToolbarEnable=true;
 	m_remote_mouse_disable=false;
+	m_MenuExecutor.SetRemoteMouseDisable(false);
+
 	m_SWselect=false;
 
 	EncodingStatusWindow = -1;
@@ -1115,7 +1117,7 @@ void ClientConnection::RebuildToolbar(HWND hwnd)
 
 void ClientConnection::GTGBS_CreateToolbar()
 {
-#ifndef _DEBUG
+#ifdef _DEBUG
 	RECT clr;
 	WNDCLASS wndclass;
 
@@ -1243,7 +1245,8 @@ void ClientConnection::CreateDisplay()
 			      NULL,                // Menu handle
 			      m_pApp->m_instance,
 			      (LPVOID)this);
-
+	
+	SetTimer(m_hwndcn, MENU_EXCUTOR_TIME_ID, MENU_EXCUTOR_TIME_DELAY, NULL);
 	//ShowWindow(m_hwnd, SW_HIDE);
 	//ShowWindow(m_hwndcn, SW_SHOW);
 	//adzm 2009-06-21 - let's not show until connected.
@@ -3098,14 +3101,13 @@ void ClientConnection::ReadServerInit()
 	vnclog.Print(0, _T("Desktop name \"%s\"\n"),m_desktopName);
 	vnclog.Print(1, _T("Geometry %d x %d depth %d\n"),
 		m_si.framebufferWidth, m_si.framebufferHeight, m_si.format.depth );
-
-	//SetWindowText(m_hwndMain, m_desktopName);
+		
 	//adzm 2009-06-21 - if we decide to connect even though it is unencrypted, do not show the plugin info
 	if (m_pDSMPlugin->IsEnabled() && m_fUsePlugin)
 	{
 			char szMess[255];
 			memset(szMess, 0, 255);
-			sprintf(szMess, "--- UltraVNC Viewer + %s-v%s by %s ",
+			sprintf(szMess, "---runsoft.runRemote %s-v%s by %s ",
 					m_pDSMPlugin->GetPluginName(),
 					m_pDSMPlugin->GetPluginVersion(),
 					m_pDSMPlugin->GetPluginAuthor()
@@ -3114,6 +3116,10 @@ void ClientConnection::ReadServerInit()
 	}
 	strcpy(m_desktopName_viewonly,m_desktopName);
 	strcat(m_desktopName_viewonly,"viewonly");
+
+	if (strlen(m_opts.m_caption) > 0) {
+		strcat(m_desktopName, m_opts.m_caption);
+	}
 
 	if (m_opts.m_ViewOnly) SetWindowText(m_hwndMain, m_desktopName_viewonly);
 	else SetWindowText(m_hwndMain, m_desktopName);
@@ -5560,6 +5566,8 @@ void ClientConnection::ReadServerState()
     {
     case rfbServerRemoteInputsState:
         m_remote_mouse_disable = (value == rfbServerState_Disabled) ? true : false;
+		m_MenuExecutor.SetRemoteMouseDisable(m_remote_mouse_disable);
+
         vnclog.Print(1, _T("New input state %u"), m_remote_mouse_disable);
         break;
 
@@ -6850,11 +6858,12 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 		 {
 		 _this = (ClientConnection*)((CREATESTRUCT*)lParam)->lpCreateParams;
 		 helper::SafeSetWindowUserData(hwnd, (LONG_PTR)_this);
+
+		 //menu Timer
+		 _this->m_MenuExecutor.SetClientConnection(_this->m_pApp->m_instance, hwnd);
+		 
 		 //SetWindowLongPtr( hwnd, GWLP_USERDATA, (LONG_PTR)_this );
 		 }
-
-
-
 	// This is a static method, so we don't know which instantiation we're
 	// dealing with.  But we've stored a 'pseudo-this' in the window data.
 //    ClientConnection *_this = helper::SafeGetWindowUserData<ClientConnection>(hwnd);
@@ -7063,8 +7072,11 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						_this->m_opts.m_ViewOnly = !_this->m_opts.m_ViewOnly;
 
 						// adzm - 2010-07 - Extended clipboard
+						/*
 						if (_this->m_opts.m_ViewOnly) SetWindowText(_this->m_hwndMain, _this->m_desktopName_viewonly);
 						else SetWindowText(_this->m_hwndMain, _this->m_desktopName);
+						*/
+
 						//_this->UpdateMenuItems(); // Handled in WM_INITMENUPOPUP
 
 						_this->UpdateRemoteClipboardCaps();
@@ -8218,12 +8230,14 @@ LRESULT CALLBACK ClientConnection::WndProcTBwin(HWND hwnd, UINT iMsg, WPARAM wPa
 					if (_this->m_remote_mouse_disable)
 					{
 						_this->m_remote_mouse_disable=false;
+						_this->m_MenuExecutor.SetRemoteMouseDisable(false); 
 						SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_INPUT,(LPARAM)0);
 						SendMessage(parent,WM_SIZE,(WPARAM)ID_DINPUT,(LPARAM)0);
 					}
 					else
 					{
 						_this->m_remote_mouse_disable=true;
+						_this->m_MenuExecutor.SetRemoteMouseDisable(true);
 						SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_DINPUT,(LPARAM)0);
 						SendMessage(parent,WM_SIZE,(WPARAM)ID_DINPUT,(LPARAM)0);
 					}
@@ -8301,7 +8315,12 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 
 			case WM_TIMER:
 				if (wParam !=0) {
-					if (wParam == _this->m_emulate3ButtonsTimer)
+					//timer
+					if (wParam == MENU_EXCUTOR_TIME_ID) 
+					{
+						_this->m_MenuExecutor.OnTimerEventResolve();
+					}
+					else if (wParam == _this->m_emulate3ButtonsTimer)
 					{
 						_this->SubProcessPointerEvent(
 							_this->m_emulateButtonPressedX,
@@ -8547,6 +8566,9 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 #ifdef _Gii
 				UnregisterTouchWindow(hwnd);
 #endif
+				//timer
+				KillTimer(_this->m_hwndcn, MENU_EXCUTOR_TIME_ID);
+
 				KillTimer(_this->m_hwndcn, _this->m_idle_timer);
 				KillTimer(_this->m_hwndcn, 1013);
 				if (_this->m_waitingOnEmulateTimer)

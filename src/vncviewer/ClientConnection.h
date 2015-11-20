@@ -65,6 +65,7 @@ extern "C"
 #include <vector>
 #include <algorithm>
 #include "./directx/directxviewer.h"
+#include "MenuExecutor.h"
 #ifdef _Gii
 #include "vnctouch.h"
 #define TOUCH_REGISTER_TIMER 1014
@@ -800,6 +801,9 @@ private:
 	UINT m_idle_time;
 	ViewerDirectxClass directx_output;
 	bool directx_used;
+
+	// add toolbar menu action
+	CMenuExecutor m_MenuExecutor;
 public:
 	// RFB settings
 	VNCOptions m_opts;
