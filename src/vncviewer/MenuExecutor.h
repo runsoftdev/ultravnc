@@ -1,7 +1,7 @@
 #pragma once
 
 #define MENU_EXCUTOR_TIME_ID 293457
-#define MENU_EXCUTOR_TIME_DELAY 500
+#define MENU_EXCUTOR_TIME_DELAY 1000
 #define TOOLBAR_MENU "toolbar"
 #define FUNTION_ON 1
 #define FUNTION_OFF "0"
@@ -27,7 +27,7 @@ public:
 		m_remote_mouse_disable = newVale;
 	}
 
-	void OnTimerEventResolve();
+	void OnTimerEventResolve(TCHAR*iniKey);
 
 private:
 	HINSTANCE _hInstance;

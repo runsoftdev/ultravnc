@@ -3118,7 +3118,9 @@ void ClientConnection::ReadServerInit()
 	strcat(m_desktopName_viewonly,"viewonly");
 
 	if (strlen(m_opts.m_caption) > 0) {
+		strcat(m_desktopName, "[");
 		strcat(m_desktopName, m_opts.m_caption);
+		strcat(m_desktopName, "]");
 	}
 
 	if (m_opts.m_ViewOnly) SetWindowText(m_hwndMain, m_desktopName_viewonly);
@@ -7632,9 +7634,15 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							char temp[10];
 							char wtext[150];
 							_itoa(wParam,temp,10);
-							strcpy(wtext,"UltraVNC Viewer - Connection dropped, trying to reconnect (");
+							strcpy(wtext,"runsoft.runRemote - Connection dropped, trying to reconnect (");
 							strcat(wtext,temp);
 							strcat(wtext,")");
+							if (strlen(_this->m_opts.m_caption) > 0) {
+								strcat(wtext, "[");
+								strcat(wtext, _this->m_opts.m_caption);
+								strcat(wtext, "]");
+							}
+
 							SetWindowText(_this->m_hwndMain, wtext);
 							_this->m_opts.m_NoStatus = true;
 							_this->SuspendThread();
@@ -7647,14 +7655,14 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 								DWORD dwWaitResult=WaitForSingleObject(_this->rcth,1000);
 								switch (dwWaitResult)
 								{
-										case WAIT_OBJECT_0:
-											CloseHandle(_this->rcth);
-											_this->rcth=NULL;
-											_this->rcth=CreateThread(NULL,0,ReconnectThreadProc,_this,0,&dw);
-											break;
-										case WAIT_TIMEOUT:
-											//reconnect still running, doubble call ignore
-											break;
+									case WAIT_OBJECT_0:
+										CloseHandle(_this->rcth);
+										_this->rcth=NULL;
+										_this->rcth=CreateThread(NULL,0,ReconnectThreadProc,_this,0,&dw);
+										break;
+									case WAIT_TIMEOUT:
+										//reconnect still running, doubble call ignore
+										break;
 								}
 							}
 							else
@@ -8318,7 +8326,7 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 					//timer
 					if (wParam == MENU_EXCUTOR_TIME_ID) 
 					{
-						_this->m_MenuExecutor.OnTimerEventResolve();
+						_this->m_MenuExecutor.OnTimerEventResolve(_this->m_opts.m_caption);
 					}
 					else if (wParam == _this->m_emulate3ButtonsTimer)
 					{
