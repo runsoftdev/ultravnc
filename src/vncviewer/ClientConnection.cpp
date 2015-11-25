@@ -1384,7 +1384,8 @@ void ClientConnection::CreateDisplay()
 	if (TitleBar.GetSafeHwnd() == NULL) {
 		TitleBar.Create(m_pApp->m_instance, m_hwndMain);
 		MenuBar.Create(m_pApp->m_instance, m_hwndMain);
-		MenuBar.DisplayWindow(TRUE);
+		TitleBar.DisplayWindow(FALSE);
+		MenuBar.DisplayWindow(FALSE);
 	}
 }
 
@@ -1771,7 +1772,9 @@ void ClientConnection::Connect()
 	if (m_sock!=NULL && m_sock!=INVALID_SOCKET) closesocket(m_sock);
 	m_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_hwndStatus) SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L43);
-	if (m_sock == INVALID_SOCKET) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L44);throw WarningException(sz_L44);}
+	if (m_sock == INVALID_SOCKET) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L44);
+	throw WarningException(m_opts.m_caption);
+	}
 	int one = 1;
 
 	if (m_hwndStatus) SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L45);
@@ -1791,7 +1794,7 @@ void ClientConnection::Connect()
 			//if(myDialog!=0)DestroyWindow(myDialog);
 			SetEvent(KillEvent);
 			if (m_hwndStatus) SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L46);
-			throw WarningException(sz_L46,IDS_L46);
+			throw WarningException(m_opts.m_caption,IDS_L46);
 		};
 		thataddr.sin_addr.s_addr = ((LPIN_ADDR) lphost->h_addr)->s_addr;
 	};
@@ -1812,10 +1815,10 @@ void ClientConnection::Connect()
 			int a=WSAGetLastError();
 			vnclog.Print(0, _T("socket error %i\n"),a);
 			if(a==6)
-				Sleep(5000);
+				Sleep(2000);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L48);
 			SetEvent(KillEvent);
-			if (!Pressed_Cancel) throw WarningException(sz_L48,IDS_L48);
+			if (!Pressed_Cancel) throw WarningException(m_opts.m_caption, IDS_L48);
 			else throw QuietException(sz_L48);
 		}
 	vnclog.Print(0, _T("Connected to %s port %d\n"), m_host, m_port);
@@ -1833,7 +1836,9 @@ void ClientConnection::ConnectProxy()
 
 	m_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L43);
-	if (m_sock == INVALID_SOCKET) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L44);throw WarningException(sz_L44);}
+	if (m_sock == INVALID_SOCKET) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L44);
+	throw WarningException(m_opts.m_caption);
+	}
 	int one = 1;
 
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L45);
@@ -1852,7 +1857,7 @@ void ClientConnection::ConnectProxy()
 			//if(myDialog!=0)DestroyWindow(myDialog);
 			SetEvent(KillEvent);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L46);
-			throw WarningException(sz_L46);
+			throw WarningException(m_opts.m_caption);
 		};
 		thataddr.sin_addr.s_addr = ((LPIN_ADDR) lphost->h_addr)->s_addr;
 	};
@@ -1868,7 +1873,9 @@ void ClientConnection::ConnectProxy()
 	ThreadSocketTimeout = CreateThread(NULL,0,SocketTimeout,(LPVOID)&m_sock,0,&threadID);
 
 	res = connect(m_sock, (LPSOCKADDR) &thataddr, sizeof(thataddr));
-	if (res == SOCKET_ERROR) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L48);throw WarningException(sz_L48,IDS_L48);}
+	if (res == SOCKET_ERROR) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L48);
+	throw WarningException(m_opts.m_caption, IDS_L48);
+	}
 	vnclog.Print(0, _T("Connected to %s port %d\n"), m_proxyhost, m_proxyport);
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L49);
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_VNCSERVER,m_proxyhost);
@@ -1881,7 +1888,7 @@ void ClientConnection::SetSocketOptions()
 	// Disable Nagle's algorithm
 	BOOL nodelayval = TRUE;
 	if (setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, (const char *) &nodelayval, sizeof(BOOL)))
-		throw WarningException(sz_L50);
+		throw WarningException(m_opts.m_caption);
 	
 	// adzm 2010-10
 	if (fis) {
@@ -1916,21 +1923,9 @@ void ClientConnection::NegotiateProtocolVersion()
 		if (!Pressed_Cancel)
 		{
 		if (m_fUsePlugin && m_pIntegratedPluginInterface == NULL)
-			throw WarningException("Connection failed - Error reading Protocol Version\r\n\r\n"
-									"Possible causes:\r\n"
-									"- You've forgotten to select a DSMPlugin and the Server uses a DSMPlugin\r\n"
-									"- The selected DSMPlugin is not compatible with the one running on the Server\r\n"
-									"- The selected DSMPlugin is not correctly configured (also possibly on the Server)\r\n"
-									"- The password you've possibly entered is incorrect\r\n"
-									"- Another viewer using a DSMPlugin is already connected to the Server (more than one is forbidden)\r\n"
-									,1003
-									);
+			throw WarningException(m_opts.m_caption, 1003);
 		else
-			throw WarningException("Connection failed - End of Stream\r\n\r\n"
-									"Possible causes:\r\r"
-									"- Another user is already listening on this ID\r\n"
-									"- Bad connection\r\n",1004
-									);
+			throw WarningException(m_opts.m_caption, 1004);
 		}
 		throw QuietException(c.str());
 	}
@@ -1942,22 +1937,9 @@ void ClientConnection::NegotiateProtocolVersion()
 		if (!Pressed_Cancel)
 		{
 		if (m_fUsePlugin && m_pIntegratedPluginInterface == NULL)
-			throw WarningException("연결실패 - 프로토콜 버전 분석중 에러\r\n\r\n"
-									"가능한 원인:\r\n"
-									"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-									"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류r\r\n"
-									"- 선택된 플러그인이 설정된 플러그인과 달라서(원격지에서 발생한 문제일수도 있음)\r\n"
-									"- 패스워드가 달라서 생긴 문제\r\n"
-									"- 플러그인을 사용하는 다른 원격사용자가 이미 서버에 접속되어있다 (하나 이상의 금지)\r\n"
-									,1003
-									);
+			throw WarningException(m_opts.m_caption, 1003);
 		else
-			throw WarningException("연결실패 - 프로토콜 버전 분석중 에러\r\n\r\n"
-									"가능한 원인:\r\n"
-									"- You've forgotten to select a DSMPlugin and the Server uses a DSMPlugin\r\n"
-									"- 관리자 원격버전과 원격지에 원격버전이 달라서 생긴문제 (다른 RFB 프로토콜을 사용중일수 있습니다.)\r\n"
-									"- 잘못된 연결일 수 있습니다.\r\n",1004
-									);
+			throw WarningException(m_opts.m_caption, 1004);
 		}
 
 		throw QuietException(c.m_info);
@@ -1971,7 +1953,7 @@ void ClientConnection::NegotiateProtocolVersion()
 	if (m_fUsePlugin && fNotEncrypted && !m_pIntegratedPluginInterface) {
 		//adzm 2010-05-12
 		if (m_opts.m_fRequireEncryption) {
-			throw WarningException("연결이 안전하지않아 연결이 거부되었습니다.");
+			throw WarningException(m_opts.m_caption);
 		}
 		else
 		{
@@ -1987,6 +1969,7 @@ void ClientConnection::NegotiateProtocolVersion()
 				//adzm 2010-05-10
 				m_pIntegratedPluginInterface = NULL;
 			}
+			/*
 			if (!m_opts.m_fAutoAcceptNoDSM)
 			{
 				//adzm 2009-07-19 - Auto-accept the connection if it is unencrypted if that option is specified
@@ -1997,6 +1980,7 @@ void ClientConnection::NegotiateProtocolVersion()
 					throw WarningException("연결을 거부했습니다.");
 				}
 			}
+			*/
 		}
 	}
 
@@ -2015,21 +1999,9 @@ void ClientConnection::NegotiateProtocolVersion()
 	{
 		SetEvent(KillEvent);
 		if (m_fUsePlugin && m_pIntegratedPluginInterface == NULL)
-			throw WarningException("연결 실패 - 잘못된 프로토콜입니다!\r\n\r\n"
-									"가능한 원인:\r\n"
-									"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-									"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류r\r\n"
-									"- 선택된 플러그인이 설정된 플러그인과 달라서(원격지에서 발생한 문제일수도 있음)\r\n"
-									"- 패스워드가 달라서 생긴 문제\r\n"
-									"- 플러그인을 사용하는 다른 원격사용자가 이미 서버에 접속되어있다 (하나 이상의 금지)\r\n"
-
-									);
+			throw WarningException(m_opts.m_caption);
 		else
-			throw WarningException("연결 실패 - 잘못된 프로토콜입니다 !\r\n\r\n"
-									"가능한 원인:\r\r"
-									"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-									"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류 (RFB 프로토콜 확인필요)\r\n"
-									);
+			throw WarningException(m_opts.m_caption);
     }
 
     vnclog.Print(0, _T("RFB server supports protocol version %d.%d\n"),
@@ -2098,7 +2070,7 @@ void ClientConnection::NegotiateProtocolVersion()
 		//block
 		if (size<0 || size >1024)
 		{
-			throw WarningException("버퍼가 너무 큽니다, ");
+			throw WarningException(m_opts.m_caption);
 			if (size<0) size=0;
 			if (size>1024) size=1024;
 		}
@@ -2113,7 +2085,7 @@ void ClientConnection::NegotiateProtocolVersion()
 			{
 				int nummer=0;
 				WriteExact((char *)&nummer,sizeof(int));
-				throw WarningException("연결이 거부되었습니다.");
+				throw WarningException(m_opts.m_caption);
 			}
 			else
 			{
@@ -2154,21 +2126,9 @@ void ClientConnection::NegotiateProxy()
 		vnclog.Print(0, _T("Error reading protocol version: %s\n"),
                           c.m_info);
 		if (m_fUsePlugin)
-			throw WarningException("프록시 연결이 실패했습니다 - 프로토콜 버전 조회중 에러발생\r\n\n\r"
-						"가능한 원인:\r\n"
-						"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-						"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류r\r\n"
-						"- 선택된 플러그인이 설정된 플러그인과 달라서(원격지에서 발생한 문제일수도 있음)\r\n"
-						"- 패스워드가 달라서 생긴 문제\r\n"
-						"- 플러그인을 사용하는 다른 원격사용자가 이미 서버에 접속되어있다 (하나 이상의 금지)\r\n"
-									);
+			throw WarningException(m_opts.m_caption);
 		else
-			throw WarningException("프록시 연결이 실패했습니다 - 프로토콜 버전 조회중 에러발생\r\n\n\r"
-									"가능한 원인:\r\r"
-									"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-									"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류 (RFB 프로토콜 확인필요)\r\n"
-									"- 잘못된 연결입니다.\r\n"
-									);
+			throw WarningException(m_opts.m_caption);
 
 		throw QuietException(c.m_info);
 	}
@@ -2189,20 +2149,9 @@ void ClientConnection::NegotiateProxy()
 	if (sscanf(pv,rfbProtocolVersionFormat,&m_majorVersion,&m_minorVersion) != 2)
 	{
 		if (m_fUsePlugin)
-			throw WarningException("프록시 연결 실패 - 잘못된 프로토콜입니다.. !\r\n\r\n"
-			"가능한 원인:\r\n"
-			"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-			"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류r\r\n"
-			"- 선택된 플러그인이 설정된 플러그인과 달라서(원격지에서 발생한 문제일수도 있음)\r\n"
-			"- 패스워드가 달라서 생긴 문제\r\n"
-			"- 플러그인을 사용하는 다른 원격사용자가 이미 서버에 접속되어있다 (하나 이상의 금지)\r\n"
-									);
+			throw WarningException(m_opts.m_caption);
 		else
-			throw WarningException("프록시 연결 실패 - 잘못된 프로토콜입니다.. !\r\n\r\n"
-			"가능한 원인:\r\r"
-			"- 원격지에 사용하는 플러그인 선택을 안해서 생긴 오류\r\n"
-			"- 선택된 플러그인이 원격지 플러그인 버전과 달라서 생긴 오류 (RFB 프로토콜 확인필요)\r\n"
-									);
+			throw WarningException(m_opts.m_caption);
     }
 
     vnclog.Print(0, _T("Connected to proxy \n"),
@@ -2296,7 +2245,7 @@ void ClientConnection::Authenticate(std::vector<CARD32>& current_auth)
 			}
 
 			if (authScheme == rfbInvalidAuth) {
-				throw WarningException("지원 가능한 인증방법이 아닙니다.!");
+				throw WarningException(m_opts.m_caption);
 			}
 
 			CARD8 authSchemeMsg = (CARD8)authScheme;
@@ -2326,7 +2275,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	{
 		//adzm 2010-05-12
 		if (m_opts.m_fRequireEncryption) {
-			throw WarningException("안전하지 않은 연결이어서 연결이 거부 되었습니다.");
+			throw WarningException(m_opts.m_caption);
 		}
 		else
 		{
@@ -2350,7 +2299,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 					"안전하지 않는 연결 수락", MB_YESNO | MB_ICONEXCLAMATION | MB_TOPMOST);
 				if (returnvalue==IDNO)
 				{
-					throw WarningException("연결이 취소 되었습니다.");
+					throw WarningException(m_opts.m_caption);
 				}
 			}
 		}
@@ -2366,14 +2315,14 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	case rfbUltraVNC_SecureVNCPluginAuth_new:
 		if (bSecureVNCPluginActive) {
 			vnclog.Print(0, _T("Cannot layer multiple SecureVNC plugin authentication schemes\n"), authScheme);
-			throw WarningException("여러 SecureVNC 플러그인 인증 체계를 인식 할 수 없습니다\n");
+			throw WarningException(m_opts.m_caption);
 		}
 		AuthSecureVNCPlugin();
 		break;
 	case rfbUltraVNC_SecureVNCPluginAuth:
 		if (bSecureVNCPluginActive) {
 			vnclog.Print(0, _T("Cannot layer multiple SecureVNC plugin authentication schemes\n"), authScheme);
-			throw WarningException("여러 SecureVNC 플러그인 인증 체계를 인식 할 수 없습니다\n");
+			throw WarningException(m_opts.m_caption);
 		}
 		AuthSecureVNCPlugin_old();
 		break;
@@ -2414,7 +2363,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 
 		vnclog.Print(0, _T("RFB connection failed, reason: %s\n"), m_netbuf);
 		if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L91);
-		throw WarningException(m_netbuf);
+		throw WarningException(m_opts.m_caption);
 		break;
 	default:
 		vnclog.Print(0, _T("RFB connection failed, unknown authentication method: %lu\n"), authScheme);
@@ -2456,11 +2405,11 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 
 			vnclog.Print(0, _T("VNC authentication failed! Extended information: %s\n"), m_netbuf);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,m_netbuf);
-			throw WarningException(m_netbuf);
+			throw WarningException(m_opts.m_caption);
 		} else {
 			vnclog.Print(0, _T("VNC authentication failed!"));
 			SetEvent(KillEvent);
-			throw WarningException(sz_L57,IDS_L57);
+			throw WarningException(m_opts.m_caption, IDS_L57);
 		}
 		break;
 	case rfbVncAuthTooMany:
@@ -2471,11 +2420,11 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	case rfbLegacy_MsLogon:
 		if (m_minorVersion >= 7) {
 			vnclog.Print(0, _T("Invalid auth response for protocol version.\n"));
-			throw ErrorException("Invalid auth response");
+			throw ErrorException(m_opts.m_caption);
 		}
 		if ((authScheme != rfbUltraVNC_SecureVNCPluginAuth) || !m_pIntegratedPluginInterface) {
 			vnclog.Print(0, _T("Invalid auth response response\n"));
-			throw ErrorException("Invalid auth response");
+			throw ErrorException(m_opts.m_caption);
 		}
 		//adzm 2010-05-10
 		AuthMsLogonII();
@@ -2483,11 +2432,11 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	case rfbVncAuthContinue:
 		if (m_minorVersion < 7) {
 			vnclog.Print(0, _T("Invalid auth continue response for protocol version.\n"));
-			throw ErrorException("Invalid auth continue response");
+			throw ErrorException(m_opts.m_caption);
 		}
 		if (current_auth.size() > 5) { // arbitrary
 			vnclog.Print(0, _T("Cannot layer more than six authentication schemes\n"), authScheme);
-			throw ErrorException("Cannot layer more than six authentication schemes\n");
+			throw ErrorException(m_opts.m_caption);
 		}
 		Authenticate(current_auth);
 		break;
@@ -2495,7 +2444,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 		vnclog.Print(0, _T("Unknown VNC authentication result: %d\n"),
 			(int)authResult);
 //				if (flash) {flash->Killflash();}
-		throw ErrorException(sz_L59,IDS_L59);
+		throw ErrorException(m_opts.m_caption, IDS_L59);
 		break;
 	}
 
@@ -3090,10 +3039,17 @@ void ClientConnection::ReadServerInit()
     // TCHAR tcDummy [MAX_PATH * 3];
 
 	// sprintf(tcDummy,"%s ",m_desktopName);
-	strcat(m_desktopName, " ");
+	if (strlen(m_opts.m_title) > 0) {
+		strcat(m_opts.m_title, " ");
+		strcat(m_opts.m_title, m_desktopName);
+		strcpy(m_desktopName, m_opts.m_title);
+	}
+	else {
+		strcat(m_desktopName, " ");
+	}
 
 	strcpy(m_desktopName_viewonly,m_desktopName);
-	strcat(m_desktopName_viewonly,"viewonly");
+	strcat(m_desktopName_viewonly,"보기전용");
 
 	if (m_opts.m_ViewOnly) SetWindowText(m_hwndMain, m_desktopName_viewonly);
 	else SetWindowText(m_hwndMain, m_desktopName);
@@ -3107,15 +3063,14 @@ void ClientConnection::ReadServerInit()
 	{
 			char szMess[255];
 			memset(szMess, 0, 255);
-			sprintf(szMess, "---runsoft.runRemote %s-v%s by %s ",
+			sprintf(szMess, "-runsoft.runRemote %s by %s ",
 					m_pDSMPlugin->GetPluginName(),
-					m_pDSMPlugin->GetPluginVersion(),
-					m_pDSMPlugin->GetPluginAuthor()
-					);
+					m_pDSMPlugin->GetPluginAuthor());
 			strcat(m_desktopName, szMess);
 	}
+
 	strcpy(m_desktopName_viewonly,m_desktopName);
-	strcat(m_desktopName_viewonly,"viewonly");
+	strcat(m_desktopName_viewonly,"보기전용");
 
 	if (strlen(m_opts.m_caption) > 0) {
 		strcat(m_desktopName, "[");
@@ -6766,7 +6721,8 @@ LRESULT CALLBACK ClientConnection::GTGBS_StatusProc(HWND hwnd, UINT iMsg, WPARAM
 
 	case WM_DESTROY:
 		{
-			// sf@2002 - Destroy the status timer... TODO: improve this
+			// sf@2002 - Destroy the status timer... TODO: improve this		
+			
 			if (_this->m_nStatusTimer != 0)
 			{
 				KillTimer(hwnd, _this->m_nStatusTimer);
@@ -7634,7 +7590,9 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							char temp[10];
 							char wtext[150];
 							_itoa(wParam,temp,10);
-							strcpy(wtext,"runsoft.runRemote - Connection dropped, trying to reconnect (");
+							
+							strcpy(wtext, _this->m_opts.m_title);
+							strcat(wtext, "runsoft.runRemote - 연결끊어짐-재접속중... (");
 							strcat(wtext,temp);
 							strcat(wtext,")");
 							if (strlen(_this->m_opts.m_caption) > 0) {

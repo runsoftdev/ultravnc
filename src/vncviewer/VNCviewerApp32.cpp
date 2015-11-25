@@ -98,7 +98,17 @@ void VNCviewerApp32::NewConnection(bool Is_Listening,TCHAR *host, int port) {
 		pcc->m_Is_Listening=Is_Listening;
 		pcc->Run();
 	} catch (Exception &e) {
-//		DestroyWindow(pcc->m_hwndMain); 
+//		DestroyWindow(pcc->m_hwndMain);
+		char szFileName[MAX_PATH];
+		if (GetModuleFileNameA(NULL, szFileName, MAX_PATH))
+		{
+			char* p = strrchr(szFileName, '\\');
+			if (p == NULL) return;
+			*p = '\0';
+			strcat(szFileName, "\\runSupportToolbar.ini");
+		}
+
+		WritePrivateProfileString(pcc->m_opts.m_caption, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
 		pcc->CloseWindows();
 		e.Report();	
 		delete pcc;

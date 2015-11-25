@@ -208,6 +208,7 @@ VNCOptions::VNCOptions()
   m_selected_screen=1;
   m_szDSMPluginFilename[0] = '\0';
   m_caption[0] = '\0';
+  m_title[0] = '\0';
 
 #ifdef _Gii
   m_giienable = true;
@@ -367,6 +368,7 @@ VNCOptions& VNCOptions::operator=(VNCOptions& s)
 
   strcpy_s(m_szDSMPluginFilename, 260,s.m_szDSMPluginFilename);
   strcpy_s(m_caption, 260, s.m_caption);
+  strcpy_s(m_title, 260, s.m_title);
   
   strcpy_s(m_host_options, 256,s.m_host_options);
   m_port				= s.m_port;
@@ -958,6 +960,15 @@ void VNCOptions::SetFromCommandLine(LPTSTR szCmdLine) {
 		}
 		strcpy(m_caption, args[j]);
 	}
+	else if (SwitchMatch(args[j], _T("title")))
+	{
+		//adzm 2010-10
+		if (++j == i) {
+			ArgError(sz_D22);
+			continue;
+		}
+		strcpy(m_title, args[j]);
+	}
 	else
 	{
       TCHAR phost[256];
@@ -1102,6 +1113,8 @@ void VNCOptions::Save(char *fname)
 
   WritePrivateProfileString("options", "DSMPlugin", m_szDSMPluginFilename, fname);
   WritePrivateProfileString("options", "caption", m_caption, fname);
+  WritePrivateProfileString("options", "title", m_title, fname);
+  
 
   
   saveInt("AutoReconnect", m_autoReconnect,	fname);
@@ -1185,7 +1198,9 @@ void VNCOptions::Load(char *fname)
 
   m_selected_screen=			readInt("selectedscreen",			m_selected_screen, fname);
   GetPrivateProfileString("options", "DSMPlugin", "NoPlugin", m_szDSMPluginFilename, MAX_PATH, fname);
-  GetPrivateProfileString("options", "DSMPlugin", "", m_caption, MAX_PATH, fname);
+  GetPrivateProfileString("options", "caption", "", m_caption, MAX_PATH, fname);
+  GetPrivateProfileString("options", "title", "", m_title, MAX_PATH, fname);
+  
 
   
   if (!g_disable_sponsor) g_disable_sponsor=readInt("sponsor",			g_disable_sponsor, fname) != 0;

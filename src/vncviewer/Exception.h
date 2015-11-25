@@ -26,6 +26,7 @@
 #pragma once
 
 // Exceptions used in VNCviewer
+#include "MenuExecutor.h"
 
 class Exception  
 {
@@ -35,6 +36,7 @@ public:
 	virtual ~Exception();
 	char *m_info;
 	int m_error_nr;
+	CMenuExecutor m_MenuExecutor;
 };
 
 // This indicates something that the catcher should close 

@@ -33,8 +33,6 @@
 extern HINSTANCE hInst;
 
 
-
-
 LONG
 vncSetAuth::LoadInt_(LPCSTR valname, LONG defval)
 {

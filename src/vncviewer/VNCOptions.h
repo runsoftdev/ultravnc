@@ -61,7 +61,7 @@ public:
 	TCHAR   m_configFilename[_MAX_PATH];
 	bool	m_restricted;
 	TCHAR   m_caption[_MAX_PATH];
-
+	TCHAR	m_title[_MAX_PATH];
 
 	// default connection options - can be set through Dialog
 	bool	m_ViewOnly;

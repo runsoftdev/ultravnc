@@ -2259,7 +2259,7 @@ vncClientThread::run(void *arg)
 	}
 	else
 	{
-		strcpy(desktopname, "WinVNC");
+		strcpy(desktopname, "runSupport");
 	}
 
 	// We add the IP address(es) to the computer name, if possible and necessary
@@ -2276,8 +2276,8 @@ vncClientThread::run(void *arg)
 	}
 
 	strcat(desktopname, " - ");
-	if (vncService::RunningAsService()) strcat(desktopname, "service mode");
-	else strcat(desktopname, "application mode");
+	if (vncService::RunningAsService()) strcat(desktopname, "서비스");
+	else strcat(desktopname, "일반");
 
 	// Send the server format message to the client
 	rfbServerInitMsg server_ini;

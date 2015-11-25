@@ -15,6 +15,7 @@
 #define MENU_SELECT_MONITOR "selectMonitor"
 #define MENU_HIDE_BACKGROUND "hideBackground"
 #define MENU_REFRESH "refreshViewer"
+#define MENU_CONNECT_TRY 	"connect_try"
 
 class CMenuExecutor
 {
@@ -28,6 +29,7 @@ public:
 	}
 
 	void OnTimerEventResolve(TCHAR*iniKey);
+	void ConnectFailed(TCHAR*iniKey);
 
 private:
 	HINSTANCE _hInstance;
