@@ -1747,6 +1747,7 @@ void ClientConnection::GetConnectDetails()
 	m_pApp->m_options.m_configSpecified = false;
 	}
 }
+HWND ddd;
 DWORD WINAPI SocketTimeout(LPVOID lpParam)
 {
 	SOCKET *sock;
@@ -1755,17 +1756,20 @@ DWORD WINAPI SocketTimeout(LPVOID lpParam)
 	while (havetobekilled && !forcedexit)
 	{
 		Sleep(100);
+		
 	}
 
 	if (havetobekilled)
 	{
 		closesocket(*sock);
 		*sock = INVALID_SOCKET;
+		SendMessage(ddd, WM_CLOSE, (WPARAM)0, (LPARAM)0);
 	}
 	return 0;
 }
 void ClientConnection::Connect()
 {
+	ddd = m_hwndMain;
 	struct sockaddr_in thataddr;
 	int res;
 	if (!m_opts.m_NoStatus) GTGBS_ShowConnectWindow();
@@ -3040,9 +3044,9 @@ void ClientConnection::ReadServerInit()
 
 	// sprintf(tcDummy,"%s ",m_desktopName);
 	if (strlen(m_opts.m_title) > 0) {
-		strcat(m_opts.m_title, " ");
+		strcat(m_opts.m_title, "¹ø ¿ø°Ý-");
 		strcat(m_opts.m_title, m_desktopName);
-		strcpy(m_desktopName, m_opts.m_title);
+		strcpy(m_desktopName, m_opts.m_title);		
 	}
 	else {
 		strcat(m_desktopName, " ");
@@ -3067,6 +3071,9 @@ void ClientConnection::ReadServerInit()
 					m_pDSMPlugin->GetPluginName(),
 					m_pDSMPlugin->GetPluginAuthor());
 			strcat(m_desktopName, szMess);
+	}
+	else {
+		strcat(m_desktopName, "-runsoft.runRemote-");
 	}
 
 	strcpy(m_desktopName_viewonly,m_desktopName);
@@ -6727,9 +6734,10 @@ LRESULT CALLBACK ClientConnection::GTGBS_StatusProc(HWND hwnd, UINT iMsg, WPARAM
 			{
 				KillTimer(hwnd, _this->m_nStatusTimer);
 				_this->m_nStatusTimer = 0;
-			}
+			}			
 			_this->OldEncodingStatusWindow = -1;
 			_this->m_fStatusOpen = false;
+			
 			return TRUE;
 		}
 	}
@@ -7672,7 +7680,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							DestroyMenu(_this->m_hPopupMenuClipboardFormats);
 							_this->m_hPopupMenuClipboardFormats = NULL;
 						}
-
+						
 //						if (_this->m_FTtimer != 0)
 //						{
 //							KillTimer(hwnd, _this->m_FTtimer);
@@ -7689,6 +7697,16 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						} catch (omni_thread_invalid& e) {
 							// The thread probably hasn't been started yet,
 						}
+						char szFileName[MAX_PATH];
+						if (GetModuleFileNameA(NULL, szFileName, MAX_PATH))
+						{
+							char* p = strrchr(szFileName, '\\');
+							if (p == NULL) return 0;
+							*p = '\0';
+							strcat(szFileName, "\\runSupportToolbar.ini");
+						}
+
+						WritePrivateProfileString(_this->m_opts.m_caption, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
 
 						//PostQuitMessage(0);
 						return 0;

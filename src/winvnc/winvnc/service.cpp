@@ -801,11 +801,10 @@ void monitor_sessions()
 	pad2();
 	HANDLE hTokenNew = NULL, hTokenDup = NULL;
 
-	int counter_ipcheck=0;
 	DWORD dwSessionId=0;
 	DWORD OlddwSessionId=99;
 	ProcessInfo.hProcess=0;
-	bool win=false;
+	//bool win=false;
 	bool Slow_connect=false;
 	bool last_con=false;
 	//We use this event to notify the program that the session has changed
@@ -858,15 +857,7 @@ void monitor_sessions()
 
         case WAIT_TIMEOUT:
 			{
-				counter_ipcheck++;
-				if (counter_ipcheck==30)
-				{
-					counter_ipcheck=0;
-					//if (!CheckIPAddrString()) OlddwSessionId=99;  //force restart
-				}
-
-									if (lpfnWTSGetActiveConsoleSessionId.isValid())
-										dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
+					if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
 									if (OlddwSessionId!=dwSessionId)
 									{
 										#ifdef _DEBUG
@@ -874,88 +865,94 @@ void monitor_sessions()
 												sprintf(szText," ++++++SetEvent Session change: signal tray icon to shut down\n");
 												OutputDebugString(szText);		
 										#endif
+							//Tell winvnc to stop
 										SetEvent(hEvent);
 									}
-
-		
-			
-
+#ifdef _DEBUG
+					if (dwSessionId == 0xFFFFFFFF) OutputDebugString("Session state changing\n");
+#endif
 									if (dwSessionId!=0xFFFFFFFF)
 										{
 													DWORD dwCode=0;
 													if (ProcessInfo.hProcess==NULL)
 													{
-																Sleep(1000);
-																if (Slow_connect) Sleep(2000);
+									//First RUN
+									#ifdef _DEBUG
+									OutputDebugString("First Run Start winvnc in session\n");
+									#endif
 							#ifdef _DEBUG
-														OutputDebugString("No Tray icon existed, starting first process\n");
+									OutputDebugString("Start winvnc.exe\n");
 							#endif
 																LaunchProcessWin(dwSessionId);
-																win=false;
-																Slow_connect=false;
+									OlddwSessionId = dwSessionId;
 													}
 													else if (GetExitCodeProcess(ProcessInfo.hProcess,&dwCode))
 													{
 														if(dwCode != STILL_ACTIVE)
 															{
-																if (last_con==true)
-																{
-																	//problems, we move from win-->default-->win
-																	// Put a long timeout to give system time to start or logout
-																	Sleep(2000);
-																}
-							//#if 0
-																Sleep(1000);
-																if (Slow_connect) Sleep(4000);
-							//#endif
 							#ifdef _DEBUG
-																OutputDebugString("Waiting up to 15 seconds for tray icon process to exit\n");
+											OutputDebugString("dwCode=not active, waitsingleobject hprocess \n");
 							#endif
-
 																WaitForSingleObject(ProcessInfo.hProcess, 15000);
 																CloseHandle(ProcessInfo.hProcess);
 																CloseHandle(ProcessInfo.hThread);
+										int sessidcounter = 0;
+										while ((OlddwSessionId == dwSessionId) || dwSessionId==0xFFFFFFFF)
+										{
+											Sleep(1000);
+											if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
+											sessidcounter++;
+											if (sessidcounter > 10) break;
+#ifdef _DEBUG
+											char			szText[256];
+											sprintf(szText, " WAITING  session change %i %i\n", OlddwSessionId, dwSessionId);
+											OutputDebugString(szText);
+#endif
+										}
+#ifdef _DEBUG
+										OutputDebugString("Start winvnc.exe\n");
+#endif
 																LaunchProcessWin(dwSessionId);
-																win=false;
-																Slow_connect=false;
+										OlddwSessionId = dwSessionId;
 															}
 														else
 															{
-																if (Slow_connect==false)
-																{
-																	//This is the first time, so createprocess worked
-																	//last_con=false-->defaultdesk
-																	//last_con=true-->windesk
-																	last_con=false;
-																}
-																Slow_connect=true;
+#ifdef _DEBUG
+										OutputDebugString("dwCode=active\n");
+#endif
 															}
 													}
 													else
 													{
-														if (last_con==true)
+								#ifdef _DEBUG
+									OutputDebugString("GetExitCodeProcess failed\n");
+								#endif
+									if (ProcessInfo.hProcess) CloseHandle(ProcessInfo.hProcess);
+									if (ProcessInfo.hThread) CloseHandle(ProcessInfo.hThread);	
+									int sessidcounter = 0;
+									while (OlddwSessionId == dwSessionId)
 																{
-																	//problems, we move from win-->default-->win
-																	// Put a long timeout to give system time to start or logout
-																	Sleep(2000);
+										Sleep(1000);
+										if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
+										sessidcounter++;
+										if (sessidcounter > 10) break;
+#ifdef _DEBUG
+										char			szText[256];
+										sprintf(szText, " WAITING  session change %i %i\n", OlddwSessionId, dwSessionId);
+										OutputDebugString(szText);
+#endif
 																}
-														Sleep(1000);
-														if (Slow_connect) Sleep(4000);
-														if (ProcessInfo.hProcess) CloseHandle(ProcessInfo.hProcess);
-														if (ProcessInfo.hThread) CloseHandle(ProcessInfo.hThread);
 							#ifdef _DEBUG
-														OutputDebugString("Tray icon exited, starting new process\n");
+									OutputDebugString("Start winvnc.exe\n");
 							#endif
 														LaunchProcessWin(dwSessionId);
-														win=false;
-														Slow_connect=false;
+									OlddwSessionId = dwSessionId;
 													}
 												#ifdef _DEBUG
 												char			szText[256];
 												sprintf(szText," ++++++1 %i %i %i %i\n",OlddwSessionId,dwSessionId,dwCode,ProcessInfo.hProcess);
 												OutputDebugString(szText);		
 												#endif
-												OlddwSessionId=dwSessionId;
 										}
 			}//timeout
 		}//switch

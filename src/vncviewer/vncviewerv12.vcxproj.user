@@ -9,7 +9,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>61.252.138.246 -nostatus -password 1234 -caption rmc565469406cbd5 -noauto -fullcolors -encoding ultra2 -compresslevel 8 -enablecache -dsmplugin securevncplugin.dsm -title 1번원격</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.16 -noauto -encoding ultra2 -compresslevel 8 -quality 6 -title 1 -normalcursor -nostatus -password 12345 -caption rmc565bb4648e6d6</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
