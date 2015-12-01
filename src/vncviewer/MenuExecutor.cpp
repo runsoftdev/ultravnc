@@ -60,12 +60,16 @@ void CMenuExecutor::OnTimerEventResolve(TCHAR*iniKey)
 			WritePrivateProfileString(iniKey, MENU_VIEWER_CLOSE, FUNTION_OFF, szFileName);
 			OutputDebugString("isClose on");
 		}
-		if (isDisplayOptimize) {
+		if (isDisplayOptimize) {			
+			
 			WritePrivateProfileString(iniKey, MENU_DISPLAY_OPTIMIZE, FUNTION_OFF, szFileName);
+			SendMessage(_hwnd, WM_SYSCOMMAND, (WPARAM)8899, (LPARAM)0);
 			OutputDebugString("isDisplayOptimize on");
 		}
 		if (isOneByOneScale) {
+			
 			WritePrivateProfileString(iniKey, MENU_ONE_BY_ONE_SCALE, FUNTION_OFF, szFileName);
+			SendMessage(_hwnd, WM_SYSCOMMAND, (WPARAM)ID_NORMALSCREEN2, (LPARAM)0);
 			OutputDebugString("isOneByOneScale on");
 		}
 		if (isFullScreen) {

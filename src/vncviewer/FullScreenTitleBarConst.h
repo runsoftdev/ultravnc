@@ -20,7 +20,7 @@
 
 //Width and heigth for the toolbar
 #define tbWidth				700
-#define tbHeigth			23
+#define tbHeigth			20
 
 //Default size on every picture used as buttons
 #define tbcxPicture			16
@@ -35,7 +35,7 @@
 //Color and layout
 #define tbFont				"Arial"
 #define tbFontSize			10
-#define tbTextColor			RGB(220,220,220)
+#define tbTextColor			RGB(255,255,255)
 #define tbStartColor		RGB(64,64,64)
 #define tbEndColor			RGB(32,32,32)
 
@@ -48,7 +48,7 @@ menu bar
 #define tbMenuPinNotPushedIn	FALSE //Is the pin pushed in or out at startup (sorry for invertion!)
 
 #define tbMenuWidth				700
-#define tbMenuHeigth			51
+#define tbMenuHeigth			48
 
 //-------------------------------------------------------------------------
 

@@ -62,8 +62,8 @@ LONG DefaultScale=1;
 LONG SocketConnect=1;
 LONG HTTPConnect;
 LONG AutoPortSelect=1;
-LONG PortNumber=5900;
-LONG HttpPortNumber=5800;
+LONG PortNumber=2800;
+LONG HttpPortNumber=2900;
 LONG IdleTimeout=0;
 LONG IdleInputTimeout = 0;
 

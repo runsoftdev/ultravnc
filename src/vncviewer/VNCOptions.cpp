@@ -1200,9 +1200,7 @@ void VNCOptions::Load(char *fname)
   GetPrivateProfileString("options", "DSMPlugin", "NoPlugin", m_szDSMPluginFilename, MAX_PATH, fname);
   GetPrivateProfileString("options", "caption", "", m_caption, MAX_PATH, fname);
   GetPrivateProfileString("options", "title", "", m_title, MAX_PATH, fname);
-  
-
-  
+    
   if (!g_disable_sponsor) g_disable_sponsor=readInt("sponsor",			g_disable_sponsor, fname) != 0;
 
   /*if (!g_disable_sponsor)

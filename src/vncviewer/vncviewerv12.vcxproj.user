@@ -4,12 +4,11 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>
-    </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.25:5901 -password 12345 -dsmplugin securevncplugin.dsm</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>192.168.0.16 -noauto -encoding ultra2 -compresslevel 8 -quality 6 -title 1 -normalcursor -nostatus -password 12345 -caption rmc565bb4648e6d6</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.25:5901 -dsmplugin securevncplugin.dsm -nostatus -password 1234 -caption rmc565d203154f05 -noauto -fullcolors -encoding ultra2 -compresslevel 8 -quality 6 -preemptiveupdates -normalcursor -title 1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

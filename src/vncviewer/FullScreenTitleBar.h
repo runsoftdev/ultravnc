@@ -86,6 +86,6 @@ private:
 
 
 	//Text to show on titlebar and it corespondent font! :)
-	LPTSTR Text;
+	TCHAR Text[_MAX_PATH];
 	HFONT Font;
 };

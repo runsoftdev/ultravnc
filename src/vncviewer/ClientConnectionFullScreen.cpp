@@ -151,7 +151,7 @@ void ClientConnection::RealiseFullScreenMode()
 		TitleBar.DisplayWindow(TRUE, TRUE); //Added by: Lars Werner (http://lars.werner.no)
 		TCHAR title[_MAX_PATH];
 		if (strlen(m_opts.m_title) > 0) {
-			strcpy(title, m_opts.m_title);
+			strcpy(title, m_desktopNameFull);
 			strcat(title, " ");	
 			if (m_opts.m_ViewOnly) {
 				strcat(title, "-보기전용");
@@ -159,10 +159,13 @@ void ClientConnection::RealiseFullScreenMode()
 			TitleBar.SetText(title);
 		}
 		else {
-			strcpy(title, m_desktopName);
+			strcpy(title, m_desktopNameFull);
 			if (m_opts.m_ViewOnly)TitleBar.SetText(m_desktopName_viewonly);
-			else TitleBar.SetText(m_desktopName); //Added by: Lars Werner (http://lars.werner.no)
+			else TitleBar.SetText(m_desktopNameFull); //Added by: Lars Werner (http://lars.werner.no)
 		}					
+		OutputDebugString("------------full screen title-------------------");
+		OutputDebugString(title);
+
 
 	} else {
 		ShowWindow(m_hwndMain, SW_NORMAL);

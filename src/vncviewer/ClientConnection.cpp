@@ -1382,10 +1382,8 @@ void ClientConnection::CreateDisplay()
 
 	//Added by: Lars Werner (http://lars.werner.no)
 	if (TitleBar.GetSafeHwnd() == NULL) {
-		TitleBar.Create(m_pApp->m_instance, m_hwndMain);
-		MenuBar.Create(m_pApp->m_instance, m_hwndMain);
-		TitleBar.DisplayWindow(FALSE);
-		MenuBar.DisplayWindow(FALSE);
+		TitleBar.Create(m_pApp->m_instance, m_hwndMain);		
+		TitleBar.DisplayWindow(FALSE);		
 	}
 }
 
@@ -1808,6 +1806,7 @@ void ClientConnection::Connect()
 	if (m_hwndStatus)UpdateWindow(m_hwndStatus);
 	if (m_hwndStatus)SetDlgItemInt(m_hwndStatus,IDC_PORT,m_port,FALSE);
 	thataddr.sin_family = AF_INET;
+
 	thataddr.sin_port = htons(m_port);
 	///Force break after timeout
 	DWORD				  threadID;
@@ -2297,7 +2296,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 			}
 
 			//adzm 2009-07-19 - Auto-accept the connection if it is unencrypted if that option is specified
-			if (!m_opts.m_fAutoAcceptNoDSM) {
+			/*if (!m_opts.m_fAutoAcceptNoDSM) {
 				int returnvalue=MessageBox(m_hwndMain, 
 					"암호화 플러그인을 사용중이십니다. 그러나 현재 연결이 암호화되지 않은 상태입니다! 계속 하시겠습니까?", 
 					"안전하지 않는 연결 수락", MB_YESNO | MB_ICONEXCLAMATION | MB_TOPMOST);
@@ -2305,7 +2304,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 				{
 					throw WarningException(m_opts.m_caption);
 				}
-			}
+			}*/
 		}
 	}
 
@@ -3044,9 +3043,13 @@ void ClientConnection::ReadServerInit()
 
 	// sprintf(tcDummy,"%s ",m_desktopName);
 	if (strlen(m_opts.m_title) > 0) {
-		strcat(m_opts.m_title, "번 원격-");
+		strcpy(m_desktopNameFull, m_opts.m_title);
+		strcat(m_desktopNameFull, " 번 원격 연결됨");
+
+		strcat(m_opts.m_title, "번 원격-");		
 		strcat(m_opts.m_title, m_desktopName);
-		strcpy(m_desktopName, m_opts.m_title);		
+		strcpy(m_desktopName, m_opts.m_title);	
+		
 	}
 	else {
 		strcat(m_desktopName, " ");
@@ -6889,15 +6892,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						break;
 					*/
 
-					case ID_AUTOSCALING:
-						_this->m_opts.m_fAutoScaling = !_this->m_opts.m_fAutoScaling;
-						_this->SizeWindow();
-						InvalidateRect(hwnd, NULL, TRUE);
-						_this->RealiseFullScreenMode();
-						// adzm - 2010-07 - Extended clipboard
-						//_this->UpdateMenuItems(); // Handled in WM_INITMENUPOPUP
-						break;
-
+					
 					case ID_DINPUT:
 						_this->m_remote_mouse_disable = true;
 						if (_this->m_opts.m_ShowToolbar)
@@ -7347,6 +7342,23 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							}*/
 							return 0;
 						}
+					case ID_AUTOSCALING:
+						_this->m_opts.m_fAutoScaling = !_this->m_opts.m_fAutoScaling;
+						_this->SizeWindow();
+						InvalidateRect(hwnd, NULL, TRUE);
+						_this->RealiseFullScreenMode();
+						// adzm - 2010-07 - Extended clipboard
+						//_this->UpdateMenuItems(); // Handled in WM_INITMENUPOPUP
+						break;
+					case 8899:
+						_this->m_opts.m_fAutoScaling = true;
+						_this->SizeWindow();
+						InvalidateRect(hwnd, NULL, TRUE);
+						_this->RealiseFullScreenMode();
+						// adzm - 2010-07 - Extended clipboard
+						//_this->UpdateMenuItems(); // Handled in WM_INITMENUPOPUP
+						break;
+
 
 					case ID_NORMALSCREEN2:
 						{
@@ -7370,8 +7382,10 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 								_this->SizeWindow();
 								InvalidateRect(hwnd, NULL, TRUE);
 								_this->SetFullScreenMode(false);
+								_this->RealiseFullScreenMode();
 								_this->m_pendingFormatChange = true;
 							}
+							
 							return 0;
 						}
 

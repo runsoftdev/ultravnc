@@ -84,7 +84,7 @@ void CTitleBar::Init()
 
 	Font=CreateFont(lfHeight, 0, 0, 0, 0, FALSE, 0, 0, 0, 0, 0, 0, 0, "Arial");
 
-	Text=""; //No text at startup...
+	//Text=""; //No text at startup...
 
 	m_hWnd=NULL;
 
@@ -615,7 +615,7 @@ void CTitleBar::Draw()
 	::SetBkMode(hdc, TRANSPARENT);
 	::SetTextColor(hdc, tbTextColor);
 	::DrawText(hdc, Text,-1,&lpRect, DT_CENTER|DT_SINGLELINE|DT_VCENTER);
-
+	
 	EndPaint(m_hWnd, &ps);
 }
 
@@ -623,7 +623,7 @@ void CTitleBar::Draw()
 
 void CTitleBar::SetText(LPTSTR TextOut)
 {
-	Text=TextOut;
+	strcpy(Text,TextOut);
 }
 
 //***************************************************************************************

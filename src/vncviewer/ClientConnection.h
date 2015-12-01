@@ -336,8 +336,7 @@ private:
 	void RealiseFullScreenMode();
 	bool BumpScroll(int x, int y);
 	CTitleBar TitleBar; //Added by: Lars Werner (http://lars.werner.no)
-	CTitleBarMenu MenuBar;
-
+	
 	//SINGLE WINDOW
 	void ReadNewFBSize(rfbFramebufferUpdateRectHeader *pfburh);
 
@@ -633,6 +632,7 @@ private:
 	omni_mutex	m_ZlibBufferMutex;
 	
 	TCHAR *m_desktopName;
+	TCHAR m_desktopNameFull[MAX_PATH];
 	TCHAR *m_desktopName_viewonly;
 	unsigned char m_encPasswd[8];
 	unsigned char m_encPasswdMs[32];
