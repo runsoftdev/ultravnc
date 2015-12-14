@@ -310,7 +310,7 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\omnithread;..;..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;__x86__;__WIN32__;WIN32;_WINDOWS;XMD_H;_WINSTATIC;_CRT_SECURE_NO_WARNINGS;_X64;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;__x86__;__WIN32__;WIN32;_WINDOWS;XMD_H;_WINSTATIC;_CRT_SECURE_NO_WARNINGS;_X64;_XZ;_USE_DESKTOPDUPLICATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -348,8 +348,8 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
       <OutputFile>.\..\Release/winvnc.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>signtool.exe sign /a /n "uvnc bvba" /v /t http://timestamp.verisign.com/scripts/timstamp.dll "$(OutDir)$(TargetName)$(TargetExt)"
-copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer64</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='IPP|Win32'">

@@ -131,7 +131,7 @@ VNCOptions::VNCOptions()
   m_Directx = false;
   autoDetect = true;
   m_Use8Bit = rfbPFFullColors; //false;
-  m_ShowToolbar = true;
+  m_ShowToolbar = false;
   m_fAutoScaling = false;
   m_NoStatus = false;
   m_NoHotKeys = false;

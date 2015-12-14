@@ -7368,6 +7368,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							_this->m_opts.m_fAutoScaling = false;
 							_this->m_nServerScale = 1;
 							_this->m_opts.m_nServerScale = 1;
+							_this->m_opts.m_Directx = 0;
 							_this->m_opts.m_scaling = false;
 							_this->m_opts.m_scale_num = 100;
 							_this->m_opts.m_scale_den = 100;

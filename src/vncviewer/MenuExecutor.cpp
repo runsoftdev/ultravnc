@@ -105,7 +105,7 @@ void CMenuExecutor::OnTimerEventResolve(TCHAR*iniKey)
 			OutputDebugString("isRefresh on");
 		}
 	}
-	catch (Exception &e) {
+	catch (...) {
 
 	}
 	
