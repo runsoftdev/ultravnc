@@ -32,7 +32,11 @@ void CMenuExecutor::OnTimerEventResolve(TCHAR*iniKey)
 		char* p = strrchr(szFileName, '\\');
 		if (p == NULL) return;
 		*p = '\0';
+#ifdef _RUNVIEW
+		strcat(szFileName, "\\runViewerToolbar.ini");
+#else
 		strcat(szFileName, "\\runSupportToolbar.ini");
+#endif
 	}
 	
 	int isSendCtrlAltDel = GetPrivateProfileInt(iniKey, MENU_CTRL_ALT_DEL_SEND, 0, szFileName);
@@ -123,7 +127,11 @@ void CMenuExecutor::ConnectFailed(TCHAR*iniKey)
 		char* p = strrchr(szFileName, '\\');
 		if (p == NULL) return;
 		*p = '\0';
+#ifdef _RUNVIEW
+		strcat(szFileName, "\\runViewerToolbar.ini");
+#else
 		strcat(szFileName, "\\runSupportToolbar.ini");
+#endif
 	}
 
 	WritePrivateProfileString(iniKey, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);

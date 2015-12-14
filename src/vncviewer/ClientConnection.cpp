@@ -7718,7 +7718,11 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							char* p = strrchr(szFileName, '\\');
 							if (p == NULL) return 0;
 							*p = '\0';
+#ifdef _RUNVIEW
+							strcat(szFileName, "\\runViewerToolbar.ini");
+#else
 							strcat(szFileName, "\\runSupportToolbar.ini");
+#endif
 						}
 
 						WritePrivateProfileString(_this->m_opts.m_caption, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);

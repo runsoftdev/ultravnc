@@ -105,7 +105,11 @@ void VNCviewerApp32::NewConnection(bool Is_Listening,TCHAR *host, int port) {
 			char* p = strrchr(szFileName, '\\');
 			if (p == NULL) return;
 			*p = '\0';
+#ifdef _RUNVIEW
+			strcat(szFileName, "\\runViewerToolbar.ini");
+#else
 			strcat(szFileName, "\\runSupportToolbar.ini");
+#endif
 		}
 
 		WritePrivateProfileString(pcc->m_opts.m_caption, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
