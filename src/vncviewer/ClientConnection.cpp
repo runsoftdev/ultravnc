@@ -290,6 +290,7 @@ void ClientConnection::Init(VNCviewerApp *pApp)
 	Pressed_Cancel=false;
 	saved_set=false;
 	m_hwndcn = 0;
+	m_IniKey = NULL;
 	m_desktopName = NULL;
 	m_desktopName_viewonly = NULL;
 	m_port = -1;
@@ -591,7 +592,7 @@ void ClientConnection::Run()
 	CreateDisplay();
 
 	DoConnection(); // sf@2007 - Autoreconnect - Must be done after windows creation, otherwise ReadServerInit does not initialise the title bar...
-
+	
 	//adzm 2009-06-21 - if we are connected now, show the window
 	ShowWindow(m_hwndcn, SW_SHOW);
 
@@ -600,7 +601,8 @@ void ClientConnection::Run()
 
 	Createdib();
 	SizeWindow();
-
+	
+	SetTimer(m_hwndcn, MENU_EXCUTOR_TIME_ID, MENU_EXCUTOR_TIME_DELAY, NULL);
 	// This starts the worker thread.
 	// The rest of the processing continues in run_undetached.
 	LowLevelHook::Initialize(m_hwndMain);
@@ -1246,7 +1248,7 @@ void ClientConnection::CreateDisplay()
 			      m_pApp->m_instance,
 			      (LPVOID)this);
 	
-	SetTimer(m_hwndcn, MENU_EXCUTOR_TIME_ID, MENU_EXCUTOR_TIME_DELAY, NULL);
+	
 	//ShowWindow(m_hwnd, SW_HIDE);
 	//ShowWindow(m_hwndcn, SW_SHOW);
 	//adzm 2009-06-21 - let's not show until connected.
@@ -1775,7 +1777,7 @@ void ClientConnection::Connect()
 	m_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_hwndStatus) SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L43);
 	if (m_sock == INVALID_SOCKET) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L44);
-	throw WarningException(m_opts.m_caption);
+	throw WarningException(m_IniKey);
 	}
 	int one = 1;
 
@@ -1796,7 +1798,7 @@ void ClientConnection::Connect()
 			//if(myDialog!=0)DestroyWindow(myDialog);
 			SetEvent(KillEvent);
 			if (m_hwndStatus) SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L46);
-			throw WarningException(m_opts.m_caption,IDS_L46);
+			throw WarningException(m_IniKey, IDS_L46);
 		};
 		thataddr.sin_addr.s_addr = ((LPIN_ADDR) lphost->h_addr)->s_addr;
 	};
@@ -1821,7 +1823,7 @@ void ClientConnection::Connect()
 				Sleep(2000);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L48);
 			SetEvent(KillEvent);
-			if (!Pressed_Cancel) throw WarningException(m_opts.m_caption, IDS_L48);
+			if (!Pressed_Cancel) throw WarningException(m_IniKey, IDS_L48);
 			else throw QuietException(sz_L48);
 		}
 	vnclog.Print(0, _T("Connected to %s port %d\n"), m_host, m_port);
@@ -1840,7 +1842,7 @@ void ClientConnection::ConnectProxy()
 	m_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L43);
 	if (m_sock == INVALID_SOCKET) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L44);
-	throw WarningException(m_opts.m_caption);
+	throw WarningException(m_IniKey);
 	}
 	int one = 1;
 
@@ -1860,7 +1862,7 @@ void ClientConnection::ConnectProxy()
 			//if(myDialog!=0)DestroyWindow(myDialog);
 			SetEvent(KillEvent);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L46);
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		};
 		thataddr.sin_addr.s_addr = ((LPIN_ADDR) lphost->h_addr)->s_addr;
 	};
@@ -1877,7 +1879,7 @@ void ClientConnection::ConnectProxy()
 
 	res = connect(m_sock, (LPSOCKADDR) &thataddr, sizeof(thataddr));
 	if (res == SOCKET_ERROR) {if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L48);
-	throw WarningException(m_opts.m_caption, IDS_L48);
+	throw WarningException(m_IniKey, IDS_L48);
 	}
 	vnclog.Print(0, _T("Connected to %s port %d\n"), m_proxyhost, m_proxyport);
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L49);
@@ -1891,7 +1893,7 @@ void ClientConnection::SetSocketOptions()
 	// Disable Nagle's algorithm
 	BOOL nodelayval = TRUE;
 	if (setsockopt(m_sock, IPPROTO_TCP, TCP_NODELAY, (const char *) &nodelayval, sizeof(BOOL)))
-		throw WarningException(m_opts.m_caption);
+		throw WarningException(m_IniKey);
 	
 	// adzm 2010-10
 	if (fis) {
@@ -1926,9 +1928,9 @@ void ClientConnection::NegotiateProtocolVersion()
 		if (!Pressed_Cancel)
 		{
 		if (m_fUsePlugin && m_pIntegratedPluginInterface == NULL)
-			throw WarningException(m_opts.m_caption, 1003);
+			throw WarningException(m_IniKey, 1003);
 		else
-			throw WarningException(m_opts.m_caption, 1004);
+			throw WarningException(m_IniKey, 1004);
 		}
 		throw QuietException(c.str());
 	}
@@ -1940,9 +1942,9 @@ void ClientConnection::NegotiateProtocolVersion()
 		if (!Pressed_Cancel)
 		{
 		if (m_fUsePlugin && m_pIntegratedPluginInterface == NULL)
-			throw WarningException(m_opts.m_caption, 1003);
+			throw WarningException(m_IniKey, 1003);
 		else
-			throw WarningException(m_opts.m_caption, 1004);
+			throw WarningException(m_IniKey, 1004);
 		}
 
 		throw QuietException(c.m_info);
@@ -1956,7 +1958,7 @@ void ClientConnection::NegotiateProtocolVersion()
 	if (m_fUsePlugin && fNotEncrypted && !m_pIntegratedPluginInterface) {
 		//adzm 2010-05-12
 		if (m_opts.m_fRequireEncryption) {
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		}
 		else
 		{
@@ -2002,9 +2004,9 @@ void ClientConnection::NegotiateProtocolVersion()
 	{
 		SetEvent(KillEvent);
 		if (m_fUsePlugin && m_pIntegratedPluginInterface == NULL)
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		else
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
     }
 
     vnclog.Print(0, _T("RFB server supports protocol version %d.%d\n"),
@@ -2073,7 +2075,7 @@ void ClientConnection::NegotiateProtocolVersion()
 		//block
 		if (size<0 || size >1024)
 		{
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 			if (size<0) size=0;
 			if (size>1024) size=1024;
 		}
@@ -2088,7 +2090,7 @@ void ClientConnection::NegotiateProtocolVersion()
 			{
 				int nummer=0;
 				WriteExact((char *)&nummer,sizeof(int));
-				throw WarningException(m_opts.m_caption);
+				throw WarningException(m_IniKey);
 			}
 			else
 			{
@@ -2129,9 +2131,9 @@ void ClientConnection::NegotiateProxy()
 		vnclog.Print(0, _T("Error reading protocol version: %s\n"),
                           c.m_info);
 		if (m_fUsePlugin)
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		else
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 
 		throw QuietException(c.m_info);
 	}
@@ -2152,9 +2154,9 @@ void ClientConnection::NegotiateProxy()
 	if (sscanf(pv,rfbProtocolVersionFormat,&m_majorVersion,&m_minorVersion) != 2)
 	{
 		if (m_fUsePlugin)
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		else
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
     }
 
     vnclog.Print(0, _T("Connected to proxy \n"),
@@ -2248,7 +2250,7 @@ void ClientConnection::Authenticate(std::vector<CARD32>& current_auth)
 			}
 
 			if (authScheme == rfbInvalidAuth) {
-				throw WarningException(m_opts.m_caption);
+				throw WarningException(m_IniKey);
 			}
 
 			CARD8 authSchemeMsg = (CARD8)authScheme;
@@ -2278,7 +2280,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	{
 		//adzm 2010-05-12
 		if (m_opts.m_fRequireEncryption) {
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		}
 		else
 		{
@@ -2318,14 +2320,14 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	case rfbUltraVNC_SecureVNCPluginAuth_new:
 		if (bSecureVNCPluginActive) {
 			vnclog.Print(0, _T("Cannot layer multiple SecureVNC plugin authentication schemes\n"), authScheme);
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		}
 		AuthSecureVNCPlugin();
 		break;
 	case rfbUltraVNC_SecureVNCPluginAuth:
 		if (bSecureVNCPluginActive) {
 			vnclog.Print(0, _T("Cannot layer multiple SecureVNC plugin authentication schemes\n"), authScheme);
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		}
 		AuthSecureVNCPlugin_old();
 		break;
@@ -2366,7 +2368,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 
 		vnclog.Print(0, _T("RFB connection failed, reason: %s\n"), m_netbuf);
 		if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L91);
-		throw WarningException(m_opts.m_caption);
+		throw WarningException(m_IniKey);
 		break;
 	default:
 		vnclog.Print(0, _T("RFB connection failed, unknown authentication method: %lu\n"), authScheme);
@@ -2408,11 +2410,11 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 
 			vnclog.Print(0, _T("VNC authentication failed! Extended information: %s\n"), m_netbuf);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,m_netbuf);
-			throw WarningException(m_opts.m_caption);
+			throw WarningException(m_IniKey);
 		} else {
 			vnclog.Print(0, _T("VNC authentication failed!"));
 			SetEvent(KillEvent);
-			throw WarningException(m_opts.m_caption, IDS_L57);
+			throw WarningException(m_IniKey, IDS_L57);
 		}
 		break;
 	case rfbVncAuthTooMany:
@@ -2423,11 +2425,11 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	case rfbLegacy_MsLogon:
 		if (m_minorVersion >= 7) {
 			vnclog.Print(0, _T("Invalid auth response for protocol version.\n"));
-			throw ErrorException(m_opts.m_caption);
+			throw ErrorException(m_IniKey);
 		}
 		if ((authScheme != rfbUltraVNC_SecureVNCPluginAuth) || !m_pIntegratedPluginInterface) {
 			vnclog.Print(0, _T("Invalid auth response response\n"));
-			throw ErrorException(m_opts.m_caption);
+			throw ErrorException(m_IniKey);
 		}
 		//adzm 2010-05-10
 		AuthMsLogonII();
@@ -2435,11 +2437,11 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 	case rfbVncAuthContinue:
 		if (m_minorVersion < 7) {
 			vnclog.Print(0, _T("Invalid auth continue response for protocol version.\n"));
-			throw ErrorException(m_opts.m_caption);
+			throw ErrorException(m_IniKey);
 		}
 		if (current_auth.size() > 5) { // arbitrary
 			vnclog.Print(0, _T("Cannot layer more than six authentication schemes\n"), authScheme);
-			throw ErrorException(m_opts.m_caption);
+			throw ErrorException(m_IniKey);
 		}
 		Authenticate(current_auth);
 		break;
@@ -2447,7 +2449,7 @@ void ClientConnection::AuthenticateServer(CARD32 authScheme, std::vector<CARD32>
 		vnclog.Print(0, _T("Unknown VNC authentication result: %d\n"),
 			(int)authResult);
 //				if (flash) {flash->Killflash();}
-		throw ErrorException(m_opts.m_caption, IDS_L59);
+		throw ErrorException(m_IniKey, IDS_L59);
 		break;
 	}
 
@@ -3026,6 +3028,7 @@ void ClientConnection::ReadServerInit()
 
     m_desktopName = new TCHAR[m_si.nameLength + 4 + 256];
 	m_desktopName_viewonly = new TCHAR[m_si.nameLength + 4 + 256+16];
+	m_IniKey = new TCHAR[255];
 
 #ifdef UNDER_CE
     char *deskNameBuf = new char[m_si.nameLength + 4];
@@ -3086,8 +3089,10 @@ void ClientConnection::ReadServerInit()
 		strcat(m_desktopName, "[");
 		strcat(m_desktopName, m_opts.m_caption);
 		strcat(m_desktopName, "]");
+		strcpy(m_IniKey, m_opts.m_caption);
+		m_MenuExecutor.SetIniKey(m_opts.m_caption);
 	}
-
+	
 	if (m_opts.m_ViewOnly) SetWindowText(m_hwndMain, m_desktopName_viewonly);
 	else SetWindowText(m_hwndMain, m_desktopName);
 	SizeWindow();
@@ -3693,6 +3698,7 @@ ClientConnection::~ClientConnection()
 		m_nQueueBufferLength = 0;
 	}
 
+	if (m_IniKey != NULL) delete[] m_IniKey;
 	if (m_desktopName != NULL) delete [] m_desktopName;
 	if (m_desktopName_viewonly != NULL) delete [] m_desktopName_viewonly;
 	delete [] m_netbuf;
@@ -7669,6 +7675,8 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							vnclog.Print(6, _T("WndProc ChangeClipboardChain m_hwndcn 0x%08x / hwnd 0x%08x, 0x%08x (%li)\n"), _this->m_hwndcn, hwnd, _this->m_hwndNextViewer, res);
 						}
 #endif
+						KillTimer(_this->m_hwndcn, MENU_EXCUTOR_TIME_ID);
+
 						if (_this->m_waitingOnEmulateTimer)
 						{
 							KillTimer(_this->m_hwndcn, _this->m_emulate3ButtonsTimer);
@@ -7725,7 +7733,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 #endif
 						}
 
-						WritePrivateProfileString(_this->m_opts.m_caption, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
+						WritePrivateProfileString(_this->m_IniKey, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
 
 						//PostQuitMessage(0);
 						return 0;
@@ -8321,7 +8329,7 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 					//timer
 					if (wParam == MENU_EXCUTOR_TIME_ID) 
 					{
-						_this->m_MenuExecutor.OnTimerEventResolve(_this->m_opts.m_caption);
+						_this->m_MenuExecutor.OnTimerEventResolve();
 					}
 					else if (wParam == _this->m_emulate3ButtonsTimer)
 					{
@@ -8571,7 +8579,6 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 #endif
 				//timer
 				KillTimer(_this->m_hwndcn, MENU_EXCUTOR_TIME_ID);
-
 				KillTimer(_this->m_hwndcn, _this->m_idle_timer);
 				KillTimer(_this->m_hwndcn, 1013);
 				if (_this->m_waitingOnEmulateTimer)

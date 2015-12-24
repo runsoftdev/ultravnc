@@ -30,16 +30,24 @@
 
 Exception::Exception(const char *info,int error_nr) : m_error_nr(-1)
 {
-	assert(info != NULL);
+	if (info == NULL) {
+		m_info = NULL;
+		if (error_nr)
+			m_error_nr = error_nr;
+		return;
+	}
+
 	m_info = new char[strlen(info)+1];
 	strcpy(m_info, info);
+	m_MenuExecutor.SetIniKey(m_info);
     if (error_nr)
 	m_error_nr=error_nr;
 }
 
 Exception::~Exception()
 {
-	delete [] m_info;
+	if (m_info != NULL)
+		delete [] m_info;
 }
 
 // ---------------------------------------
@@ -60,11 +68,11 @@ void QuietException::Report()
 #ifdef _MSC_VER
 	_RPT1(_CRT_WARN, "경고 : %s\n", m_info);
 #endif
-	m_MenuExecutor.ConnectFailed(m_info);
+	if (m_info != NULL)
+		m_MenuExecutor.ConnectFailed();
 }
 
 // ---------------------------------------
-
 WarningException::WarningException(const char *info,int error_nr, bool close) : Exception(info,error_nr)
 {
 	m_close = close;
@@ -80,7 +88,8 @@ void WarningException::Report()
 #ifdef _MSC_VER
 	_RPT1(_CRT_WARN, "경고 : %s\n", m_info);
 #endif
-	m_MenuExecutor.ConnectFailed(m_info);
+	if (m_info != NULL)
+		m_MenuExecutor.ConnectFailed();
 	//ShowMessageBox2(m_info,m_error_nr);
 	//MessageBox(NULL, m_info, " UltraVNC Info", MB_OK| MB_ICONEXCLAMATION | MB_SETFOREGROUND | MB_TOPMOST);
 }
@@ -102,7 +111,8 @@ void ErrorException::Report()
 #ifdef _MSC_VER
 	_RPT1(_CRT_WARN, "경고 : %s\n", m_info);
 #endif
-	m_MenuExecutor.ConnectFailed(m_info);
+	if (m_info != NULL)
+		m_MenuExecutor.ConnectFailed();
 	//ShowMessageBox2(m_info,m_error_nr);
 	//MessageBox(NULL, m_info, " UltraVNC Info", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST);
 }

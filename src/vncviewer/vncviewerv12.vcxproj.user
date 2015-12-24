@@ -8,11 +8,11 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>192.168.0.16:2800 -nostatus -password 1234 -caption rmc566790e372c4d -noauto -fullcolors -encoding ultra2 -compresslevel 8 -quality 6 -preemptiveupdates -throttlemouse 500 -normalcursor -dsmplugin securevncplugin.dsm -title 1 -notoolbar</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.16:2801 -nostatus -password qawsed1 -caption run -noauto -fullcolors -encoding ultra2 -compresslevel 7 -quality 6 -preemptiveupdates -throttlemouse 100 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>192.168.0.1 -nostatus -password 1234 -title 1번원격 -caption rmc56558262bc8c0 -noauto -fullcolors -encoding ultra2 -compresslevel 8 -quality 6 -dsmplugin securevncplugin.dsm</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.16:5900 -nostatus -password 1234 -title 1번원격 -caption rmc56558262bc8c0 -noauto -fullcolors -encoding ultra2 -compresslevel 8 -quality 6 -dsmplugin securevncplugin.dsm</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

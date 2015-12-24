@@ -112,7 +112,7 @@ void VNCviewerApp32::NewConnection(bool Is_Listening,TCHAR *host, int port) {
 #endif
 		}
 
-		WritePrivateProfileString(pcc->m_opts.m_caption, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
+		WritePrivateProfileString(pcc->m_IniKey, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
 		pcc->CloseWindows();
 		e.Report();	
 		delete pcc;

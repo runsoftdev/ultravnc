@@ -324,7 +324,7 @@ void vncHTTPConnectThread::DoHTTP(VSocket *socket)
 			}
 			else
 			{
-				strcpy(desktopname, "RunRemote");
+				strcpy(desktopname, "runRemote");
 			}
 
 			// Send the java applet page

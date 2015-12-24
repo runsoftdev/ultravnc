@@ -292,10 +292,8 @@ void VNCOptions::GetDefaultOptionsFileName(TCHAR *optionfile)
 		return;
 	}
 		
-
-
     const char *APPDIR = "UltraVNC";
-    if (SHGetFolderPath (0,CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, optionfile) == S_OK)
+	if (SHGetFolderPath(0, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, optionfile) == S_OK)
     {
 		strcat_s(optionfile, MAX_PATH, "\\");
 		strcat_s(optionfile, MAX_PATH,APPDIR);

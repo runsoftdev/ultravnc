@@ -632,6 +632,7 @@ private:
 	omni_mutex	m_ZlibBufferMutex;
 	
 	TCHAR *m_desktopName;
+	
 	TCHAR m_desktopNameFull[MAX_PATH];
 	TCHAR *m_desktopName_viewonly;
 	unsigned char m_encPasswd[8];
@@ -816,6 +817,7 @@ public:
 	HANDLE rcth;
 	void ReadExact(char *buf, int bytes);
 	bool new_ultra_server;
+	TCHAR *m_IniKey;
 };
 
 // Some handy classes for temporary GDI object selection

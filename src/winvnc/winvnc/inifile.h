@@ -28,7 +28,11 @@
 
 bool Copy_to_Temp(char *tempfile);
 bool Copy_to_Secure_from_temp(char *tempfile);
-#define INIFILE_NAME "RunRemote.ini"
+#ifdef _RUNVIEW
+	#define INIFILE_NAME "RunViewer.ini"
+#else
+	#define INIFILE_NAME "RunRemote.ini"
+#endif
 
 class IniFile
 {

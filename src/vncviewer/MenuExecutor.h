@@ -28,13 +28,14 @@ public:
 		m_remote_mouse_disable = newVale;
 	}
 
-	void OnTimerEventResolve(TCHAR*iniKey);
-	void ConnectFailed(TCHAR*iniKey);
-
+	void OnTimerEventResolve();
+	void ConnectFailed();
+	void SetIniKey(char *iniKey) { strcpy(m_iniKey, iniKey); }
 private:
+	char m_iniKey[256];
 	HINSTANCE _hInstance;
 	HWND _hwnd;
 	bool m_remote_mouse_disable;
-
+	
 };
 

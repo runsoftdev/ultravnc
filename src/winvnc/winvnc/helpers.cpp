@@ -389,7 +389,7 @@ Set_start_service_as_admin()
 
 void Open_homepage()
 {
-	ShellExecute(0, "open", "http://www.uvnc.com", 0, 0, 1);
+	ShellExecute(0, "open", "http://www.runremote.com", 0, 0, 1);
 }
 
 void Open_forum()

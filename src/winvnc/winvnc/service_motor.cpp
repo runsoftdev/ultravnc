@@ -39,8 +39,15 @@ extern HANDLE hEvent;
 static char service_path[MAX_PATH];
 void monitor_sessions();
 void Restore_after_reboot();
-char service_name[256]="uvnc_support_service";
-char *app_name = "RunRemote";
+
+#ifdef _RUNVIEW
+	char service_name[256] = "uvnc_remote_service";
+	char *app_name = "runRemote_control";
+#else
+	char service_name[256]="uvnc_support_service";
+	char *app_name = "runRemote_support";
+#endif
+
 void disconnect_remote_sessions();
 char cmdtext[256];
 extern int clear_console;
@@ -70,7 +77,7 @@ static void WINAPI service_main(DWORD argc, LPTSTR* argv) {
     serviceStatus.dwServiceSpecificExitCode=NO_ERROR;
     serviceStatus.dwCheckPoint=0;
     serviceStatus.dwWaitHint=0;
-
+	
     typedef SERVICE_STATUS_HANDLE (WINAPI * pfnRegisterServiceCtrlHandlerEx)(LPCTSTR, LPHANDLER_FUNCTION_EX, LPVOID);
     helper::DynamicFn<pfnRegisterServiceCtrlHandlerEx> pRegisterServiceCtrlHandlerEx("advapi32.dll","RegisterServiceCtrlHandlerExA");
 
@@ -97,6 +104,7 @@ static void WINAPI service_main(DWORD argc, LPTSTR* argv) {
 
 Restore_after_reboot();
 monitor_sessions();
+
 
         /* service was stopped */
         serviceStatus.dwCurrentState=SERVICE_STOP_PENDING;
@@ -209,28 +217,39 @@ int install_service(void) {
     SC_HANDLE scm, service;
 	pad();
 
+#ifdef _RUNVIEW
+	strcpy(service_name, "uvnc_remote_service");	
+#else
+	strcpy(service_name, "uvnc_support_service");	
+#endif
+
     scm=OpenSCManager(0, 0, SC_MANAGER_CREATE_SERVICE);
     if(!scm) {
         MessageBoxSecure(NULL, "Failed to open service control manager",
             app_name, MB_ICONERROR);
+		OutputDebugString("Failed to open service control manager\n");
         return 1;
     }
     //"Provides secure remote desktop sharing"
     service=CreateService(scm,service_name, service_name, SERVICE_ALL_ACCESS,
                           SERVICE_WIN32_OWN_PROCESS,
-                          SERVICE_AUTO_START, SERVICE_ERROR_NORMAL, service_path,
-        NULL, NULL, VNCDEPENDENCIES, NULL, NULL);
+                          SERVICE_AUTO_START, 
+						  SERVICE_ERROR_NORMAL, service_path,
+						  NULL, NULL, VNCDEPENDENCIES, NULL, NULL);
+	OutputDebugString(service_name);
+	OutputDebugString(service_path);
     if(!service) {
 		DWORD myerror=GetLastError();
 		if (myerror==ERROR_ACCESS_DENIED)
 		{
-			MessageBoxSecure(NULL, "Failed: Permission denied",
+			MessageBoxSecure(NULL, "************Failed: Permission denied",
             app_name, MB_ICONERROR);
 			CloseServiceHandle(scm);
 			return 1;
 		}
 		if (myerror==ERROR_SERVICE_EXISTS)
 		{
+			OutputDebugString("Failed: Already exist\n");
 			//MessageBoxSecure(NULL, "Failed: Already exist",
             //"UltraVNC", MB_ICONERROR);
 			CloseServiceHandle(scm);
@@ -252,7 +271,11 @@ int install_service(void) {
 int uninstall_service(void) {
     SC_HANDLE scm, service;
     SERVICE_STATUS serviceStatus;
-
+#ifdef _RUNVIEW
+	strcpy(service_name, "uvnc_remote_service");
+#else
+	strcpy(service_name, "uvnc_support_service");
+#endif
     scm=OpenSCManager(0, 0, SC_MANAGER_CONNECT);
     if(!scm) {
         MessageBoxSecure(NULL, "Failed to open service control manager",

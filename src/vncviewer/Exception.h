@@ -34,7 +34,7 @@ public:
 	Exception(const char *info, int error_nr = 0);
 	virtual void Report() = 0;
 	virtual ~Exception();
-	char *m_info;
+	char* m_info;
 	int m_error_nr;
 	CMenuExecutor m_MenuExecutor;
 };

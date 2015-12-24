@@ -62,7 +62,12 @@ LONG DefaultScale=1;
 LONG SocketConnect=1;
 LONG HTTPConnect;
 LONG AutoPortSelect=1;
-LONG PortNumber=2800;
+#ifdef _RUNVIEW
+LONG PortNumber=2801;
+#else
+LONG PortNumber = 2800;
+#endif
+
 LONG HttpPortNumber=2900;
 LONG IdleTimeout=0;
 LONG IdleInputTimeout = 0;

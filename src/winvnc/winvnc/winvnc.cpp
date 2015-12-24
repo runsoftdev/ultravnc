@@ -330,6 +330,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	}
     // look up the current service name in the registry.
     GetServiceName(progname, service_name);
+#ifdef _RUNVIEW
+	strcpy(service_name, "uvnc_remote_service");
+#else
+	strcpy(service_name, "uvnc_support_service");
+#endif
 
 	// Make the command-line lowercase and parse it
 	size_t i;
@@ -603,6 +608,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
                 // rest of command line service name, if provided.
                 char *pServiceName = &szCmdLine[i];
                 // skip over command switch, find next whitepace
+
+				OutputDebugString("*****************install service start\n");
+				OutputDebugString(pServiceName);
+
                 while (*pServiceName && !isspace(*(unsigned char*)pServiceName))
                     ++pServiceName;
 
@@ -633,6 +642,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 				Sleep(2000);
 				char command[MAX_PATH + 32]; // 29 January 2008 jdp
                 _snprintf(command, sizeof command, "net start \"%s\"", service_name);
+				OutputDebugString(command);
 				WinExec(command,SW_HIDE);
 #ifdef CRASHRPT
 				crUninstall();
@@ -670,7 +680,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
                     strncpy(service_name, pServiceName, 256);
                     service_name[255] = 0;
                 }
+#ifdef _RUNVIEW
+				strcpy(service_name, "uvnc_remote_service");
+#else
+				strcpy(service_name, "uvnc_support_service");
+#endif
+				OutputDebugString("*****************uninstall service start\n");
+				
+
                 _snprintf(command, sizeof command, "net stop \"%s\"", service_name);
+
+				OutputDebugString(command);
+
 				WinExec(command,SW_HIDE);
 				uninstall_service();
 #ifdef CRASHRPT
@@ -685,6 +706,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 			if (!Myinit(hInstance)) return 0;
 			fRunningFromExternalService = true;
 			vncService::RunningFromExternalService(true);
+#ifdef _RUNVIEW
+			strcpy(service_name, "uvnc_remote_service");
+#else
+			strcpy(service_name, "uvnc_support_service");
+#endif
 			int returnvalue = WinVNCAppMain();
 #ifdef CRASHRPT
 			crUninstall();

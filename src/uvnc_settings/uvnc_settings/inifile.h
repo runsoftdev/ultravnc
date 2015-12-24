@@ -2,7 +2,11 @@
 #if (!defined(_WINVNC_INIFILE))
 #define _WINVNC_INIFILE
 
-#define INIFILE_NAME "UltraVNC.ini"
+#ifdef _RUNVIEW
+#define INIFILE_NAME "RunViewer.ini"
+#else
+#define INIFILE_NAME "RunRemote.ini"
+#endif
 
 class IniFile
 {
