@@ -3,7 +3,7 @@
 #define MENU_EXCUTOR_TIME_ID 293457
 #define MENU_EXCUTOR_TIME_DELAY 1000
 #define TOOLBAR_MENU "toolbar"
-#define FUNTION_ON 1
+#define FUNTION_ON "1"
 #define FUNTION_OFF "0"
 
 #define MENU_CTRL_ALT_DEL_SEND 	"ctrlaltdelSend"
@@ -16,6 +16,7 @@
 #define MENU_HIDE_BACKGROUND "hideBackground"
 #define MENU_REFRESH "refreshViewer"
 #define MENU_CONNECT_TRY 	"connect_try"
+#define MENU_FULLSCREEN_ONOFF 	"viwer_fullscreen_on"
 
 class CMenuExecutor
 {
@@ -30,12 +31,17 @@ public:
 
 	void OnTimerEventResolve();
 	void ConnectFailed();
+	void FullScreenMode(bool isFullScreen);
 	void SetIniKey(char *iniKey) { strcpy(m_iniKey, iniKey); }
+	bool isClosed() {
+		return m_isClosed;
+	}
 private:
 	char m_iniKey[256];
 	HINSTANCE _hInstance;
 	HWND _hwnd;
 	bool m_remote_mouse_disable;
+	bool m_isClosed;
 	
 };
 

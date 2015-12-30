@@ -163,7 +163,7 @@ VNCOptions::VNCOptions()
   // Modif sf@2002 - Server Scaling
   m_nServerScale = 1;
 
-  m_reconnectcounter = 3;
+  m_reconnectcounter = 5;
 
   // Modif sf@2002 - Cache
   m_fEnableCache = false;
@@ -232,12 +232,12 @@ VNCOptions::VNCOptions()
   m_saved_scaling = false;
   
   // sf@2007 - Autoreconnect
-  m_autoReconnect = 3; // Default: 10s before reconnecting
+  m_autoReconnect = 5; // Default: 10s before reconnecting
 
   // Fix by Act : no user password command line after a rejected connection
   m_NoMoreCommandLineUserPassword = false;
 
-  m_fExitCheck = false; //PGM @ Advantig
+  m_fExitCheck = true; //PGM @ Advantig
   hwnd = 0;
 
   m_FTTimeout = FT_RECV_TIMEOUT;

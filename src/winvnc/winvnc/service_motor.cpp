@@ -172,6 +172,8 @@ int start_service(char *cmd) {
         {0, 0}
     };
 
+	OutputDebugString("------int start_service(char *cmd)");
+	OutputDebugString(cmdtext);
     if(!StartServiceCtrlDispatcher(serviceTable)) {
         return 1;
     }

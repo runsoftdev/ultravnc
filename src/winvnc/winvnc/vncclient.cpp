@@ -1046,7 +1046,7 @@ vncClientThread::FilterClients_Blacklist()
 	return TRUE;
 }
 
-BOOL vncClientThread::CheckEmptyPasswd()
+BOOL vncClientThread::CheckEmptyPasswd()	
 {
 	char password[MAXPWLEN];
 	m_server->GetPassword(password);

@@ -365,6 +365,9 @@ Real_stop_service()
     char command[MAX_PATH + 32]; // 29 January 2008 jdp
     _snprintf(command, sizeof command, "net stop \"%s\"", service_name);
 	WinExec(command,SW_HIDE);
+
+	_snprintf(command, sizeof command, "*****************************net stop \"%s\"", service_name);
+	OutputDebugString(command);
 }
 
 void
@@ -403,6 +406,9 @@ Real_start_service()
     char command[MAX_PATH + 32]; // 29 January 2008 jdp
     _snprintf(command, sizeof command, "net start \"%s\"", service_name);
 	WinExec(command,SW_HIDE);
+
+	_snprintf(command, sizeof command, "*****************************net start \"%s\"", service_name);
+	OutputDebugString(command);
 }
 
 void

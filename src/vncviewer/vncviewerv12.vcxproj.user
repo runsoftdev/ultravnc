@@ -8,7 +8,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>192.168.0.16:2801 -nostatus -password qawsed1 -caption run -noauto -fullcolors -encoding ultra2 -compresslevel 7 -quality 6 -preemptiveupdates -throttlemouse 100 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.16:2800 -nostatus -password runremote!daebak@cheer$$ -caption rmc5680f8b83fc6b -noauto -fullcolors -encoding ultra2 -compresslevel 7 -quality 8 -preemptiveupdates -throttlemouse 100 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm -title 5</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

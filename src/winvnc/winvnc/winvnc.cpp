@@ -711,6 +711,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 #else
 			strcpy(service_name, "uvnc_support_service");
 #endif
+			OutputDebugString("*****************winvncRunService service start\n");
 			int returnvalue = WinVNCAppMain();
 #ifdef CRASHRPT
 			crUninstall();

@@ -603,6 +603,7 @@ void ClientConnection::Run()
 	SizeWindow();
 	
 	SetTimer(m_hwndcn, MENU_EXCUTOR_TIME_ID, MENU_EXCUTOR_TIME_DELAY, NULL);
+	m_MenuExecutor.SetClientConnection(m_pApp->m_instance, m_hwndcn);
 	// This starts the worker thread.
 	// The rest of the processing continues in run_undetached.
 	LowLevelHook::Initialize(m_hwndMain);
@@ -3069,18 +3070,19 @@ void ClientConnection::ReadServerInit()
 		m_si.framebufferWidth, m_si.framebufferHeight, m_si.format.depth );
 		
 	//adzm 2009-06-21 - if we decide to connect even though it is unencrypted, do not show the plugin info
-	if (m_pDSMPlugin->IsEnabled() && m_fUsePlugin)
+	/*cif (m_pDSMPlugin->IsEnabled() && m_fUsePlugin)
 	{
-			char szMess[255];
+			har szMess[255];
 			memset(szMess, 0, 255);
 			sprintf(szMess, "-runsoft.runRemote %s by %s ",
 					m_pDSMPlugin->GetPluginName(),
 					m_pDSMPlugin->GetPluginAuthor());
-			strcat(m_desktopName, szMess);
+			strcat(m_desktopName, "[runsoft.runRemote]");
 	}
 	else {
 		strcat(m_desktopName, "-runsoft.runRemote-");
-	}
+	*/
+	strcat(m_desktopName, "-runsoft.runRemote-");
 
 	strcpy(m_desktopName_viewonly,m_desktopName);
 	strcat(m_desktopName_viewonly,"보기전용");
@@ -6833,9 +6835,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 		 {
 		 _this = (ClientConnection*)((CREATESTRUCT*)lParam)->lpCreateParams;
 		 helper::SafeSetWindowUserData(hwnd, (LONG_PTR)_this);
-
-		 //menu Timer
-		 _this->m_MenuExecutor.SetClientConnection(_this->m_pApp->m_instance, hwnd);
+	 
 		 
 		 //SetWindowLongPtr( hwnd, GWLP_USERDATA, (LONG_PTR)_this );
 		 }
@@ -6886,6 +6886,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						_this->m_opts.m_ShowToolbar = !_this->m_opts.m_ShowToolbar;
 						_this->SizeWindow();
 						_this->SetFullScreenMode(_this->InFullScreenMode());
+						
 						// adzm - 2010-07 - Extended clipboard
 						//_this->UpdateMenuItems(); // Handled in WM_INITMENUPOPUP
 						break;
@@ -6936,6 +6937,8 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							Sleep(100);
 						}
 						_this->SetFullScreenMode(!_this->InFullScreenMode());
+						
+
 						return 0;
 						break;
 
@@ -7032,6 +7035,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						} //PGM
 
 						_this->SetFullScreenMode(!_this->InFullScreenMode());
+						
 						return 0;
 
 					case ID_VIEWONLYTOGGLE:
@@ -7389,6 +7393,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 								_this->SizeWindow();
 								InvalidateRect(hwnd, NULL, TRUE);
 								_this->SetFullScreenMode(false);
+								_this->m_MenuExecutor.FullScreenMode(false);
 								_this->RealiseFullScreenMode();
 								_this->m_pendingFormatChange = true;
 							}
@@ -7531,8 +7536,11 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 
 				case WM_CLOSE:
 					{
-						_this->m_keepalive_timer=0;
-                        // April 8 2008 jdp
+						char msg[255];
+						sprintf(msg, "WM_CLOSE lParam=%u wParam=%u\n", lParam, wParam);
+						OutputDebugString(msg);
+						
+                        // April 8 2008 jdp												
 						static bool boxopen=false;
 						if (boxopen) return 0;
                         if (lParam == 0 && !_this->m_bKillThread)
@@ -7540,7 +7548,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							if (_this->m_opts.m_fExitCheck) //PGM @ Advantig
 							{ //PGM @ Advantig
 								boxopen=true;
-							    if (MessageBox(hwnd, sz_L75,sz_L76,MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST|MB_SYSTEMMODAL) == IDNO)
+								if (MessageBox(hwnd, "원격을 종료하시겠습니까?", "runRemote 원격지원", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST | MB_SYSTEMMODAL) == IDNO)
 									{
 										boxopen=false;
 										return 0;
@@ -7591,6 +7599,10 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						// If wParam == 0 then the close is "normal" and presumably wanted by the user
 						if ( ( _this->m_autoReconnect == 0) || (wParam == 0))
 						{
+							OutputDebugString("~~~~~~~~~~~~~~~``kill remote\n");
+							_this->m_port = -1;
+							KillTimer(_this->m_hwndcn, MENU_EXCUTOR_TIME_ID);
+							
 							_this->m_autoReconnect = 0; // Forbid autoreconnect when the CLOSE order comes from the user
 
                             // 8 April 2008 jdp hide window while shutting down
@@ -7616,6 +7628,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						}
 						else // Autoreconnect allowed - We only suspend the working thread then reconnect a few seconds later
 						{
+							OutputDebugString("~~~~~~~~~~~~~~~Autoreconnect\n");
 							char temp[10];
 							char wtext[150];
 							_itoa(wParam,temp,10);
@@ -7956,7 +7969,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 					//Added by: Lars Werner (http://lars.werner.no)
 					if(wParam==SIZE_MAXIMIZED&&_this->InFullScreenMode()==FALSE)
 					{
-						_this->SetFullScreenMode(!_this->InFullScreenMode());
+						_this->SetFullScreenMode(!_this->InFullScreenMode());						
 						//MessageBox(NULL,"Fullscreeen from maximizehora...","KAKE",MB_OK);
 						//return 0;
 					}
@@ -8035,7 +8048,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 
 				case tbWM_MAXIMIZE:
 					//_this->SetFullScreenMode(!_this->InFullScreenMode());
-					_this->SetFullScreenMode(FALSE);
+					_this->SetFullScreenMode(FALSE);					
 					return 0;
 			} // end of iMsg switch
 
@@ -8329,7 +8342,12 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 					//timer
 					if (wParam == MENU_EXCUTOR_TIME_ID) 
 					{
-						_this->m_MenuExecutor.OnTimerEventResolve();
+						if (forcedexit == false && !_this->m_MenuExecutor.isClosed())
+						{
+							OutputDebugString("WM_TIMER~~~~~~\n");
+							_this->m_MenuExecutor.OnTimerEventResolve();
+							_this->m_MenuExecutor.FullScreenMode(_this->m_opts.m_FullScreen);
+						}
 					}
 					else if (wParam == _this->m_emulate3ButtonsTimer)
 					{
@@ -8510,8 +8528,13 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 
 			case WM_CLOSE:
 				{
+
                     // April 8 2008 jdp
 					static bool boxopen=false;
+					KillTimer(_this->m_hwndcn, MENU_EXCUTOR_TIME_ID);
+					OutputDebugString("WM_CLOSE 2222~~~~~~~~~~~\n");
+					
+					
 					if (boxopen) return 0;
                     if (lParam == 0)
 					{
@@ -8554,7 +8577,7 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 							MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST|MB_SYSTEMMODAL);
 						return 0;
 					}
-
+					
                     // 8 April 2008 jdp
                     ::ShowWindow(hwnd, SW_HIDE);
 					// Close the worker thread as well
@@ -8577,6 +8600,7 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 #ifdef _Gii
 				UnregisterTouchWindow(hwnd);
 #endif
+				OutputDebugString("WM_DESTROY 1\n");
 				//timer
 				KillTimer(_this->m_hwndcn, MENU_EXCUTOR_TIME_ID);
 				KillTimer(_this->m_hwndcn, _this->m_idle_timer);
