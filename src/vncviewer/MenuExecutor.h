@@ -18,6 +18,8 @@
 #define MENU_CONNECT_TRY 	"connect_try"
 #define MENU_FULLSCREEN_ONOFF 	"viwer_fullscreen_on"
 
+class ClientConnection;
+
 class CMenuExecutor
 {
 public:
@@ -29,7 +31,7 @@ public:
 		m_remote_mouse_disable = newVale;
 	}
 
-	void OnTimerEventResolve();
+	void OnTimerEventResolve(ClientConnection*pClient);
 	void ConnectFailed();
 	void FullScreenMode(bool isFullScreen);
 	void SetIniKey(char *iniKey) { strcpy(m_iniKey, iniKey); }

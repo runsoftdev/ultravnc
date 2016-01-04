@@ -38,6 +38,7 @@ HANDLE hEvent=NULL;
 HANDLE hEventcad=NULL;
 extern HANDLE stopServiceEvent;
 static char app_path[MAX_PATH];
+static char app_launch_path[MAX_PATH];
 typedef DWORD (*WTSGETACTIVECONSOLESESSIONID)();
 typedef bool (*WTSQUERYUSERTOKEN)(ULONG,PHANDLE);
 helper::DynamicFn<WTSGETACTIVECONSOLESESSIONID> lpfnWTSGetActiveConsoleSessionId("kernel32", "WTSGetActiveConsoleSessionId");
@@ -299,8 +300,8 @@ BOOL CreateRemoteSessionProcess(
         return bRet;
 
 }
-//////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////
 static int pad2()
 {
 
@@ -336,6 +337,31 @@ static int pad2()
 		strcat(app_path,cmdline);
 		strcat(app_path, " -service_run");
 	}
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+static int pad3(char* path)
+{
+	OSVERSIONINFO OSversion;
+
+	OSversion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+	GetVersionEx(&OSversion);
+	W2K = 0;
+	switch (OSversion.dwPlatformId)
+	{
+	case VER_PLATFORM_WIN32_NT:
+		if (OSversion.dwMajorVersion == 5 && OSversion.dwMinorVersion == 0)
+			W2K = 1;
+
+	}
+	
+	strcpy(app_launch_path, path);
+	
+	IniFile myIniFile;
+	kickrdp = myIniFile.ReadInt("admin", "kickrdp", kickrdp);
+	clear_console = myIniFile.ReadInt("admin", "clearconsole", clear_console);	
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -727,6 +753,185 @@ LaunchProcessWin(DWORD dwSessionId)
     
     return bReturn;
 }
+
+BOOL
+LaunchProcessWinCustom(DWORD dwSessionId)
+{
+	BOOL                 bReturn = FALSE;
+	HANDLE               hToken;
+	STARTUPINFO          StartUPInfo;
+	PVOID                lpEnvironment = NULL;
+
+	ZeroMemory(&StartUPInfo, sizeof(STARTUPINFO));
+	ZeroMemory(&ProcessInfo, sizeof(PROCESS_INFORMATION));
+	StartUPInfo.wShowWindow = SW_SHOW;
+	StartUPInfo.lpDesktop = "Winsta0\\Winlogon";
+	//StartUPInfo.lpDesktop = "Winsta0\\Default";
+	StartUPInfo.cb = sizeof(STARTUPINFO);
+	SetTBCPrivileges();
+	pad2();
+
+	if (GetSessionUserTokenWin(&hToken))
+	{
+		if (CreateEnvironmentBlock(&lpEnvironment, hToken, FALSE))
+		{
+
+			SetLastError(0);
+			if (CreateProcessAsUser(hToken, NULL, app_launch_path, NULL, NULL, FALSE, CREATE_UNICODE_ENVIRONMENT | DETACHED_PROCESS, lpEnvironment, NULL, &StartUPInfo, &ProcessInfo))
+			{
+				counter = 0;
+				bReturn = TRUE;
+				DWORD error = GetLastError();
+#ifdef _DEBUG
+				char			szText[256];
+				sprintf(szText, " ++++++ CreateProcessAsUser winlogon %d\n", error);
+				OutputDebugString(szText);
+#endif
+			}
+			else
+			{
+				DWORD error = GetLastError();
+#ifdef _DEBUG
+				char			szText[256];
+				sprintf(szText, " ++++++ CreateProcessAsUser failed %d %d %d\n", error, kickrdp, counter);
+				OutputDebugString(szText);
+#endif
+				if (error == 233 && kickrdp == 1)
+				{
+					counter++;
+					if (counter>3)
+					{
+#ifdef _DEBUG
+						DWORD error = GetLastError();
+						sprintf(szText, " ++++++ error==233 win\n");
+						SetLastError(0);
+						OutputDebugString(szText);
+#endif
+						typedef BOOLEAN(WINAPI * pWinStationConnect) (HANDLE, ULONG, ULONG, PCWSTR, ULONG);
+						typedef BOOL(WINAPI * pLockWorkStation)();
+						HMODULE  hlibwinsta = LoadLibrary("winsta.dll");
+						HMODULE  hlibuser32 = LoadLibrary("user32.dll");
+						pWinStationConnect WinStationConnectF = NULL;
+						pLockWorkStation LockWorkStationF = NULL;
+
+						if (hlibwinsta)
+						{
+							WinStationConnectF = (pWinStationConnect)GetProcAddress(hlibwinsta, "WinStationConnectW");
+						}
+						if (hlibuser32)
+						{
+							LockWorkStationF = (pLockWorkStation)GetProcAddress(hlibuser32, "LockWorkStation");
+						}
+						if (WinStationConnectF != NULL && LockWorkStationF != NULL)
+						{
+							DWORD ID = 0;
+							if (lpfnWTSGetActiveConsoleSessionId.isValid()) ID = (*lpfnWTSGetActiveConsoleSessionId)();
+							WinStationConnectF(0, 0, ID, L"", 0);
+							LockWorkStationF();
+						}
+						Sleep(3000);
+					}
+				}
+				else if (error == 233)
+				{
+					CreateRemoteSessionProcess(dwSessionId, true, hToken, NULL, app_launch_path, NULL, NULL, FALSE, CREATE_UNICODE_ENVIRONMENT | DETACHED_PROCESS, lpEnvironment, NULL, &StartUPInfo, &ProcessInfo);
+					counter = 0;
+					bReturn = TRUE;
+				}
+			}
+
+			if (lpEnvironment)
+			{
+				DestroyEnvironmentBlock(lpEnvironment);
+			}
+
+		}//createenv
+		else
+		{
+			SetLastError(0);
+			if (CreateProcessAsUser(hToken, NULL, app_launch_path, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &StartUPInfo, &ProcessInfo))
+			{
+				counter = 0;
+				bReturn = TRUE;
+				DWORD error = GetLastError();
+#ifdef _DEBUG
+				char			szText[256];
+				sprintf(szText, " ++++++ CreateProcessAsUser winlogon %d\n", error);
+				OutputDebugString(szText);
+#endif
+			}
+			else
+			{
+				DWORD error = GetLastError();
+#ifdef _DEBUG
+				char			szText[256];
+				sprintf(szText, " ++++++ CreateProcessAsUser no env failed %d\n", error);
+				OutputDebugString(szText);
+#endif
+				//Little trick needed, FUS sometimes has an unreachable logon session.
+				//Switch to USER B, logout user B
+				//The logon session is then unreachable
+				//We force the logon session on the console
+				if (error == 233 && kickrdp == 1)
+				{
+					counter++;
+					if (counter>3)
+					{
+#ifdef _DEBUG
+						DWORD error = GetLastError();
+						sprintf(szText, " ++++++ error==233 win\n");
+						SetLastError(0);
+						OutputDebugString(szText);
+#endif
+						typedef BOOLEAN(WINAPI * pWinStationConnect) (HANDLE, ULONG, ULONG, PCWSTR, ULONG);
+						typedef BOOL(WINAPI * pLockWorkStation)();
+						HMODULE  hlibwinsta = LoadLibrary("winsta.dll");
+						HMODULE  hlibuser32 = LoadLibrary("user32.dll");
+						pWinStationConnect WinStationConnectF = NULL;
+						pLockWorkStation LockWorkStationF = NULL;
+
+						if (hlibwinsta)
+						{
+							WinStationConnectF = (pWinStationConnect)GetProcAddress(hlibwinsta, "WinStationConnectW");
+						}
+						if (hlibuser32)
+						{
+							LockWorkStationF = (pLockWorkStation)GetProcAddress(hlibuser32, "LockWorkStation");
+						}
+						if (WinStationConnectF != NULL && LockWorkStationF != NULL)
+						{
+							DWORD ID = 0;
+							if (lpfnWTSGetActiveConsoleSessionId.isValid()) ID = (*lpfnWTSGetActiveConsoleSessionId)();
+							WinStationConnectF(0, 0, ID, L"", 0);
+							LockWorkStationF();
+						}
+						Sleep(3000);
+					}
+				}
+				else if (error == 233)
+				{
+					CreateRemoteSessionProcess(dwSessionId, true, hToken, NULL, app_launch_path, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &StartUPInfo, &ProcessInfo);
+					counter = 0;
+					bReturn = TRUE;
+				}
+			}
+
+		}  //getsession
+		CloseHandle(hToken);
+	}
+	else
+	{
+#ifdef _DEBUG
+		char			szText[256];
+		DWORD error = GetLastError();
+		sprintf(szText, " ++++++ Getsessionusertokenwin failed %d\n", error);
+		OutputDebugString(szText);
+#endif
+
+	}
+
+	return bReturn;
+}
 //////////////////////////////////////////////////////////////////////////////
 
 void wait_for_existing_process()
@@ -883,7 +1088,7 @@ void monitor_sessions()
 							#ifdef _DEBUG
 									OutputDebugString("Start winvnc.exe\n");
 							#endif
-																LaunchProcessWin(dwSessionId);
+									LaunchProcessWin(dwSessionId);
 									OlddwSessionId = dwSessionId;
 													}
 													else if (GetExitCodeProcess(ProcessInfo.hProcess,&dwCode))
@@ -978,6 +1183,113 @@ void monitor_sessions()
 
 	if (hEvent) CloseHandle(hEvent);
 	if (hEventcad) CloseHandle(hEventcad);
+}
+
+void launch_exe(char*path)
+{
+	pad3(path);
+	HANDLE hTokenNew = NULL, hTokenDup = NULL;
+
+	DWORD dwSessionId = 0;
+	DWORD OlddwSessionId = 99;
+	ProcessInfo.hProcess = 0;
+	//bool win=false;
+	bool Slow_connect = false;
+	bool last_con = false;
+	//We use this event to notify the program that the session has changed
+	//The program need to end so the service can restart the program in the correct session
+	
+	if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
+			
+	if (dwSessionId != 0xFFFFFFFF)
+	{
+		DWORD dwCode = 0;
+		if (ProcessInfo.hProcess == NULL)
+		{
+				
+			LaunchProcessWinCustom(dwSessionId);
+			OlddwSessionId = dwSessionId;
+		}
+		else if (GetExitCodeProcess(ProcessInfo.hProcess, &dwCode))
+		{
+			if (dwCode != STILL_ACTIVE)
+			{
+				WaitForSingleObject(ProcessInfo.hProcess, 15000);
+				CloseHandle(ProcessInfo.hProcess);
+				CloseHandle(ProcessInfo.hThread);
+				int sessidcounter = 0;
+				while ((OlddwSessionId == dwSessionId) || dwSessionId == 0xFFFFFFFF)
+				{
+					Sleep(1000);
+					if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
+					sessidcounter++;
+					if (sessidcounter > 10) break;
+
+				}
+#ifdef _DEBUG
+				char command[MAX_PATH + 32]; // 29 January 2008 jdp
+				_snprintf(command, sizeof command, ">>>>>>>>>>>>>> winvncLaunchExe=%s\n", path);
+				OutputDebugString(command);
+#endif
+				LaunchProcessWinCustom(dwSessionId);
+				OlddwSessionId = dwSessionId;
+			}
+			else
+			{
+#ifdef _DEBUG
+				OutputDebugString("dwCode=active\n");
+#endif
+			}
+		}
+		else
+		{
+#ifdef _DEBUG
+			OutputDebugString("GetExitCodeProcess failed\n");
+#endif
+			if (ProcessInfo.hProcess) CloseHandle(ProcessInfo.hProcess);
+			if (ProcessInfo.hThread) CloseHandle(ProcessInfo.hThread);
+			int sessidcounter = 0;
+			while (OlddwSessionId == dwSessionId)
+			{
+				Sleep(1000);
+				if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
+				sessidcounter++;
+				if (sessidcounter > 10) break;
+#ifdef _DEBUG
+				char			szText[256];
+				sprintf(szText, " WAITING  session change %i %i\n", OlddwSessionId, dwSessionId);
+				OutputDebugString(szText);
+#endif
+			}
+#ifdef _DEBUG
+			OutputDebugString("Start winvnc.exe\n");
+#endif
+			LaunchProcessWinCustom(dwSessionId);
+			OlddwSessionId = dwSessionId;
+		}
+#ifdef _DEBUG
+		char			szText[256];
+		sprintf(szText, " ++++++1 %i %i %i %i\n", OlddwSessionId, dwSessionId, dwCode, ProcessInfo.hProcess);
+		OutputDebugString(szText);
+#endif
+	}
+		
+		
+#ifdef _DEBUG
+	char			szText[256];
+	sprintf(szText, " ++++++SetEvent Service stopping: signal tray icon to shut down\n");
+	OutputDebugString(szText);
+#endif	
+
+	if (ProcessInfo.hProcess)
+	{
+#ifdef _DEBUG
+		OutputDebugString("Waiting up to 15 seconds for tray icon process to exit\n");
+#endif
+		WaitForSingleObject(ProcessInfo.hProcess, 15000);
+		if (ProcessInfo.hProcess) CloseHandle(ProcessInfo.hProcess);
+		if (ProcessInfo.hThread) CloseHandle(ProcessInfo.hThread);
+	}
 }
 
 // 20 April 2008 jdp paquette@atnetsend.net

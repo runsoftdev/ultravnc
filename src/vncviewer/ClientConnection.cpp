@@ -3047,12 +3047,16 @@ void ClientConnection::ReadServerInit()
 
 	// sprintf(tcDummy,"%s ",m_desktopName);
 	if (strlen(m_opts.m_title) > 0) {
+#ifdef _RUNVIEW
+		strcpy(m_desktopNameFull, m_opts.m_title);
+#else
 		strcpy(m_desktopNameFull, m_opts.m_title);
 		strcat(m_desktopNameFull, " 번 원격 연결됨");
 
 		strcat(m_opts.m_title, "번 원격-");		
 		strcat(m_opts.m_title, m_desktopName);
 		strcpy(m_desktopName, m_opts.m_title);	
+#endif
 		
 	}
 	else {
@@ -7548,7 +7552,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							if (_this->m_opts.m_fExitCheck) //PGM @ Advantig
 							{ //PGM @ Advantig
 								boxopen=true;
-								if (MessageBox(hwnd, "원격을 종료하시겠습니까?", "runRemote 원격지원", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST | MB_SYSTEMMODAL) == IDNO)
+								if (MessageBox(hwnd, "원격지원을 종료하시겠습니까?", "runRemote원격지원 알림", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST | MB_SYSTEMMODAL) == IDNO)
 									{
 										boxopen=false;
 										return 0;
@@ -7733,7 +7737,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						} catch (omni_thread_invalid& e) {
 							// The thread probably hasn't been started yet,
 						}
-						char szFileName[MAX_PATH];
+						/*char szFileName[MAX_PATH];
 						if (GetModuleFileNameA(NULL, szFileName, MAX_PATH))
 						{
 							char* p = strrchr(szFileName, '\\');
@@ -7747,6 +7751,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						}
 
 						WritePrivateProfileString(_this->m_IniKey, MENU_CONNECT_TRY, FUNTION_OFF, szFileName);
+						*/
 
 						//PostQuitMessage(0);
 						return 0;
@@ -8342,11 +8347,15 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 					//timer
 					if (wParam == MENU_EXCUTOR_TIME_ID) 
 					{
-						if (forcedexit == false && !_this->m_MenuExecutor.isClosed())
+						if (forcedexit == false)
 						{
 							OutputDebugString("WM_TIMER~~~~~~\n");
-							_this->m_MenuExecutor.OnTimerEventResolve();
 							_this->m_MenuExecutor.FullScreenMode(_this->m_opts.m_FullScreen);
+							
+							if (forcedexit == false)
+							{
+								_this->m_MenuExecutor.OnTimerEventResolve(_this);
+							}
 						}
 					}
 					else if (wParam == _this->m_emulate3ButtonsTimer)
