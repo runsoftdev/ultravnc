@@ -46,6 +46,7 @@
 ///unload driver
 #include "vncOSVersion.h"
 #include "videodriver.h"
+int plink_main(int argc, char* argv[]);
 
 #ifdef IPP
 void InitIpp();
@@ -343,11 +344,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	{
 		szCmdLine[i] = tolower(szCmdLine[i]);
 	}
+
 	BOOL argfound = FALSE;
 	for (i = 0; i < strlen(szCmdLine); i++)
 	{
 		if (szCmdLine[i] <= ' ')
 			continue;
+
 		argfound = TRUE;
 
 		if (strncmp(&szCmdLine[i], winvncSettingshelper, strlen(winvncSettingshelper)) == 0)
@@ -742,9 +745,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 				OutputDebugString(command);
 				launch_exe(name);
 
-				delete [] name;
+				delete[] name;
 			}
-			
+
+			return 0;
+		}
+
+		if (strncmp(&szCmdLine[i], winvncPLink, strlen(winvncPLink)) == 0)
+		{
+			int start, end;
+			start = 7;
+			while (szCmdLine[start] <= ' ' && szCmdLine[start] != 0) start++;
+			end = start;
+			while (szCmdLine[end] > ' ') end++;
+
+			// Was there a hostname (and optionally a port number) given?
+			if (end - start > 0)
+			{
+				char *name = new char[end - start + 1];
+				if (name != 0) {
+					strncpy(name, &(szCmdLine[start]), end - start);
+					name[end - start] = 0;
+				}
+
+				char command[MAX_PATH + 32]; // 29 January 2008 jdp
+				_snprintf(command, sizeof command, ">>>>>>>>>>>>>> winvncLaunchExe path=%s\n", name);
+				OutputDebugString(command);
+				plink_main(0, command);
+
+				delete[] name;
+			}
+
 			return 0;
 		}
 

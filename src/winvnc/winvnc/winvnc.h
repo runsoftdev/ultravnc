@@ -65,6 +65,7 @@ const char winvncSCprompt[]	= "-sc_prompt";
 const char winvncmulti[]	= "-multi";
 const char winvnchttp[]	= "-httpproxy";
 const char winvncLaunchExe[] = "-launch";
+const char winvncPLink[] = "-plink";
 
 //adzm 2009-06-20
 // for use with -sc
