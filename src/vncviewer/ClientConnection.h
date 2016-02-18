@@ -817,7 +817,7 @@ public:
 	HANDLE rcth;
 	void ReadExact(char *buf, int bytes);
 	bool new_ultra_server;
-	TCHAR *m_IniKey;
+	TCHAR* m_IniKey;
 };
 
 // Some handy classes for temporary GDI object selection

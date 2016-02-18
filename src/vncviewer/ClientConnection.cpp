@@ -616,6 +616,9 @@ void ClientConnection::Run()
 void ClientConnection::DoConnection()
 {
 	havetobekilled=true;
+	m_IniKey = new TCHAR[255];
+	strcpy(m_IniKey, m_opts.m_caption);
+
 	// Connect if we're not already connected
 	if (m_sock == INVALID_SOCKET)
 		if (strcmp(m_proxyhost,"") !=NULL && m_fUseProxy)
@@ -1850,6 +1853,7 @@ void ClientConnection::ConnectProxy()
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L45);
 	if (m_hwndStatus)UpdateWindow(m_hwndStatus);
 
+
 	// The host may be specified as a dotted address "a.b.c.d"
 	// Try that first
 	thataddr.sin_addr.s_addr = inet_addr(m_proxyhost);
@@ -1999,8 +2003,9 @@ void ClientConnection::NegotiateProtocolVersion()
 		pv[2] = rfbProtocolVersionFormat[2];
 		pv[3] = rfbProtocolVersionFormat[3];
 	}
-	*/
+	
 
+	
     if (sscanf(pv,rfbProtocolVersionFormat,&m_majorVersion,&m_minorVersion) != 2)
 	{
 		SetEvent(KillEvent);
@@ -2009,10 +2014,10 @@ void ClientConnection::NegotiateProtocolVersion()
 		else
 			throw WarningException(m_IniKey);
     }
-
+	*/
     vnclog.Print(0, _T("RFB server supports protocol version %d.%d\n"),
 	    m_majorVersion,m_minorVersion);
-
+		
 	// UltraVNC specific functionnalities
 	// - ms logon
 	// - FileTransfer (TODO: change Minor version in next eSVNC release so it's compatible with Ultra)
@@ -2069,6 +2074,7 @@ void ClientConnection::NegotiateProtocolVersion()
 
     WriteExact(pv, sz_rfbProtocolVersionMsg);
 	if (m_minorVersion == 14 || m_minorVersion == 16 || m_minorVersion == 18) // adzm 2010-09
+	//if (1)
 	{
 		int size;
 		ReadExact((char *)&size,sizeof(int));
@@ -2109,7 +2115,8 @@ void ClientConnection::NegotiateProtocolVersion()
 	vnclog.Print(0, _T("Connected to RFB server, using protocol version %d.%d\n"),
 		rfbProtocolMajorVersion, m_minorVersion);
 
-	if (m_minorVersion >= 7 && m_pIntegratedPluginInterface) {
+	//if (m_minorVersion >= 7 && m_pIntegratedPluginInterface) {
+	if (1) {
 		m_fPluginStreamingIn = true;
 		m_fPluginStreamingOut = true;
 	}
@@ -3029,7 +3036,7 @@ void ClientConnection::ReadServerInit()
 
     m_desktopName = new TCHAR[m_si.nameLength + 4 + 256];
 	m_desktopName_viewonly = new TCHAR[m_si.nameLength + 4 + 256+16];
-	m_IniKey = new TCHAR[255];
+	
 
 #ifdef UNDER_CE
     char *deskNameBuf = new char[m_si.nameLength + 4];
@@ -5759,6 +5766,7 @@ void ClientConnection::ReadExactProtocolVersion(char *inbuf, int wanted, bool& f
 					//adzm 2009-06-21
 					// first just read 4 bytes and see if they are 'RFB '.
 					// if so, then this does not appear to be encrypted.
+					if (1)					return;
 					char testBuffer[4];
 					fis->readBytes(testBuffer, 4);
 					if (memcmp(testBuffer, "RFB ", 4) == 0) {
@@ -5768,7 +5776,7 @@ void ClientConnection::ReadExactProtocolVersion(char *inbuf, int wanted, bool& f
 						fis->readBytes(inbuf+4, wanted-4);
 						return;
 					}
-
+					
 					//adzm 2010-05-11
 					// if we have an encrypted start, and we are currently using an integrated inteface, reset
 					// and load the classic interface instead.

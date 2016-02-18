@@ -4,15 +4,19 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>192.168.0.16:2800 -nostatus -password 1234 -caption rmc566790e372c4d -noauto -fullcolors -encoding ultra2 -compresslevel 8 -quality 6 -preemptiveupdates -throttlemouse 500 -normalcursor -dsmplugin securevncplugin.dsm -title 1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>id:65191 -proxy repeater2.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56a5e5634bb7c -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm -title 1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>192.168.0.22:2801 -nostatus -password qawsed1 -caption _PC_AGENT_desktop-69ah4o0 -noauto -fullcolors -encoding ultra2 -compresslevel 7 -quality 7 -preemptiveupdates -throttlemouse 100 -nocursor -notoolbar -dsmplugin securevncplugin.dsm -title "jcparksub1 로 원격 접속중"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>id:68604 -proxy repeater2.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56aec200e47a1 -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm -title 5</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>192.168.0.16:5900 -nostatus -password 1234 -title 1번원격 -caption rmc56558262bc8c0 -noauto -fullcolors -encoding ultra2 -compresslevel 8 -quality 6 -dsmplugin securevncplugin.dsm</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>id:65234 -proxy repeater2.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56a5e9e19ae8a -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm -title 1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

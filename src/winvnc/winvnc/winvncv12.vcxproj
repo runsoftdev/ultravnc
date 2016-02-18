@@ -258,7 +258,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\omnithread;..;..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>MAIN;Win32;NO_RUNVIEW;N_USE_DESKTOPDUPLICATION;NDEBUG;__x86__;__WIN32__;WIN32;_WINDOWS;XMD_H;_WINSTATIC;_CRT_SECURE_NO_WARNINGS;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_RUNVIEW;n_USE_DESKTOPDUPLICATION;MAIN;Win32;NDEBUG;__x86__;__WIN32__;WIN32;_WINDOWS;XMD_H;_WINSTATIC;_CRT_SECURE_NO_WARNINGS;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -312,7 +312,7 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\omnithread;..;..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>N_RUNVIEW;N_USE_DESKTOPDUPLICATION;NDEBUG;__x86__;__WIN32__;WIN32;_WINDOWS;XMD_H;_WINSTATIC;_CRT_SECURE_NO_WARNINGS;_X64;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_RUNVIEW;n_USE_DESKTOPDUPLICATION;NDEBUG;__x86__;__WIN32__;WIN32;_WINDOWS;XMD_H;_WINSTATIC;_CRT_SECURE_NO_WARNINGS;_X64;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -460,98 +460,6 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\Clipboard.cpp" />
-    <ClCompile Include="..\plink-1.07-src\annot.cpp" />
-    <ClCompile Include="..\plink-1.07-src\assoc.cpp" />
-    <ClCompile Include="..\plink-1.07-src\binput.cpp" />
-    <ClCompile Include="..\plink-1.07-src\blox.cpp" />
-    <ClCompile Include="..\plink-1.07-src\bmerge.cpp" />
-    <ClCompile Include="..\plink-1.07-src\cfamily.cpp" />
-    <ClCompile Include="..\plink-1.07-src\clumpld.cpp" />
-    <ClCompile Include="..\plink-1.07-src\cluster.cpp" />
-    <ClCompile Include="..\plink-1.07-src\cnv.cpp" />
-    <ClCompile Include="..\plink-1.07-src\cnvqt.cpp" />
-    <ClCompile Include="..\plink-1.07-src\crandom.cpp" />
-    <ClCompile Include="..\plink-1.07-src\dcdflib.cpp" />
-    <ClCompile Include="..\plink-1.07-src\dfam.cpp" />
-    <ClCompile Include="..\plink-1.07-src\dosage.cpp" />
-    <ClCompile Include="..\plink-1.07-src\elf.cpp" />
-    <ClCompile Include="..\plink-1.07-src\em.cpp" />
-    <ClCompile Include="..\plink-1.07-src\epi.cpp" />
-    <ClCompile Include="..\plink-1.07-src\filters.cpp" />
-    <ClCompile Include="..\plink-1.07-src\fisher.cpp" />
-    <ClCompile Include="..\plink-1.07-src\flip.cpp" />
-    <ClCompile Include="..\plink-1.07-src\genedrop.cpp" />
-    <ClCompile Include="..\plink-1.07-src\genepi.cpp" />
-    <ClCompile Include="..\plink-1.07-src\genoerr.cpp" />
-    <ClCompile Include="..\plink-1.07-src\genogroup.cpp" />
-    <ClCompile Include="..\plink-1.07-src\genome.cpp" />
-    <ClCompile Include="..\plink-1.07-src\glm.cpp" />
-    <ClCompile Include="..\plink-1.07-src\greport.cpp" />
-    <ClCompile Include="..\plink-1.07-src\gvar.cpp" />
-    <ClCompile Include="..\plink-1.07-src\gxe.cpp" />
-    <ClCompile Include="..\plink-1.07-src\hapglm.cpp" />
-    <ClCompile Include="..\plink-1.07-src\haploCC.cpp" />
-    <ClCompile Include="..\plink-1.07-src\haplohelper.cpp" />
-    <ClCompile Include="..\plink-1.07-src\haploQTL.cpp" />
-    <ClCompile Include="..\plink-1.07-src\haploTDT.cpp" />
-    <ClCompile Include="..\plink-1.07-src\haplowindow.cpp" />
-    <ClCompile Include="..\plink-1.07-src\helper.cpp" />
-    <ClCompile Include="..\plink-1.07-src\homozyg.cpp" />
-    <ClCompile Include="..\plink-1.07-src\hotel.cpp" />
-    <ClCompile Include="..\plink-1.07-src\idhelp.cpp" />
-    <ClCompile Include="..\plink-1.07-src\impute.cpp" />
-    <ClCompile Include="..\plink-1.07-src\informative.cpp" />
-    <ClCompile Include="..\plink-1.07-src\input.cpp" />
-    <ClCompile Include="..\plink-1.07-src\lapackf.cpp" />
-    <ClCompile Include="..\plink-1.07-src\legacy.cpp" />
-    <ClCompile Include="..\plink-1.07-src\linear.cpp" />
-    <ClCompile Include="..\plink-1.07-src\linput.cpp" />
-    <ClCompile Include="..\plink-1.07-src\locus.cpp" />
-    <ClCompile Include="..\plink-1.07-src\logistic.cpp" />
-    <ClCompile Include="..\plink-1.07-src\lookup.cpp" />
-    <ClCompile Include="..\plink-1.07-src\lookup2.cpp" />
-    <ClCompile Include="..\plink-1.07-src\mds.cpp" />
-    <ClCompile Include="..\plink-1.07-src\merge.cpp" />
-    <ClCompile Include="..\plink-1.07-src\metaanal.cpp" />
-    <ClCompile Include="..\plink-1.07-src\metaem.cpp" />
-    <ClCompile Include="..\plink-1.07-src\mh.cpp" />
-    <ClCompile Include="..\plink-1.07-src\mishap.cpp" />
-    <ClCompile Include="..\plink-1.07-src\model.cpp" />
-    <ClCompile Include="..\plink-1.07-src\multi.cpp" />
-    <ClCompile Include="..\plink-1.07-src\multiple.cpp" />
-    <ClCompile Include="..\plink-1.07-src\nlist.cpp" />
-    <ClCompile Include="..\plink-1.07-src\nonfounderphasing.cpp" />
-    <ClCompile Include="..\plink-1.07-src\options.cpp" />
-    <ClCompile Include="..\plink-1.07-src\output.cpp" />
-    <ClCompile Include="..\plink-1.07-src\parse.cpp" />
-    <ClCompile Include="..\plink-1.07-src\pdriver.cpp" />
-    <ClCompile Include="..\plink-1.07-src\perm.cpp" />
-    <ClCompile Include="..\plink-1.07-src\phase.cpp" />
-    <ClCompile Include="..\plink-1.07-src\plink.cpp" />
-    <ClCompile Include="..\plink-1.07-src\poo.cpp" />
-    <ClCompile Include="..\plink-1.07-src\prephap.cpp" />
-    <ClCompile Include="..\plink-1.07-src\profile.cpp" />
-    <ClCompile Include="..\plink-1.07-src\proxy.cpp" />
-    <ClCompile Include="..\plink-1.07-src\qfam.cpp" />
-    <ClCompile Include="..\plink-1.07-src\qualscores.cpp" />
-    <ClCompile Include="..\plink-1.07-src\r.cpp" />
-    <ClCompile Include="..\plink-1.07-src\Rconnection.cpp" />
-    <ClCompile Include="..\plink-1.07-src\segment.cpp" />
-    <ClCompile Include="..\plink-1.07-src\sets.cpp" />
-    <ClCompile Include="..\plink-1.07-src\setscreen.cpp" />
-    <ClCompile Include="..\plink-1.07-src\sharing.cpp" />
-    <ClCompile Include="..\plink-1.07-src\simul.cpp" />
-    <ClCompile Include="..\plink-1.07-src\sockets.cpp" />
-    <ClCompile Include="..\plink-1.07-src\stats.cpp" />
-    <ClCompile Include="..\plink-1.07-src\step.cpp" />
-    <ClCompile Include="..\plink-1.07-src\tag.cpp" />
-    <ClCompile Include="..\plink-1.07-src\tdt.cpp" />
-    <ClCompile Include="..\plink-1.07-src\tinput.cpp" />
-    <ClCompile Include="..\plink-1.07-src\trio.cpp" />
-    <ClCompile Include="..\plink-1.07-src\webcheck.cpp" />
-    <ClCompile Include="..\plink-1.07-src\whap.cpp" />
-    <ClCompile Include="..\plink-1.07-src\zed.cpp" />
-    <ClCompile Include="..\plink-1.07-src\zfstream.cpp" />
     <ClCompile Include="benchmark.cpp" />
     <ClCompile Include="black_layered.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -1377,38 +1285,6 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
     <ClCompile Include="..\..\ZipUnZip32\ZipUnzip32.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\plink-1.07-src\cdflib.h" />
-    <ClInclude Include="..\plink-1.07-src\cfamily.h" />
-    <ClInclude Include="..\plink-1.07-src\clumpld.h" />
-    <ClInclude Include="..\plink-1.07-src\cnv.h" />
-    <ClInclude Include="..\plink-1.07-src\config.h" />
-    <ClInclude Include="..\plink-1.07-src\crandom.h" />
-    <ClInclude Include="..\plink-1.07-src\dcdflib.h" />
-    <ClInclude Include="..\plink-1.07-src\fisher.h" />
-    <ClInclude Include="..\plink-1.07-src\genogroup.h" />
-    <ClInclude Include="..\plink-1.07-src\gvar.h" />
-    <ClInclude Include="..\plink-1.07-src\haplowindow.h" />
-    <ClInclude Include="..\plink-1.07-src\helper.h" />
-    <ClInclude Include="..\plink-1.07-src\idhelp.h" />
-    <ClInclude Include="..\plink-1.07-src\ipmpar.h" />
-    <ClInclude Include="..\plink-1.07-src\lapackf.h" />
-    <ClInclude Include="..\plink-1.07-src\linear.h" />
-    <ClInclude Include="..\plink-1.07-src\logistic.h" />
-    <ClInclude Include="..\plink-1.07-src\model.h" />
-    <ClInclude Include="..\plink-1.07-src\nlist.h" />
-    <ClInclude Include="..\plink-1.07-src\options.h" />
-    <ClInclude Include="..\plink-1.07-src\perm.h" />
-    <ClInclude Include="..\plink-1.07-src\phase.h" />
-    <ClInclude Include="..\plink-1.07-src\plink.h" />
-    <ClInclude Include="..\plink-1.07-src\Rconnection.h" />
-    <ClInclude Include="..\plink-1.07-src\Rsrv.h" />
-    <ClInclude Include="..\plink-1.07-src\sets.h" />
-    <ClInclude Include="..\plink-1.07-src\sisocks.h" />
-    <ClInclude Include="..\plink-1.07-src\sockets.h" />
-    <ClInclude Include="..\plink-1.07-src\stats.h" />
-    <ClInclude Include="..\plink-1.07-src\whap.h" />
-    <ClInclude Include="..\plink-1.07-src\zed.h" />
-    <ClInclude Include="..\plink-1.07-src\zfstream.h" />
     <ClInclude Include="CpuUsage.h" />
     <ClInclude Include="DesktopManager.h" />
     <ClInclude Include="Dtwinver.h" />
@@ -1485,12 +1361,6 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\plink-1.07-src\blox.cpp~" />
-    <None Include="..\plink-1.07-src\gPLINK.jar" />
-    <None Include="..\plink-1.07-src\Makefile" />
-    <None Include="..\plink-1.07-src\test.map" />
-    <None Include="..\plink-1.07-src\test.ped" />
-    <None Include="..\plink-1.07-src\webcheck.cpp~" />
     <None Include="res\mslogon\AuthPanel.class" />
     <None Include="res\mslogon\ButtonPanel.class" />
     <None Include="res\mslogon\ClipboardFrame.class" />
@@ -1565,10 +1435,6 @@ copy "$(LocalDebuggerCommand)" ..\..\..\..\..\installer</Command>
     <ProjectReference Include="..\omnithread\omnithreadv12.vcxproj">
       <Project>{e52b9956-fe67-47f7-bc4f-67cc5a64b708}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\plink-1.07-src\COPYING.txt" />
-    <Text Include="..\plink-1.07-src\README.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

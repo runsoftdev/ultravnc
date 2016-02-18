@@ -771,7 +771,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 				char command[MAX_PATH + 32]; // 29 January 2008 jdp
 				_snprintf(command, sizeof command, ">>>>>>>>>>>>>> winvncLaunchExe path=%s\n", name);
 				OutputDebugString(command);
-				plink_main(0, command);
+				//plink_main(0, command);
 
 				delete[] name;
 			}
