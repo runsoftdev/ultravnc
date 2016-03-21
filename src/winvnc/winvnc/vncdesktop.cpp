@@ -629,10 +629,10 @@ vncDesktop::~vncDesktop()
 			// we must be carefull to avoid memory leaks...
 			((RGBPixelList*)(*iGrid))->clear();
 			delete ((RGBPixelList*)(*iGrid));
-			vnclog.Print(LL_INTWARN, VNCLOG("delete ((RGBPixelList) \n"));
+			//vnclog.Print(LL_INTWARN, VNCLOG("delete ((RGBPixelList) \n"));
 		}
 	}
-	vnclog.Print(LL_INTINFO, VNCLOG("~vncDesktop m_lGridsList.clear\n"));
+	//vnclog.Print(LL_INTINFO, VNCLOG("~vncDesktop m_lGridsList.clear\n"));
 	m_lGridsList.clear();
 	if (hUser32) FreeLibrary(hUser32);
 	g_Desktop_running=false;
@@ -644,7 +644,7 @@ vncDesktop::~vncDesktop()
 	// Fix E. SAG
 	if (InitWindowThreadh)
 	{
-      vnclog.Print(LL_INTERR, VNCLOG("~vncDesktop:: second request to close InitWindowthread\n"));
+      //vnclog.Print(LL_INTERR, VNCLOG("~vncDesktop:: second request to close InitWindowthread\n"));
       StopInitWindowthread();
 	}
 	Sleep(1000);//FIX
@@ -2138,14 +2138,12 @@ void vncDesktop::SetSW(int x,int y)
 			case 2:
 				{
 					if (m_current_monitor == MULTI_MON_PRIMARY) {
-						m_current_monitor = MULTI_MON_SECOND;
-						m_buffer.MultiMonitors(1);
-					} else if (m_current_monitor == MULTI_MON_SECOND) {
 						m_current_monitor = MULTI_MON_ALL;
 						m_buffer.MultiMonitors(2);
-					} else if (m_current_monitor == MULTI_MON_ALL) {
-						m_buffer.MultiMonitors(1);
+					}
+					else if (m_current_monitor == MULTI_MON_ALL) {
 						m_current_monitor = MULTI_MON_PRIMARY;
+						m_buffer.MultiMonitors(1);
 					} 
 				} break;
 			case 3:
@@ -2484,45 +2482,45 @@ bool vncDesktop::block_input(bool first)
 	}
 	else
 	{
-    bool Blockinput_val;
-	BOOL returnvalue;
-	if(m_bIsInputDisabledByClient || m_server->LocalInputsDisabled())
-	{
-		Blockinput_val=true;
-	}
-	else
-	{
-		Blockinput_val=false;
-	}
-
-	/*#ifdef _DEBUG
-					char			szText[256];
-					sprintf(szText," blockinput %i %i %i %i\n",m_bIsInputDisabledByClient,m_server->LocalInputsDisabled(),old_Blockinput1,old_Blockinput2);
-					SetLastError(0);
-					OutputDebugString(szText);		
-	#endif*/
-
-	if (old_Blockinput1!=m_bIsInputDisabledByClient || old_Blockinput2!=m_server->LocalInputsDisabled())
-	{
-		CARD32 state;
-		state=!Blockinput_val;
-		m_server->NotifyClients_StateChange(rfbServerRemoteInputsState, state);
-	}
-    if (pbi)
-    {
-        returnvalue = (*pbi)(Blockinput_val);
-		DWORD aa=GetLastError();
-		if (old_Blockinput!=Blockinput_val && aa==5)
+		bool Blockinput_val;
+		BOOL returnvalue;
+		if(m_bIsInputDisabledByClient || m_server->LocalInputsDisabled())
 		{
-			if (m_hookinited)
-			PostMessage(m_hwnd, WM_HOOKCHANGE, 2, 0);
-			else Blockinput_val=false;
+			Blockinput_val=true;
+		}
+		else
+		{
+			Blockinput_val=false;
 		}
 
-    }
-	old_Blockinput1=m_bIsInputDisabledByClient;
-	old_Blockinput2=m_server->LocalInputsDisabled();
-	old_Blockinput=Blockinput_val;
-    return Blockinput_val;
+		/*#ifdef _DEBUG
+						char			szText[256];
+						sprintf(szText," blockinput %i %i %i %i\n",m_bIsInputDisabledByClient,m_server->LocalInputsDisabled(),old_Blockinput1,old_Blockinput2);
+						SetLastError(0);
+						OutputDebugString(szText);		
+		#endif*/
+
+		if (old_Blockinput1!=m_bIsInputDisabledByClient || old_Blockinput2!=m_server->LocalInputsDisabled())
+		{
+			CARD32 state;
+			state=!Blockinput_val;
+			m_server->NotifyClients_StateChange(rfbServerRemoteInputsState, state);
+		}
+		if (pbi)
+		{
+			returnvalue = (*pbi)(Blockinput_val);
+			DWORD aa=GetLastError();
+			if (old_Blockinput!=Blockinput_val && aa==5)
+			{
+				if (m_hookinited)
+				PostMessage(m_hwnd, WM_HOOKCHANGE, 2, 0);
+				else Blockinput_val=false;
+			}
+
+		}
+		old_Blockinput1=m_bIsInputDisabledByClient;
+		old_Blockinput2=m_server->LocalInputsDisabled();
+		old_Blockinput=Blockinput_val;
+		return Blockinput_val;
 	}
 }

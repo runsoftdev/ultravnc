@@ -851,13 +851,21 @@ vncClientThread::InitVersion()
 			while (!bReady && bRetry) {
 				// RDV 2010-6-10 
 				// removed SPECIAL_SC_PROMPT
-
+				int Send_OK = 0;
+				int Recv_OK = 0;
+				vnclog.Print(LL_STATE, VNCLOG("Repeater connect\n"));
+				Send_OK = m_socket->SendExact((char *)&protocolMsg, sz_rfbProtocolVersionMsg);
+				if (Send_OK == 1)
+				{
+					vnclog.Print(LL_STATE, VNCLOG("Repeater connected, waiting viewer\n"));
+					Recv_OK = m_socket->ReadExact((char *)&protocol_ver, sz_rfbProtocolVersionMsg);
+				}
 				// Send our protocol version, and get the client's protocol version
-				if (!m_socket->SendExact((char *)&protocolMsg, sz_rfbProtocolVersionMsg) ||
-					!m_socket->ReadExact((char *)&protocol_ver, sz_rfbProtocolVersionMsg)) {
+				if (!Send_OK || !Recv_OK) {
+					if (!Recv_OK) vnclog.Print(LL_STATE, VNCLOG("Reconnect to repeater\n"));				
+				
 					bReady = false;
 					// we need to reconnect!
-
 					Sleep(min(nRetry * 1000, 30000));
 
 					if (TryReconnect()) {
@@ -883,7 +891,11 @@ vncClientThread::InitVersion()
 		//Old serverversion return FALSE; and close repeater connection
 		//Using an old repeater this doesn't make a difference
 
-		if (strncmp(protocol_ver, "REP", 3) == 0) repeaterkeepaliveloop = true;
+		if (strncmp(protocol_ver, "REP", 3) == 0)
+		{
+			vnclog.Print(LL_STATE, VNCLOG("Keepalive received\n"));
+			repeaterkeepaliveloop = true;
+		}
 	}
 
 	// sf@2006 - Trying to fix neverending authentication bug - Check if this is RFB protocole
@@ -2188,7 +2200,7 @@ vncClientThread::run(void *arg)
 			vncMenu::NotifyBalloon(szInfo, NULL);
 		}
 		// wa@2005 - AutoReconnection attempt if required
-		if (m_client->m_Autoreconnect)
+		if (m_client->m_Autoreconnect && !fShutdownOrdered)
 		{
 			for (int i=0;i<10*m_server->AutoReconnect_counter;i++)
 			{
@@ -5745,9 +5757,9 @@ BOOL vncClient::SendCacheZip(const rfb::RectVector &rects)
 			delete [] m_pCacheZipBuf;
 			m_pCacheZipBuf = NULL;
 		}
-		m_pCacheZipBuf = new BYTE [maxCompSize+1];
+		m_pCacheZipBuf = new BYTE [maxCompSize+1000];
 		if (m_pCacheZipBuf == NULL) return 0;
-		m_nCacheZipBufSize = maxCompSize;
+		m_nCacheZipBufSize = maxCompSize+999;
 	}
 
 	int nRet = compress((unsigned char*)(m_pCacheZipBuf),

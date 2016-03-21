@@ -133,16 +133,17 @@ DWORD WINAPI LowLevelHook::HookThreadProc(LPVOID lpParam)
 BOOL LowLevelHook::Release()
 {
 	/*
-        if (g_HookID!=0) {
-                return UnhookWindowsHookEx(g_HookID);
-        }
-        return FALSE;
+	if (g_HookID!=0) {
+	return UnhookWindowsHookEx(g_HookID);
+	}
+	return FALSE;
 	*/
 
 	// adzm 2009-09-25 - Post a message to the thread to terminate
 	if (g_hThread) {
-		PostThreadMessage(g_nThreadID, WM_USER+1, 0, 0);
+		PostThreadMessage(g_nThreadID, WM_USER + 1, 0, 0);
 		g_nThreadID = 0;
+		CloseHandle(g_hThread);
 		g_hThread = NULL;
 	}
 	return FALSE;

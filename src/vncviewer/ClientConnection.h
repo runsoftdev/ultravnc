@@ -630,9 +630,7 @@ private:
 	omni_mutex	m_FileZipBufferMutex;
 	omni_mutex	m_FileChunkBufferMutex;
 	omni_mutex	m_ZlibBufferMutex;
-	
-	TCHAR *m_desktopName;
-	
+		
 	TCHAR m_desktopNameFull[MAX_PATH];
 	TCHAR *m_desktopName_viewonly;
 	unsigned char m_encPasswd[8];
@@ -818,6 +816,7 @@ public:
 	void ReadExact(char *buf, int bytes);
 	bool new_ultra_server;
 	TCHAR* m_IniKey;
+	TCHAR *m_desktopName;
 };
 
 // Some handy classes for temporary GDI object selection

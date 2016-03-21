@@ -729,7 +729,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 			start = 7;
 			while (szCmdLine[start] <= ' ' && szCmdLine[start] != 0) start++;
 			end = start;
-			while (szCmdLine[end] > ' ') end++;
+			while (szCmdLine[end] > '-') end++;
 
 			// Was there a hostname (and optionally a port number) given?
 			if (end - start > 0)
@@ -1323,7 +1323,7 @@ int WinVNCAppMain()
 		}
 		vnclog.Print(LL_STATE, VNCLOG("################## Closing Imp Thread\n"));
 	}
-
+	fShutdownOrdered = true;
 	//KillSDTimer();
 	if (instancehan!=NULL)
 		delete instancehan;

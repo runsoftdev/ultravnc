@@ -2,21 +2,21 @@
 #ifdef _Gii
 
 
-#define PF_flag 0x80000000// 'P'ressed 'F'lag : es wird übertragen, ob der Touchpunkt gedrückt oder losgelassen wurde. 
+#define PF_flag 0x80000000// 'P'ressed 'F'lag : es wird ?ertragen, ob der Touchpunkt gedr?kt oder losgelassen wurde. 
 #define R1_flag 0x40000000 //Reserved 1
-#define IF_flag 0x20000000//pr'I'mary 'F'lag : es wird übertragen, ob der Touchpunkt der primäre Touchpunkt ist.
-#define S1_flag 0x10000000//'S'ize Flag : es werden zusätzlich zur Position auch die Daten der Touchfläche übertragen. Die Touchfläche wird(derzeit) als symmetrische Ellipse übertragen
-#define S2_flag 0x8000000//reserviert für asymetrische Ellipse, wird momentan nicht unterstützt und muss 0 sein.
-#define RT_flag 0x4000000//'R'ec't'angle : Die Touchfläche wurde vom Treiber als Rechteck, und nicht als Ellipse ermittelt.
-#define PR_flag 0x2000000//'Pr'essure Flag : Der Druck, welcher auf die Touchfläche ausgeübt wird, wird mit übertragen.
-#define TI_flag 0x1000000//'Ti'mestamp : Der Zeitstempel zu dem das Ereignis am Touchdevice entstanden ist, wird mit übertragen.
+#define IF_flag 0x20000000//pr'I'mary 'F'lag : es wird ?ertragen, ob der Touchpunkt der prim?e Touchpunkt ist.
+#define S1_flag 0x10000000//'S'ize Flag : es werden zus?zlich zur Position auch die Daten der Touchfl?he ?ertragen. Die Touchfl?he wird(derzeit) als symmetrische Ellipse ?ertragen
+#define S2_flag 0x8000000//reserviert f? asymetrische Ellipse, wird momentan nicht unterst?zt und muss 0 sein.
+#define RT_flag 0x4000000//'R'ec't'angle : Die Touchfl?he wurde vom Treiber als Rechteck, und nicht als Ellipse ermittelt.
+#define PR_flag 0x2000000//'Pr'essure Flag : Der Druck, welcher auf die Touchfl?he ausge?t wird, wird mit ?ertragen.
+#define TI_flag 0x1000000//'Ti'mestamp : Der Zeitstempel zu dem das Ereignis am Touchdevice entstanden ist, wird mit ?ertragen.
 #define HC_flag 0x800000//'H'igh Performance 'C'ounter
 
  // Reserverd   0x40000-0x100
 #define FORMAT_0_flag 0x0
-#define LANGE_16_flag 0x10 //16bit signed für x gefolgt von 16bit signed für y gemeinsam in einem DWORD
-#define LANGE_32_flag 0x20 //32bit signed für x gefolgt von 32bit signed für y in jeweils einem DWORD
-#define LANGE_64_flag 0x30 //64bit signed für x gefolgt von 64bit signed für y in jeweils 2 DWORD
+#define LANGE_16_flag 0x10 //16bit signed f? x gefolgt von 16bit signed f? y gemeinsam in einem DWORD
+#define LANGE_32_flag 0x20 //32bit signed f? x gefolgt von 32bit signed f? y in jeweils einem DWORD
+#define LANGE_64_flag 0x30 //64bit signed f? x gefolgt von 64bit signed f? y in jeweils 2 DWORD
 #define IDFORMAT_32  0x1 //32bit ID
 #define IDFORMAT_CLEAR 0xF // No more touch points
 
@@ -45,16 +45,16 @@ Bytes          Type[Value]         Description
 4 * count   S32 array                    value(32Bit data type)
 
 
-Der valuator event enthält einen konstanen Anteil bestehend aus :
+Der valuator event enth?t einen konstanen Anteil bestehend aus :
 event - size, event.type, padding, device - origin, first, count
 Danach kommt der variable Anteil mit den Daten der Touchevents
 Die Anzahl der Touchevents entspricht valuator.first.
 Die Gesamtanzahl der Touchdaten(values) entspricht valuator.count.
-Ein Wert(value) hat eine Länge von 4 Byte(32Bit)
-Das Wertefeld(value - array)  hat eine Länge von(valuator.count * 4) Bytes
-Innerhalb des Wertefeldes(value - array) können mehrere Touchevents fortlaufend enthalten
+Ein Wert(value) hat eine L?ge von 4 Byte(32Bit)
+Das Wertefeld(value - array)  hat eine L?ge von(valuator.count * 4) Bytes
+Innerhalb des Wertefeldes(value - array) k?nen mehrere Touchevents fortlaufend enthalten
 sein gemäß valuator.first.
-Die Anzahl der Werte für einen Touchevent berechnet sich aus der Gesamtanzahl der Werte
+Die Anzahl der Werte f? einen Touchevent berechnet sich aus der Gesamtanzahl der Werte
 geteilt durch die Anzahl der Touchevents(valuator.count / valuator.first).
 ////////////////////////////////////////////////////////////////////////////////
 //UVNC: REMARK
@@ -63,7 +63,7 @@ geteilt durch die Anzahl der Touchevents(valuator.count / valuator.first).
 //defined with (can be missing)...
 //The server need to ignore the count number and calculate the size based on the flags
 ////////////////////////////////////////////////////////////////////////////////
-Wertefeld für einen Touchevent:
+Wertefeld f? einen Touchevent:
 VALUE-ARRAY is
 
 Bytes          Type      [Value]         Description
@@ -77,9 +77,9 @@ Bytes          Type      [Value]         Description
 4              U32   (can be missing)    Timestamp microsec Low (in case of flag HC)
 4              U32   (can be missing)    Timestamp microsec High (in case of flag HC)
 
-Für jeden einzelnen Touchevent ist immer ein Wertefeld der Länge: (valuator.count / valuator.first) vorhanden.
-Wenn das ID-Format des zugehörigen Touchevents eine 1 enthält, dann darf das Wertefeld weiter verarbeitet werden.
-Enthält das ID-Format -15 (0xF), dann dürfen die weiteren Daten nicht mehr verarbeitet werden und der InjectEvent ist damit beendet.
+F? jeden einzelnen Touchevent ist immer ein Wertefeld der L?ge: (valuator.count / valuator.first) vorhanden.
+Wenn das ID-Format des zugeh?igen Touchevents eine 1 enth?t, dann darf das Wertefeld weiter verarbeitet werden.
+Enth?t das ID-Format -15 (0xF), dann d?fen die weiteren Daten nicht mehr verarbeitet werden und der InjectEvent ist damit beendet.
 */
 /*
 Detailbeschreibung der Touchwerte
@@ -92,47 +92,47 @@ DWORD 1:    (Formatflag)
 |PF|R |IF|S1|S2|RT|PR|TI|HC| R       | Pix-Format | ID Format |
 +--+--+--+--+--+--+--+--+--+---------+------------+-----------+
 
-PF         - 'P'ressed 'F'lag : es wird übertragen, ob der Touchpunkt gedrückt oder losgelassen wurde.
-IF         - pr'I'mary 'F'lag : es wird übertragen, ob der Touchpunkt der primäre Touchpunkt ist.
-S1         - 'S'ize Flag : es werden zusätzlich zur Position auch die Daten der Touchfläche übertragen.
-Die Touchfläche wird (derzeit) als symmetrische Ellipse übertragen
-S2         - reserviert für asymetrische Ellipse, wird momentan nicht unterstützt und muss 0 sein.
-RT         - 'R'ec't'angle: Die Touchfläche wurde vom Treiber als Rechteck, und nicht als Ellipse ermittelt.
-PR         - 'Pr'essure Flag: Der Druck, welcher auf die Touchfläche ausgeübt wird, wird mit übertragen.
-TI         - 'Ti'mestamp: Der Zeitstempel zu dem das Ereignis am Touchdevice entstanden ist, wird mit übertragen.
+PF         - 'P'ressed 'F'lag : es wird ?ertragen, ob der Touchpunkt gedr?kt oder losgelassen wurde.
+IF         - pr'I'mary 'F'lag : es wird ?ertragen, ob der Touchpunkt der prim?e Touchpunkt ist.
+S1         - 'S'ize Flag : es werden zus?zlich zur Position auch die Daten der Touchfl?he ?ertragen.
+Die Touchfl?he wird (derzeit) als symmetrische Ellipse ?ertragen
+S2         - reserviert f? asymetrische Ellipse, wird momentan nicht unterst?zt und muss 0 sein.
+RT         - 'R'ec't'angle: Die Touchfl?he wurde vom Treiber als Rechteck, und nicht als Ellipse ermittelt.
+PR         - 'Pr'essure Flag: Der Druck, welcher auf die Touchfl?he ausge?t wird, wird mit ?ertragen.
+TI         - 'Ti'mestamp: Der Zeitstempel zu dem das Ereignis am Touchdevice entstanden ist, wird mit ?ertragen.
 HC         - 'H'igh Performance 'C'ounter
-R          - reservierte Flags für zukünftige Nutzung, müssen derzeit 0 sein
+R          - reservierte Flags f? zuk?ftige Nutzung, m?sen derzeit 0 sein
 Pix-Format - Format der Pixeldaten:
-Als Kombination zwischen Länge und Format
+Als Kombination zwischen L?ge und Format
 +--------+-------+
 | 7 .. 6 | 5..4  |
 +--------+-------+
-| Format | Länge |
+| Format | L?ge |
 +--------+-------+
-Länge 0: sollte zur Erkennung von Übertragungsfehlern nicht verwendet werden
-Länge 1: 1 DWORD
---> Format       0 : 16bit signed für x gefolgt von 16bit signed für y gemeinsam in einem DWORD
-Formate > 1..3 : noch nicht definiert und dürfen derzeit nicht benutzt werden.
-Länge 2: 2 DWORD
---> Format       0 : 32bit signed für x gefolgt von 32bit signed für y in jeweils einem DWORD
-Formate > 1..3 : noch nicht definiert und dürfen derzeit nicht benutzt werden.
-Länge 3: 4 DWORD
---> Format       0 : 64bit signed für x gefolgt von 64bit signed für y in jeweils 2 DWORDs
-Formate > 1..3 : noch nicht definiert und dürfen derzeit nicht benutzt werden.
+L?ge 0: sollte zur Erkennung von ?ertragungsfehlern nicht verwendet werden
+L?ge 1: 1 DWORD
+--> Format       0 : 16bit signed f? x gefolgt von 16bit signed f? y gemeinsam in einem DWORD
+Formate > 1..3 : noch nicht definiert und d?fen derzeit nicht benutzt werden.
+L?ge 2: 2 DWORD
+--> Format       0 : 32bit signed f? x gefolgt von 32bit signed f? y in jeweils einem DWORD
+Formate > 1..3 : noch nicht definiert und d?fen derzeit nicht benutzt werden.
+L?ge 3: 4 DWORD
+--> Format       0 : 64bit signed f? x gefolgt von 64bit signed f? y in jeweils 2 DWORDs
+Formate > 1..3 : noch nicht definiert und d?fen derzeit nicht benutzt werden.
 
 ID Format  - Format des vorzeichenbehafteter Identifier des jeweiligen "Fingers"
-0 : sollte zur Erkennung von Übertragungsfehlern nicht verwendet werden
+0 : sollte zur Erkennung von ?ertragungsfehlern nicht verwendet werden
 1 : 32-bit ID (1 DWORD)
 15 : Clear Message --> kein Touchpunkt mehr vorhanden
-alle anderen Werte sind für zukünftige Erweiterungen reserviert und dürfen derzeit nicht benutzt werden.
+alle anderen Werte sind f? zuk?ftige Erweiterungen reserviert und d?fen derzeit nicht benutzt werden.
 
 
 
-Die folgenden Felder werden nur bei Bedarf übertragen. Wenn die ID Format ungleich -1 ist, muss direkt danach die ID gefolgt von den Koordinaten im
-entsprechendem Format übertragen werden.
-Alle folgenden DWORDs werden nur übertragen, falls das entsprechende Bit im ersten DWORD gesetzt ist.
-Die Reihenfolge der dabei zu übertragenden DWORDs muss immer der hier definierten ensprechen, auch wenn dazwischenliegende DWORDs nicht
-übertragen werden.
+Die folgenden Felder werden nur bei Bedarf ?ertragen. Wenn die ID Format ungleich -1 ist, muss direkt danach die ID gefolgt von den Koordinaten im
+entsprechendem Format ?ertragen werden.
+Alle folgenden DWORDs werden nur ?ertragen, falls das entsprechende Bit im ersten DWORD gesetzt ist.
+Die Reihenfolge der dabei zu ?ertragenden DWORDs muss immer der hier definierten ensprechen, auch wenn dazwischenliegende DWORDs nicht
+?ertragen werden.
 
 
 
@@ -160,8 +160,8 @@ Koordinaten: (wenn 0 < ID Format < 15 && Pix-Format != 1)
 noch nicht definiert!
 
 
-weitere DWORDS dürfen nur bei den jeweils gesetzten Flags mit folgender fallender Priorität interpretiert werden: (S1 | S2 | RT), PR, TI, HC
-Wenn Flag 'S1' gesetzt: Fläche (Ellipse) des Touchpunktes, wobei x-pos und y-pos den Mittelpunkt darstellen.
+weitere DWORDS d?fen nur bei den jeweils gesetzten Flags mit folgender fallender Priorit? interpretiert werden: (S1 | S2 | RT), PR, TI, HC
+Wenn Flag 'S1' gesetzt: Fl?he (Ellipse) des Touchpunktes, wobei x-pos und y-pos den Mittelpunkt darstellen.
 +-------------+----------+----------+
 | 31 .. 24    | 23 .. 12 | 11..0    |
 +-------------+----------+----------+
@@ -169,14 +169,14 @@ Wenn Flag 'S1' gesetzt: Fläche (Ellipse) des Touchpunktes, wobei x-pos und y-pos
 +-------------+----------+----------+
 major : lange Halbachse der Ellipse in Pixel
 minor : kurze Halbachse der Ellipse in Pixel
-orientation : -180° .. + 180° // Werte müssen noch definiert werden!!!
+orientation : -180?.. + 180?// Werte m?sen noch definiert werden!!!
 /// Vorschlag: S1: 0 = senkrechte Lage oben, 63 waagerechte Lage rechts,
 /// -64 waagerechte Lage links, 127 senkrechte Lage unten,
-/// alles andere entsprechend orientation*180°/128
-/// Alternative: Microsoft sieht einen Wertebereich von 0..359 vor, dann müssten
-/// wir die Daten auf 2 DWORDs aufteilen, oder die Touchfläche auf 11-bit
+/// alles andere entsprechend orientation*180?128
+/// Alternative: Microsoft sieht einen Wertebereich von 0..359 vor, dann m?sten
+/// wir die Daten auf 2 DWORDs aufteilen, oder die Touchfl?he auf 11-bit
 /// pro Richtung begrenzen.
-Asymetrische Ellipsen werden von uns (noch) nicht unterstützt. Dafür ist aber bereits S2 mit der selben Daten-Struktur wie S1 reserviert.
+Asymetrische Ellipsen werden von uns (noch) nicht unterst?zt. Daf? ist aber bereits S2 mit der selben Daten-Struktur wie S1 reserviert.
 
 Wenn Flag 'PR' gesetzt: Druck des Touchpunktes
 +----------------+----------------+
@@ -184,7 +184,7 @@ Wenn Flag 'PR' gesetzt: Druck des Touchpunktes
 +----------------+----------------+
 | R              | pressure       |
 +----------------+----------------+
-pressure: 0       - Druckangabe wird vom Treiber nicht unterstützt
+pressure: 0       - Druckangabe wird vom Treiber nicht unterst?zt
 1..1024 - normierte Druckangabe
 
 Wenn Flag 'TI' gesetzt: Zeitstempel des Touchereignisses in Millisekunden

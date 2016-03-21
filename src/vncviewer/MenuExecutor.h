@@ -17,6 +17,11 @@
 #define MENU_REFRESH "refreshViewer"
 #define MENU_CONNECT_TRY 	"connect_try"
 #define MENU_FULLSCREEN_ONOFF 	"viwer_fullscreen_on"
+#define MENU_VIEWONLY_ONOFF 	"viwer_viewonly_on"
+#define MENU_SERVERINPUT_DISABLE_ONOFF 	"server_viewonly_on"
+#define MENU_SERVERINPUT_ENABLE_ONOFF 	"server_no_viewonly_on"
+#define CONNECTED_VNC 	"connected_vnc"
+#define CHANGE_CAPTION 	"chang_caption"
 
 class ClientConnection;
 
@@ -33,6 +38,7 @@ public:
 
 	void OnTimerEventResolve(ClientConnection*pClient);
 	void ConnectFailed();
+	void Connected();
 	void FullScreenMode(bool isFullScreen);
 	void SetIniKey(char *iniKey) { strcpy(m_iniKey, iniKey); }
 	bool isClosed() {

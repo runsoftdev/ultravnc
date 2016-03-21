@@ -164,6 +164,7 @@ vncBuffer::CheckBuffer()
 	// Check that the local format buffers are sufficient
 	if ((m_backbuffsize != m_desktop->ScreenBuffSize()) || !m_freemainbuff)
 	{
+		omni_mutex_lock l(m_cacheLock, 666);
 		vnclog.Print(LL_INTINFO, VNCLOG("request local buffer[%d]\n"), m_desktop->ScreenBuffSize());
 		if (m_freemainbuff) {
 			// Slow blits were enabled - free the slow blit buffer
@@ -314,7 +315,7 @@ void vncBuffer::CheckRect(rfb::Region2D &dest, rfb::Region2D &cacheRgn, const rf
 	//only called from desktopthread
 	if (!FastCheckMainbuffer())
 		return;
-
+	omni_mutex_lock l(m_cacheLock, 667);
 	const UINT bytesPerPixel = m_scrinfo.format.bitsPerPixel >> 3; // divide by 8
 
 	rfb::Rect new_rect;
@@ -962,6 +963,7 @@ vncBuffer::ClearCache()
 	m_cursor_shape_cleared=TRUE;
 	if (m_use_cache && m_cachebuff)
 	{
+		omni_mutex_lock l(m_cacheLock, 668);
 	RECT dest;
 	dest.left=0;
 	dest.top=0;
@@ -986,8 +988,10 @@ vncBuffer::ClearCache()
 void
 vncBuffer::ClearCacheRect(const rfb::Rect &dest)
 {
+	omni_mutex_lock l(m_cacheLock, 669);
 	if (m_use_cache && m_cachebuff)
 	{
+
 	int nValue = 0;
 	BYTE *cacheptr = m_cachebuff + (dest.tl.y * m_bytesPerRow) +
 		(dest.tl.x * m_scrinfo.format.bitsPerPixel/8);
@@ -1113,6 +1117,7 @@ void vncBuffer::EnableGreyPalette(BOOL enable)
 void
 vncBuffer::EnableCache(BOOL enable)
 {
+	omni_mutex_lock l(m_cacheLock, 670);
 	m_use_cache = enable;
 	if (m_use_cache)
 	{

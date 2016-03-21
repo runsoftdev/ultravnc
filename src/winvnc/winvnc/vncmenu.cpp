@@ -342,7 +342,7 @@ vncMenu::vncMenu(vncServer *server)
 	ResetEvent(hEvent);
 	*/
 
-	SetTimer(m_hwnd, 1, 5000, NULL);
+	SetTimer(m_hwnd, 1, 1000, NULL);
 
 
 	// sf@2002
@@ -968,7 +968,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 			}
 
 		// *** HACK for running servicified
-		if (vncService::RunningAsService())
+		/*if (vncService::RunningAsService())
 			{
 				//vnclog.Print(LL_INTERR, VNCLOG("########### vncMenu::TIMER TrayIcon 5s hack call - Runningasservice\n"));
 				// Attempt to add the icon if it's not already there
@@ -977,7 +977,7 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				PostMessage(hwnd, WM_USERCHANGED, 0, 0);
 			}
 		// Update the icon
-		_this->FlashTrayIcon(_this->m_server->AuthClientCount() != 0);
+		_this->FlashTrayIcon(_this->m_server->AuthClientCount() != 0);*/
 		break;
 
 		// DEAL WITH NOTIFICATIONS FROM THE SERVER:
@@ -1724,10 +1724,14 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 		if ( iMsg == MENU_STOP_RECONNECT_MSG )
 		{
 			_this->m_server->AutoReconnect(false);
+			_this->m_server->KillAuthClients();
+			OutputDebugStringA("~~~~~~~~~~~~~~~~~~~~~~~KillAuthClients~~~~~~~~~~~~~~");
 		}
 		if ( iMsg == MENU_STOP_ALL_RECONNECT_MSG )
 		{
 			_this->m_server->StopReconnectAll();
+			_this->m_server->KillAuthClients();
+			OutputDebugStringA("~~~~~~~~~~~~~~~~~~~~~~~KillAuthClients");
 		}
 		if ( iMsg == MENU_AUTO_RECONNECT_MSG )
 		{
@@ -1738,6 +1742,11 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				ret = GlobalGetAtomName( (ATOM)lParam, szId, sizeof( szId ) );
 				GlobalDeleteAtom( (ATOM)lParam );
 			}
+			char m_pref_passwd[MAXPWLEN];
+			IniFile myIniFile;
+			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
+			_this->m_server->SetPassword(m_pref_passwd);
+			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
 			_this->m_server->AutoReconnect(true);
 			
 			if ( ret > 0 )
@@ -1756,6 +1765,12 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 			}
 			_this->m_server->IdReconnect(true);
 			
+			char m_pref_passwd[MAXPWLEN];
+			IniFile myIniFile;
+			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
+			_this->m_server->SetPassword(m_pref_passwd);
+			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
+
 			if ( ret > 0 )
 				_this->m_server->AutoReconnectId(szId);
 			
@@ -1771,7 +1786,12 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 			// Add Client message.  This message includes an IP address
 			// of a listening client, to which we should connect.
-
+			char m_pref_passwd[MAXPWLEN];
+			IniFile myIniFile;
+			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
+			_this->m_server->SetPassword(m_pref_passwd);			
+			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
+			
 			//adzm 2009-06-20 - Check for special add repeater client message
 			if (wParam == 0xFFFFFFFF && (ULONG) lParam == 0xFFFFFFFF) {
 				vncConnDialog *newconn = new vncConnDialog(_this->m_server);

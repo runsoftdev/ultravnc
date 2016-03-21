@@ -155,7 +155,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;./omnithread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>n_RUNVIEW;_DEBUG;WIN32;_WINDOWS;__NT__;_WINSTATIC;__WIN32__;_CRT_SECURE_NO_WARNINGS;_X64;_VIEWER;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_RUNVIEW;_DEBUG;WIN32;_WINDOWS;__NT__;_WINSTATIC;__WIN32__;_CRT_SECURE_NO_WARNINGS;_X64;_VIEWER;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BrowseInformation>true</BrowseInformation>
@@ -205,7 +205,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>./omnithread;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>N_RUNVIEW;NDEBUG;WIN32;_WINDOWS;__NT__;_WINSTATIC;__WIN32__;_CRT_SECURE_NO_WARNINGS;_VIEWER;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>n_RUNVIEW;NDEBUG;WIN32;_WINDOWS;__NT__;_WINSTATIC;__WIN32__;_CRT_SECURE_NO_WARNINGS;_VIEWER;_XZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -214,7 +214,8 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <UndefinePreprocessorDefinitions>192.168.0.16 -password 1234</UndefinePreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

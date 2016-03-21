@@ -4,11 +4,11 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>id:65191 -proxy repeater2.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56a5e5634bb7c -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm -title 1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>id:85883 -proxy repeater1.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56d3b802759c3 -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -notoolbar -dsmplugin securevncplugin.dsm -autoreconnect 3 -normalcursor -title 4</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>id:68604 -proxy repeater2.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56aec200e47a1 -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -normalcursor -notoolbar -dsmplugin securevncplugin.dsm -title 5</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>id:94012 -proxy repeater1.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56dd226298b95 -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -notoolbar -dsmplugin securevncplugin.dsm -autoreconnect 3 -normalcursor -title 4</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -195,6 +195,7 @@ void VNCLog::ReallyPrint(const char* format, va_list ap)
 	TCHAR szErrorMsg[LINE_BUFFER_SIZE];
 	DWORD  dwErrorCode = GetLastError();
     _vsnprintf(line, LINE_BUFFER_SIZE, format, ap);
+	OutputDebugString(line);
 	SetLastError(0);
     if (dwErrorCode != 0) {
 	    if (FormatMessage( 

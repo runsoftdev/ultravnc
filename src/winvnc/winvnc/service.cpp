@@ -337,6 +337,10 @@ static int pad2()
 		strcat(app_path,cmdline);
 		strcat(app_path, " -service_run");
 	}
+	else {
+		strcpy(app_path, exe_file_name);		
+		strcat(app_path, " -stopservice");
+	}
 	return 0;
 }
 
@@ -591,7 +595,7 @@ LaunchProcessWin(DWORD dwSessionId)
   StartUPInfo.cb = sizeof(STARTUPINFO);
   SetTBCPrivileges();
   pad2();
-
+  OutputDebugString(app_path);
   if ( GetSessionUserTokenWin(&hToken) )
   {
       if ( CreateEnvironmentBlock(&lpEnvironment, hToken, FALSE) ) 
@@ -603,16 +607,17 @@ LaunchProcessWin(DWORD dwSessionId)
 				counter=0;
 				bReturn = TRUE;
 				DWORD error=GetLastError();
-				#ifdef _DEBUG
+				#ifndef _DEBUG
 					char			szText[256];
 					sprintf(szText," ++++++ CreateProcessAsUser winlogon %d\n",error);
+										
 					OutputDebugString(szText);		
 				#endif
 			}
 		 else
 		 {
 			 DWORD error=GetLastError();
-			 #ifdef _DEBUG
+			 #ifndef _DEBUG
 					char			szText[256];
 					sprintf(szText," ++++++ CreateProcessAsUser failed %d %d %d\n",error,kickrdp,counter);
 					OutputDebugString(szText);		
@@ -622,7 +627,7 @@ LaunchProcessWin(DWORD dwSessionId)
 						counter++;
 						if (counter>3)
 							{
-								#ifdef _DEBUG
+								#ifndef _DEBUG
 								DWORD error=GetLastError();
 								sprintf(szText," ++++++ error==233 win\n");
 								SetLastError(0);
@@ -675,7 +680,7 @@ LaunchProcessWin(DWORD dwSessionId)
 				counter=0;
 				bReturn = TRUE;
 				DWORD error=GetLastError();
-				#ifdef _DEBUG
+				#ifndef _DEBUG
 					char			szText[256];
 					sprintf(szText," ++++++ CreateProcessAsUser winlogon %d\n",error);
 					OutputDebugString(szText);		
@@ -684,7 +689,7 @@ LaunchProcessWin(DWORD dwSessionId)
 		 else
 		 {
 			 DWORD error=GetLastError();
-			 #ifdef _DEBUG
+			 #ifndef _DEBUG
 					char			szText[256];
 					sprintf(szText," ++++++ CreateProcessAsUser no env failed %d\n",error);
 					OutputDebugString(szText);		
@@ -742,7 +747,7 @@ LaunchProcessWin(DWORD dwSessionId)
 	}
   else
   {
-	 #ifdef _DEBUG
+	 #ifndef _DEBUG
 	char			szText[256];
 	DWORD error=GetLastError();
 	sprintf(szText," ++++++ Getsessionusertokenwin failed %d\n",error);
@@ -769,7 +774,7 @@ LaunchProcessWinCustom(DWORD dwSessionId)
 	//StartUPInfo.lpDesktop = "Winsta0\\Default";
 	StartUPInfo.cb = sizeof(STARTUPINFO);
 	SetTBCPrivileges();
-	pad2();
+	OutputDebugString(app_launch_path);
 
 	if (GetSessionUserTokenWin(&hToken))
 	{
@@ -801,7 +806,9 @@ LaunchProcessWinCustom(DWORD dwSessionId)
 					counter++;
 					if (counter>3)
 					{
-#ifdef _DEBUG
+#ifndef _DEBUwinvmG
+
+						char szText[MAX_PATH];
 						DWORD error = GetLastError();
 						sprintf(szText, " ++++++ error==233 win\n");
 						SetLastError(0);
@@ -854,7 +861,7 @@ LaunchProcessWinCustom(DWORD dwSessionId)
 				counter = 0;
 				bReturn = TRUE;
 				DWORD error = GetLastError();
-#ifdef _DEBUG
+#ifndef _DEBUG
 				char			szText[256];
 				sprintf(szText, " ++++++ CreateProcessAsUser winlogon %d\n", error);
 				OutputDebugString(szText);
@@ -863,7 +870,7 @@ LaunchProcessWinCustom(DWORD dwSessionId)
 			else
 			{
 				DWORD error = GetLastError();
-#ifdef _DEBUG
+#ifndef _DEBUG
 				char			szText[256];
 				sprintf(szText, " ++++++ CreateProcessAsUser no env failed %d\n", error);
 				OutputDebugString(szText);
@@ -877,7 +884,7 @@ LaunchProcessWinCustom(DWORD dwSessionId)
 					counter++;
 					if (counter>3)
 					{
-#ifdef _DEBUG
+#ifndef _DEBUG
 						DWORD error = GetLastError();
 						sprintf(szText, " ++++++ error==233 win\n");
 						SetLastError(0);
@@ -921,7 +928,7 @@ LaunchProcessWinCustom(DWORD dwSessionId)
 	}
 	else
 	{
-#ifdef _DEBUG
+#ifndef _DEBUG
 		char			szText[256];
 		DWORD error = GetLastError();
 		sprintf(szText, " ++++++ Getsessionusertokenwin failed %d\n", error);
@@ -1062,10 +1069,11 @@ void monitor_sessions()
 
 		case WAIT_TIMEOUT:
 		{
+			pad2();
 			if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
 			if (OlddwSessionId != dwSessionId)
 			{
-#ifdef _DEBUG
+#ifndef _DEBUG
 				char			szText[256];
 				sprintf(szText," ++++++SetEvent Session change: signal tray icon to shut down\n");
 				OutputDebugString(szText);		
@@ -1073,7 +1081,7 @@ void monitor_sessions()
 				//Tell winvnc to stop
 				SetEvent(hEvent);
 			}
-#ifdef _DEBUG
+#ifndef _DEBUG
 			if (dwSessionId == 0xFFFFFFFF) OutputDebugString("Session state changing\n");
 #endif
 			if (dwSessionId != 0xFFFFFFFF)
@@ -1082,10 +1090,10 @@ void monitor_sessions()
 				if (ProcessInfo.hProcess == NULL)
 				{
 					//First RUN
-#ifdef _DEBUG
+#ifndef _DEBUG
 					OutputDebugString("First Run Start winvnc in session\n");
 #endif
-#ifdef _DEBUG
+#ifndef _DEBUG
 					OutputDebugString("Start winvnc.exe\n");
 #endif									
 					LaunchProcessWin(dwSessionId);
@@ -1095,7 +1103,7 @@ void monitor_sessions()
 				{
 					if (dwCode != STILL_ACTIVE)
 					{
-#ifdef _DEBUG
+#ifndef _DEBUG
 						OutputDebugString("dwCode=not active, waitsingleobject hprocess \n");
 #endif
 						WaitForSingleObject(ProcessInfo.hProcess, 15000);
@@ -1108,13 +1116,13 @@ void monitor_sessions()
 							if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
 							sessidcounter++;
 							if (sessidcounter > 10) break;
-#ifdef _DEBUG
+#ifndef _DEBUG
 							char			szText[256];
 							sprintf(szText, " WAITING  session change %i %i\n", OlddwSessionId, dwSessionId);
 							OutputDebugString(szText);
 #endif
 						}
-#ifdef _DEBUG
+#ifndef _DEBUG
 						OutputDebugString("Start winvnc.exe\n");
 #endif
 						LaunchProcessWin(dwSessionId);
@@ -1122,14 +1130,14 @@ void monitor_sessions()
 					}
 					else
 					{
-#ifdef _DEBUG
+#ifndef _DEBUG
 						OutputDebugString("dwCode=active\n");
 #endif
 					}
 				}
 				else
 				{
-#ifdef _DEBUG
+#ifndef _DEBUG
 					OutputDebugString("GetExitCodeProcess failed\n");
 #endif
 					if (ProcessInfo.hProcess) CloseHandle(ProcessInfo.hProcess);
@@ -1141,19 +1149,19 @@ void monitor_sessions()
 						if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
 						sessidcounter++;
 						if (sessidcounter > 10) break;
-#ifdef _DEBUG
+#ifndef _DEBUG
 						char			szText[256];
 						sprintf(szText, " WAITING  session change %i %i\n", OlddwSessionId, dwSessionId);
 						OutputDebugString(szText);
 #endif
 					}
-#ifdef _DEBUG
+#ifndef _DEBUG
 					OutputDebugString("Start winvnc.exe\n");
 #endif
 					LaunchProcessWin(dwSessionId);
 					OlddwSessionId = dwSessionId;
 				}
-#ifdef _DEBUG
+#ifndef _DEBUG
 				char			szText[256];
 				sprintf(szText," ++++++1 %i %i %i %i\n",OlddwSessionId,dwSessionId,dwCode,ProcessInfo.hProcess);
 				OutputDebugString(szText);		
@@ -1162,7 +1170,7 @@ void monitor_sessions()
 		}//timeout
 		}//switch
 	}//while
-#ifdef _DEBUG
+#ifndef _DEBUG
 	char			szText[256];
 	sprintf(szText," ++++++SetEvent Service stopping: signal tray icon to shut down\n");
 	OutputDebugString(szText);		
@@ -1171,7 +1179,7 @@ void monitor_sessions()
 
 	if (ProcessInfo.hProcess)
 	{
-#ifdef _DEBUG
+#ifndef _DEBUG
 		OutputDebugString("Waiting up to 15 seconds for tray icon process to exit\n");
 #endif
 		WaitForSingleObject(ProcessInfo.hProcess, 15000);
@@ -1228,7 +1236,7 @@ void launch_exe(char*path)
 					if (sessidcounter > 10) break;
 
 				}
-#ifdef _DEBUG
+#ifndef _DEBUG
 				char command[MAX_PATH + 32]; // 29 January 2008 jdp
 				_snprintf(command, sizeof command, ">>>>>>>>>>>>>> winvncLaunchExe=%s\n", path);
 				OutputDebugString(command);
@@ -1238,14 +1246,14 @@ void launch_exe(char*path)
 			}
 			else
 			{
-#ifdef _DEBUG
+#ifndef _DEBUG
 				OutputDebugString("dwCode=active\n");
 #endif
 			}
 		}
 		else
 		{
-#ifdef _DEBUG
+#ifndef _DEBUG
 			OutputDebugString("GetExitCodeProcess failed\n");
 #endif
 			if (ProcessInfo.hProcess) CloseHandle(ProcessInfo.hProcess);
@@ -1257,19 +1265,19 @@ void launch_exe(char*path)
 				if (lpfnWTSGetActiveConsoleSessionId.isValid()) dwSessionId = (*lpfnWTSGetActiveConsoleSessionId)();
 				sessidcounter++;
 				if (sessidcounter > 10) break;
-#ifdef _DEBUG
+#ifndef _DEBUG
 				char			szText[256];
 				sprintf(szText, " WAITING  session change %i %i\n", OlddwSessionId, dwSessionId);
 				OutputDebugString(szText);
 #endif
 			}
-#ifdef _DEBUG
+#ifndef _DEBUG
 			OutputDebugString("Start winvnc.exe\n");
 #endif
 			LaunchProcessWinCustom(dwSessionId);
 			OlddwSessionId = dwSessionId;
 		}
-#ifdef _DEBUG
+#ifndef _DEBUG
 		char			szText[256];
 		sprintf(szText, " ++++++1 %i %i %i %i\n", OlddwSessionId, dwSessionId, dwCode, ProcessInfo.hProcess);
 		OutputDebugString(szText);
@@ -1277,7 +1285,7 @@ void launch_exe(char*path)
 	}
 		
 		
-#ifdef _DEBUG
+#ifndef _DEBUG
 	char			szText[256];
 	sprintf(szText, " ++++++SetEvent Service stopping: signal tray icon to shut down\n");
 	OutputDebugString(szText);
@@ -1285,7 +1293,7 @@ void launch_exe(char*path)
 
 	if (ProcessInfo.hProcess)
 	{
-#ifdef _DEBUG
+#ifndef _DEBUG
 		OutputDebugString("Waiting up to 15 seconds for tray icon process to exit\n");
 #endif
 		WaitForSingleObject(ProcessInfo.hProcess, 15000);

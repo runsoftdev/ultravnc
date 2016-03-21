@@ -113,8 +113,10 @@
 #define IDC_PLUGINS_COMBO               1053
 #define IDC_PLUGIN_BUTTON               1054
 #define IDC_VIEWERS_LISTBOX             1055
+#define IDC_PENDING_LISTBOX             1055
 #define IDC_SINGLE_WINDOW               1056
 #define IDC_CLIENTTEXT                  1056
+#define IDC_VIEWERS_LISTBOX2            1056
 #define IDC_KILL_B                      1057
 #define IDC_NAME_APPLI                  1058
 #define IDC_TEXTCHAT_B                  1058

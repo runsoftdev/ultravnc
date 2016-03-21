@@ -91,7 +91,7 @@ vncDesktopThread::Handle_Ringbuffer(mystruct *ringbuffer,rfb::Region2D &rgncache
 				rect.br.x-=m_desktop->m_ScreenOffsetx;
 				rect.tl.y-=m_desktop->m_ScreenOffsety;
 				rect.br.y-=m_desktop->m_ScreenOffsety;
-				vnclog.Print(LL_INTERR, VNCLOG("REct %i %i %i %i  \n"),rect.tl.x,rect.br.x,rect.tl.y,rect.br.y);
+				//vnclog.Print(LL_INTERR, VNCLOG("REct %i %i %i %i  \n"),rect.tl.x,rect.br.x,rect.tl.y,rect.br.y);
 	/*#ifdef _DEBUG
 					char			szText[256];
 					DWORD error=GetLastError();

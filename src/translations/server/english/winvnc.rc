@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -64,8 +64,8 @@ BEGIN
     LTEXT           "",IDC_STATIC_SPLIT,5,127,298,8,SS_NOTIFY
 END
 
-IDD_LIST_DLG DIALOGEX 0, 0, 164, 116
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_LIST_DLG DIALOGEX 0, 0, 271, 116
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION " List of Clients - UltraVNC"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
@@ -73,9 +73,11 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDOK,106,94,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,106,78,50,14,NOT WS_VISIBLE
     LTEXT           " Currently Connected Clients :",IDC_STATIC,5,4,105,8
-    LISTBOX         IDC_VIEWERS_LISTBOX,7,16,91,93,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
-    PUSHBUTTON      "Kill Client",IDC_KILL_B,106,17,50,14
-    PUSHBUTTON      "Chat with ???Client",IDC_TEXTCHAT_B,106,35,50,22,BS_MULTILINE
+    LISTBOX         IDC_PENDING_LISTBOX,161,16,91,93,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    PUSHBUTTON      "Kill Client",IDC_KILL_B,105,15,51,14
+    PUSHBUTTON      "Chat with Client",IDC_TEXTCHAT_B,106,35,50,22,BS_MULTILINE
+    LTEXT           " Currently Connected Clients :",IDC_STATIC,159,7,105,8
+    LISTBOX         IDC_VIEWERS_LISTBOX2,7,16,91,93,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
 END
 
 IDD_ABOUT DIALOGEX 0, 0, 282, 158
@@ -84,7 +86,7 @@ CAPTION " runRemote VNC 정보"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,8,135,54,16
-    CONTROL         139,IDC_VNCLOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,53,46,WS_EX_TRANSPARENT
+    CONTROL         IDB_LOGO64,IDC_VNCLOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,53,46,WS_EX_TRANSPARENT
     LTEXT           "runRemote VNC Win32 Server 1.0.5",IDC_VERSION,73,5,195,11
     LTEXT           "Copyright ⓒ 2002-2005 Ultr@VNC Team\nCopyright ⓒ 2001-2002 Sam - eSVNC \nCopyright ⓒ 1999-2002 Rudi D. V. - VdaccVNC \nCopyright ⓒ 2001 Harakan Software - PalmVNC\nCopyright ⓒ 1999-2002 Const. Kaplinsky - TightVNC \n",IDC_NAME,74,27,202,41
     LTEXT           "For more Information and Links please visit: \nhttp://www.runremote.net",IDC_WWW,74,135,141,19
@@ -234,7 +236,7 @@ CAPTION " Info"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,210,204,54,16
-    CONTROL         153,IDC_VNCLOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,269,199,WS_EX_TRANSPARENT
+    CONTROL         IDB_BITMAP3,IDC_VNCLOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,7,5,269,199,WS_EX_TRANSPARENT
 END
 
 IDD_MSLOGON DIALOG 0, 0, 186, 166
@@ -285,7 +287,7 @@ BEGIN
     IDD_LIST_DLG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 157
+        RIGHTMARGIN, 264
         TOPMARGIN, 7
         BOTTOMMARGIN, 109
     END
@@ -579,12 +581,12 @@ BEGIN
     ID_CADPERMISSION        "cad.exe 거부 권한이 runRemote VNC는 ""프로그램 파일""에 설치해야합니다 다른 특별한 치사한 권한은 거부됩니다."
 END
 
-#endif    // 한국어(대한민국) resources
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 영어(영국) resources
+// English (United Kingdom) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
@@ -615,7 +617,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // 영어(영국) resources
+#endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

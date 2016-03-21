@@ -62,9 +62,9 @@ extern "C" {
 
 #define INITIALNETBUFSIZE 4096
 #ifdef _XZ
-#define MAX_ENCODINGS (LASTENCODING+25)
+#define MAX_ENCODINGS (LASTENCODING+65)
 #else
-#define MAX_ENCODINGS (LASTENCODING+10)
+#define MAX_ENCODINGS (LASTENCODING+50)
 #endif
 #define VWR_WND_CLASS_NAME _T("VNCviewer")
 #define VWR_WND_CLASS_NAME_VIEWER _T("VNCviewerwindow")
@@ -618,38 +618,54 @@ void ClientConnection::DoConnection()
 	havetobekilled=true;
 	m_IniKey = new TCHAR[255];
 	strcpy(m_IniKey, m_opts.m_caption);
-
+	if (strlen(m_opts.m_caption) > 0) {		
+		m_MenuExecutor.SetIniKey(m_opts.m_caption);
+	}
+	OutputDebugStringA("Prev Connect");
 	// Connect if we're not already connected
 	if (m_sock == INVALID_SOCKET)
 		if (strcmp(m_proxyhost,"") !=NULL && m_fUseProxy)
 			ConnectProxy();
 		else
 			Connect();
+	OutputDebugStringA("After Connect");
 
+	OutputDebugStringA("Prev SetSocketOptions");
 	SetSocketOptions();
+	OutputDebugStringA("After SetSocketOptions");
 
+	OutputDebugStringA("Prev SetDSMPluginStuff");
 	SetDSMPluginStuff(); // The Plugin is now activated BEFORE the protocol negociation
 						 // so ALL the communication data travel through the DSMPlugin
-
+	OutputDebugStringA("After SetDSMPluginStuff");
+	OutputDebugStringA("Prev NegotiateProxy");
 	if (strcmp(m_proxyhost,"")!=NULL && m_fUseProxy)
 		NegotiateProxy();
-
+	OutputDebugStringA("After NegotiateProxy");
+	OutputDebugStringA("Prev NegotiateProtocolVersion");
 	NegotiateProtocolVersion();
-
+	OutputDebugStringA("After NegotiateProtocolVersion");
+	OutputDebugStringA("Prev Authenticate");
 	std::vector<CARD32> current_auth;
 	Authenticate(current_auth);
-
+	m_MenuExecutor.Connected();
+	OutputDebugStringA("After Authenticate");
 //	if (flash) {flash->Killflash();}
+	OutputDebugStringA("Prev SendClientInit");
 	SendClientInit();
-
+	OutputDebugStringA("After SendClientInit");
+	OutputDebugStringA("Prev ReadServerInit");
 	ReadServerInit();
-
+	OutputDebugStringA("After ReadServerInit");
+	OutputDebugStringA("Prev CreateLocalFramebuffer");
 	CreateLocalFramebuffer();
-
+	OutputDebugStringA("After CreateLocalFramebuffer");
+	OutputDebugStringA("Prev SetupPixelFormat");
 	SetupPixelFormat();
-
+	OutputDebugStringA("After SetupPixelFormat");
+	OutputDebugStringA("Prev SetFormatAndEncodings");
     SetFormatAndEncodings();
-
+	OutputDebugStringA("After SetFormatAndEncodings");
 	reconnectcounter=m_reconnectcounter;
 
 	havetobekilled=false;;
@@ -709,6 +725,9 @@ void ClientConnection::Reconnect()
 HWND ClientConnection::GTGBS_ShowConnectWindow()
 {
 	DWORD				  threadID;
+	if (m_statusThread) CloseHandle(m_statusThread);
+		m_statusThread = NULL;
+
 	m_statusThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE )ClientConnection::GTGBS_ShowStatusWindow,(LPVOID)this,0,&threadID);
 	if (m_statusThread) ResumeThread(m_statusThread);
 	return (HWND)0;
@@ -1816,6 +1835,13 @@ void ClientConnection::Connect()
 	thataddr.sin_port = htons(m_port);
 	///Force break after timeout
 	DWORD				  threadID;
+	if (ThreadSocketTimeout)
+	{
+		havetobekilled = false; //force SocketTimeout thread to quit
+		WaitForSingleObject(ThreadSocketTimeout, 5000);
+		CloseHandle(ThreadSocketTimeout);
+		ThreadSocketTimeout = NULL;
+	}
 	ThreadSocketTimeout = CreateThread(NULL,0,SocketTimeout,(LPVOID)&m_sock,0,&threadID);
 	res = connect(m_sock, (LPSOCKADDR) &thataddr, sizeof(thataddr));
 
@@ -2115,8 +2141,8 @@ void ClientConnection::NegotiateProtocolVersion()
 	vnclog.Print(0, _T("Connected to RFB server, using protocol version %d.%d\n"),
 		rfbProtocolMajorVersion, m_minorVersion);
 
-	//if (m_minorVersion >= 7 && m_pIntegratedPluginInterface) {
-	if (1) {
+	if (m_minorVersion >= 7 && m_pIntegratedPluginInterface) {
+	//if (1) {
 		m_fPluginStreamingIn = true;
 		m_fPluginStreamingOut = true;
 	}
@@ -3023,6 +3049,7 @@ void ClientConnection::SendClientInit()
     WriteExact((char *)&ci, sz_rfbClientInitMsg); // sf@2002 - RSM Plugin
 }
 
+
 void ClientConnection::ReadServerInit()
 {
     ReadExact((char *)&m_si, sz_rfbServerInitMsg);
@@ -3105,6 +3132,8 @@ void ClientConnection::ReadServerInit()
 		strcpy(m_IniKey, m_opts.m_caption);
 		m_MenuExecutor.SetIniKey(m_opts.m_caption);
 	}
+	
+	
 	
 	if (m_opts.m_ViewOnly) SetWindowText(m_hwndMain, m_desktopName_viewonly);
 	else SetWindowText(m_hwndMain, m_desktopName);
@@ -3515,39 +3544,41 @@ void ClientConnection::Createdib()
 	if (m_membitmap != NULL) {DeleteObject(m_membitmap);m_membitmap= NULL;}
 	m_hmemdc = CreateCompatibleDC(m_hBitmapDC);
 	m_membitmap = CreateDIBSection(m_hmemdc, (BITMAPINFO*)&bi.bmiHeader, iUsage, &m_DIBbits, NULL, 0);
-	memset((char*)m_DIBbits,128,bi.bmiHeader.biSizeImage);
+	memset((char*)m_DIBbits, 128, bi.bmiHeader.biSizeImage);
 
-	ObjectSelector bb(m_hmemdc, m_membitmap);
-
-	if (m_myFormat.bitsPerPixel==8 && m_myFormat.trueColour)
 	{
-		struct Colour {
-		int r, g, b;
-		};
-		Colour rgbQ[256];
-		 for (int i=0; i < (1<<(m_myFormat.depth)); i++) {
-			rgbQ[i].b = ((((i >> m_myFormat.blueShift) & m_myFormat.blueMax) * 65535) + m_myFormat.blueMax/2) / m_myFormat.blueMax;
-			rgbQ[i].g = ((((i >> m_myFormat.greenShift) & m_myFormat.greenMax) * 65535) + m_myFormat.greenMax/2) / m_myFormat.greenMax;
-			rgbQ[i].r = ((((i >> m_myFormat.redShift) & m_myFormat.redMax) * 65535) + m_myFormat.redMax/2) / m_myFormat.redMax;
-		 }
+		ObjectSelector bb(m_hmemdc, m_membitmap);
 
-	for (int ii=0; ii<256; ii++)
-	{
-		bi.color[ii].rgbRed      = rgbQ[ii].r >> 8;
-		bi.color[ii].rgbGreen    = rgbQ[ii].g >> 8;
-		bi.color[ii].rgbBlue     = rgbQ[ii].b >> 8;
-		bi.color[ii].rgbReserved = 0;
-	}
-	SetDIBColorTable(m_hmemdc, 0, 256, bi.color);
-	}
-	if (m_opts.m_fEnableCache)
-	{
-		if (m_DIBbitsCache != NULL) delete [] m_DIBbitsCache;
-		int Pitch=m_si.framebufferWidth*m_myFormat.bitsPerPixel/8;
-		if (Pitch % 4)Pitch += 4 - Pitch % 4;
+		if (m_myFormat.bitsPerPixel == 8 && m_myFormat.trueColour)
+		{
+			struct Colour {
+				int r, g, b;
+			};
+			Colour rgbQ[256];
+			for (int i = 0; i < (1 << (m_myFormat.depth)); i++) {
+				rgbQ[i].b = ((((i >> m_myFormat.blueShift) & m_myFormat.blueMax) * 65535) + m_myFormat.blueMax / 2) / m_myFormat.blueMax;
+				rgbQ[i].g = ((((i >> m_myFormat.greenShift) & m_myFormat.greenMax) * 65535) + m_myFormat.greenMax / 2) / m_myFormat.greenMax;
+				rgbQ[i].r = ((((i >> m_myFormat.redShift) & m_myFormat.redMax) * 65535) + m_myFormat.redMax / 2) / m_myFormat.redMax;
+			}
 
-		m_DIBbitsCache= new BYTE[Pitch*m_si.framebufferHeight];
-		vnclog.Print(0, _T("Cache: Cache buffer bitmap creation\n"));
+			for (int ii = 0; ii < 256; ii++)
+			{
+				bi.color[ii].rgbRed = rgbQ[ii].r >> 8;
+				bi.color[ii].rgbGreen = rgbQ[ii].g >> 8;
+				bi.color[ii].rgbBlue = rgbQ[ii].b >> 8;
+				bi.color[ii].rgbReserved = 0;
+			}
+			SetDIBColorTable(m_hmemdc, 0, 256, bi.color);
+		}
+		if (m_opts.m_fEnableCache)
+		{
+			if (m_DIBbitsCache != NULL) delete[] m_DIBbitsCache;
+			int Pitch = m_si.framebufferWidth*m_myFormat.bitsPerPixel / 8;
+			if (Pitch % 4)Pitch += 4 - Pitch % 4;
+
+			m_DIBbitsCache = new BYTE[Pitch*m_si.framebufferHeight];
+			vnclog.Print(0, _T("Cache: Cache buffer bitmap creation\n"));
+		}
 	}
 	if (m_opts.m_Directx && (m_myFormat.bitsPerPixel==32 || m_myFormat.bitsPerPixel==16))
 	if (!FAILED(directx_output.InitD3D(m_hwndcn,m_hwndMain, m_si.framebufferWidth, m_si.framebufferHeight, false,m_myFormat.bitsPerPixel,m_myFormat.redShift)))
@@ -3559,8 +3590,8 @@ void ClientConnection::Createdib()
 						m_myFormat.greenShift=(CARD8)directx_output.m_directxformat.greenShift;
 						m_myFormat.blueShift=(CARD8)directx_output.m_directxformat.blueShift;
 
-						if (m_hmemdc != NULL) {DeleteDC(m_hmemdc);m_hmemdc = NULL;m_DIBbits=NULL;}
-						if (m_membitmap != NULL) {DeleteObject(m_membitmap);m_membitmap= NULL;}
+						if (m_membitmap != NULL) { DeleteObject(m_membitmap); m_membitmap = NULL; }
+						if (m_hmemdc != NULL) { DeleteDC(m_hmemdc); m_hmemdc = NULL; m_DIBbits = NULL; }
 					}
 				else
 					{
@@ -5765,8 +5796,7 @@ void ClientConnection::ReadExactProtocolVersion(char *inbuf, int wanted, bool& f
 				{
 					//adzm 2009-06-21
 					// first just read 4 bytes and see if they are 'RFB '.
-					// if so, then this does not appear to be encrypted.
-					if (1)					return;
+					// if so, then this does not appear to be encrypted.					
 					char testBuffer[4];
 					fis->readBytes(testBuffer, 4);
 					if (memcmp(testBuffer, "RFB ", 4) == 0) {
@@ -6885,12 +6915,12 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						break;
 
 					case ID_DESKTOP:
-						if (!_this->m_SWselect)
-						{
+						//if (!_this->m_SWselect)
+						//{
 							//multimon switch
 							//_this->m_SWselect=true;
 							_this->SendSW(9999,9999);
-						}
+						//}
 						break;
 
 					// Toggle toolbar & toolbar menu option
@@ -7045,7 +7075,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 
 							Sleep(100); //PGM
 						} //PGM
-
+	
 						_this->SetFullScreenMode(!_this->InFullScreenMode());
 						
 						return 0;
@@ -7560,7 +7590,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							if (_this->m_opts.m_fExitCheck) //PGM @ Advantig
 							{ //PGM @ Advantig
 								boxopen=true;
-								if (MessageBox(hwnd, "원격지원을 종료하시겠습니까?", "runRemote원격지원 알림", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST | MB_SYSTEMMODAL) == IDNO)
+								if (MessageBox(hwnd, "원격을 종료하시겠습니까?", "runRemote원격 알림", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST | MB_SYSTEMMODAL) == IDNO)
 									{
 										boxopen=false;
 										return 0;
@@ -8137,6 +8167,8 @@ LRESULT CALLBACK ClientConnection::WndProcTBwin(HWND hwnd, UINT iMsg, WPARAM wPa
 					}else{
 						SECURITY_ATTRIBUTES   lpSec;
 						DWORD				  threadID;
+						if (_this->m_statusThread) CloseHandle(_this->m_statusThread);
+							_this->m_statusThread = NULL;
 						_this->m_statusThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE )ClientConnection::GTGBS_ShowStatusWindow,(LPVOID)_this,0,&threadID);
 					}
 					return 0;
@@ -8357,7 +8389,7 @@ LRESULT CALLBACK ClientConnection::WndProchwnd(HWND hwnd, UINT iMsg, WPARAM wPar
 					{
 						if (forcedexit == false)
 						{
-							OutputDebugString("WM_TIMER~~~~~~\n");
+							//OutputDebugString("WM_TIMER~~~~~~\n");
 							_this->m_MenuExecutor.FullScreenMode(_this->m_opts.m_FullScreen);
 							
 							if (forcedexit == false)

@@ -97,7 +97,7 @@ void VNCviewerApp32::NewConnection(bool Is_Listening,TCHAR *host, int port) {
 		pcc->m_opts = m_options;
 		pcc->m_Is_Listening=Is_Listening;
 		pcc->Run();
-	} catch (Exception &e) {
+ 	} catch (Exception &e) {
 //		DestroyWindow(pcc->m_hwndMain);
 		char szFileName[MAX_PATH];
 		if (GetModuleFileNameA(NULL, szFileName, MAX_PATH))
