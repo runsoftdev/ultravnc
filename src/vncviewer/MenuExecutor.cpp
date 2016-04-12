@@ -68,8 +68,10 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 				subject.replace(pos, search.length(), replace);
 				pos += replace.length();
 			}
-			SetWindowText(pClient->m_hwndMain, subject.c_str());
+
+			SetWindowText(pClient->m_hwndMain, subject.c_str());			
 			WritePrivateProfileString(m_iniKey, CHANGE_CAPTION, "", szFileName);
+			strcpy(m_iniKey, caption);
 		}
 		
 		if (isStartButton) {

@@ -3,7 +3,7 @@
  *
  * This file was part of the Independent JPEG Group's software:
  * Copyright (C) 1994-1996, Thomas G. Lane.
- * Modifications:
+ * libjpeg-turbo Modifications:
  * Copyright (C) 2011, D. R. Commander.
  * For conditions of distribution and use, see the accompanying README file.
  *
@@ -18,7 +18,7 @@
  * Upsample and color convert for the case of 2:1 horizontal and 1:1 vertical.
  */
 
-INLINE
+
 LOCAL(void)
 h2v1_merged_upsample_internal (j_decompress_ptr cinfo,
                                JSAMPIMAGE input_buf,
@@ -91,7 +91,7 @@ h2v1_merged_upsample_internal (j_decompress_ptr cinfo,
  * Upsample and color convert for the case of 2:1 horizontal and 2:1 vertical.
  */
 
-INLINE
+
 LOCAL(void)
 h2v2_merged_upsample_internal (j_decompress_ptr cinfo,
                                JSAMPIMAGE input_buf,

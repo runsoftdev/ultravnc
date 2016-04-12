@@ -552,7 +552,11 @@ vncMenu::AddTrayIcon()
 		else
 		{
 			vnclog.Print(LL_INTERR, VNCLOG("########### Shell_TrayWnd found %i\n"),IsIconSet);
-			SendTrayMsg(NIM_ADD, FALSE);
+			if (!m_server->GetDisableTrayIcon())
+			{
+				vnclog.Print(LL_INTERR, VNCLOG("########### Shell_TrayWnd found %i\n"), IsIconSet);
+				SendTrayMsg(NIM_ADD, FALSE);
+			}			
 		}
 		if (m_server->AuthClientCount() != 0) { //PGM @ Advantig
 			// adzm - 2010-07 - Disable more effects or font smoothing
