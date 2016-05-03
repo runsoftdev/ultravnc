@@ -887,6 +887,11 @@ void vncBuffer::WriteMessageOnScreen(char* tt)
 	m_desktop->WriteMessageOnScreen(tt,m_mainbuff, m_backbuffsize);
 }
 
+void vncBuffer::WriteMessageOnScreenPreConnect()
+{
+	m_desktop->WriteMessageOnScreenPreConnect( m_mainbuff, m_backbuffsize);
+}
+
 void
 vncBuffer::GrabRect(const rfb::Rect &rect,BOOL driver,BOOL capture)
 {
@@ -991,7 +996,6 @@ vncBuffer::ClearCacheRect(const rfb::Rect &dest)
 	omni_mutex_lock l(m_cacheLock, 669);
 	if (m_use_cache && m_cachebuff)
 	{
-
 	int nValue = 0;
 	BYTE *cacheptr = m_cachebuff + (dest.tl.y * m_bytesPerRow) +
 		(dest.tl.x * m_scrinfo.format.bitsPerPixel/8);

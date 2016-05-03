@@ -836,6 +836,7 @@ VSocket::Read(char *buff, const VCard bufflen)
 }
 
 ////////////////////////////
+
 VBool
 VSocket::ReadExact(char *buff, const VCard bufflen)
 {	

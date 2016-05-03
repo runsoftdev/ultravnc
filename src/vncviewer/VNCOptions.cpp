@@ -287,6 +287,7 @@ void VNCOptions::GetDefaultOptionsFileName(TCHAR *optionfile)
 		CloseHandle(m_hDestFile);
 		m_hDestFile = CreateFile(szFileName, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	}
+
 	if (m_hDestFile != INVALID_HANDLE_VALUE)
 	{ 
 		strcpy_s(optionfile, MAX_PATH, szFileName); 
@@ -294,6 +295,8 @@ void VNCOptions::GetDefaultOptionsFileName(TCHAR *optionfile)
 		return;
 	}
 		
+
+
     const char *APPDIR = "UltraVNC";
 	if (SHGetFolderPath(0, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, optionfile) == S_OK)
     {

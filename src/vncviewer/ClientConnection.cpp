@@ -727,7 +727,6 @@ HWND ClientConnection::GTGBS_ShowConnectWindow()
 	DWORD				  threadID;
 	if (m_statusThread) CloseHandle(m_statusThread);
 		m_statusThread = NULL;
-
 	m_statusThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE )ClientConnection::GTGBS_ShowStatusWindow,(LPVOID)this,0,&threadID);
 	if (m_statusThread) ResumeThread(m_statusThread);
 	return (HWND)0;
@@ -1216,9 +1215,6 @@ void ClientConnection::GTGBS_CreateToolbar()
     }
     SendMessage(m_logo_wnd, CB_SETCURSEL, 0, 0);
 	if (m_pMRU) delete m_pMRU; 
-
-
-
 }
 //////////////////////////////////////////////////////////
 
@@ -1270,7 +1266,6 @@ void ClientConnection::CreateDisplay()
 			      NULL,                // Menu handle
 			      m_pApp->m_instance,
 			      (LPVOID)this);
-	
 	
 	//ShowWindow(m_hwnd, SW_HIDE);
 	//ShowWindow(m_hwndcn, SW_SHOW);
@@ -1850,7 +1845,7 @@ void ClientConnection::Connect()
 			int a=WSAGetLastError();
 			vnclog.Print(0, _T("socket error %i\n"),a);
 			if(a==6)
-				Sleep(2000);
+				Sleep(3000);
 			if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L48);
 			SetEvent(KillEvent);
 			if (!Pressed_Cancel) throw WarningException(m_IniKey, IDS_L48);
@@ -1879,7 +1874,6 @@ void ClientConnection::ConnectProxy()
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L45);
 	if (m_hwndStatus)UpdateWindow(m_hwndStatus);
 
-
 	// The host may be specified as a dotted address "a.b.c.d"
 	// Try that first
 	thataddr.sin_addr.s_addr = inet_addr(m_proxyhost);
@@ -1906,6 +1900,13 @@ void ClientConnection::ConnectProxy()
 	thataddr.sin_port = htons(m_proxyport);
 
 	DWORD				  threadID;
+	if (ThreadSocketTimeout)
+	{
+		havetobekilled = false; //force SocketTimeout thread to quit
+		WaitForSingleObject(ThreadSocketTimeout, 5000);
+		CloseHandle(ThreadSocketTimeout);
+		ThreadSocketTimeout = NULL;
+	}
 	ThreadSocketTimeout = CreateThread(NULL,0,SocketTimeout,(LPVOID)&m_sock,0,&threadID);
 
 	res = connect(m_sock, (LPSOCKADDR) &thataddr, sizeof(thataddr));
@@ -2100,7 +2101,6 @@ void ClientConnection::NegotiateProtocolVersion()
 
     WriteExact(pv, sz_rfbProtocolVersionMsg);
 	if (m_minorVersion == 14 || m_minorVersion == 16 || m_minorVersion == 18) // adzm 2010-09
-	//if (1)
 	{
 		int size;
 		ReadExact((char *)&size,sizeof(int));
@@ -2142,7 +2142,6 @@ void ClientConnection::NegotiateProtocolVersion()
 		rfbProtocolMajorVersion, m_minorVersion);
 
 	if (m_minorVersion >= 7 && m_pIntegratedPluginInterface) {
-	//if (1) {
 		m_fPluginStreamingIn = true;
 		m_fPluginStreamingOut = true;
 	}
@@ -3592,6 +3591,7 @@ void ClientConnection::Createdib()
 
 						if (m_membitmap != NULL) { DeleteObject(m_membitmap); m_membitmap = NULL; }
 						if (m_hmemdc != NULL) { DeleteDC(m_hmemdc); m_hmemdc = NULL; m_DIBbits = NULL; }
+						
 					}
 				else
 					{
@@ -6618,9 +6618,9 @@ void ClientConnection::GTGBS_CreateDisplay()
 			  winstyle,
 			  CW_USEDEFAULT,
 			  CW_USEDEFAULT,
-			  //CW_USEDEFAULT,
-			  //CW_USEDEFAULT,
-			  320,200,
+			  CW_USEDEFAULT,
+			  CW_USEDEFAULT,
+			  //320,200,
 			  NULL,                // Parent handle
 			  NULL,                // Menu handle
 			  m_pApp->m_instance,
@@ -6782,7 +6782,6 @@ LRESULT CALLBACK ClientConnection::GTGBS_StatusProc(HWND hwnd, UINT iMsg, WPARAM
 	case WM_DESTROY:
 		{
 			// sf@2002 - Destroy the status timer... TODO: improve this		
-			
 			if (_this->m_nStatusTimer != 0)
 			{
 				KillTimer(hwnd, _this->m_nStatusTimer);
@@ -6790,7 +6789,6 @@ LRESULT CALLBACK ClientConnection::GTGBS_StatusProc(HWND hwnd, UINT iMsg, WPARAM
 			}			
 			_this->OldEncodingStatusWindow = -1;
 			_this->m_fStatusOpen = false;
-			
 			return TRUE;
 		}
 	}
@@ -6877,13 +6875,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 		 {
 		 _this = (ClientConnection*)((CREATESTRUCT*)lParam)->lpCreateParams;
 		 helper::SafeSetWindowUserData(hwnd, (LONG_PTR)_this);
-	 
-		 
-		 //SetWindowLongPtr( hwnd, GWLP_USERDATA, (LONG_PTR)_this );
 		 }
-	// This is a static method, so we don't know which instantiation we're
-	// dealing with.  But we've stored a 'pseudo-this' in the window data.
-//    ClientConnection *_this = helper::SafeGetWindowUserData<ClientConnection>(hwnd);
 
 	if (_this == NULL)
 		return DefWindowProc(hwnd, iMsg, wParam, lParam);
@@ -6979,8 +6971,6 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							Sleep(100);
 						}
 						_this->SetFullScreenMode(!_this->InFullScreenMode());
-						
-
 						return 0;
 						break;
 
