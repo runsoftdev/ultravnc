@@ -85,20 +85,17 @@ Daemon::Daemon(int port)
 
 	// Create a listening socket
     struct sockaddr_in addr;
-
+	memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = INADDR_ANY;
-
     m_deamon_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (!m_deamon_sock) throw WarningException(sz_I1);
     
+	
+    
 	try {
-		int one = 1, res = 0;
-		//res = setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (const char *) &one, sizeof(one));
-		//if (res == SOCKET_ERROR) 
-		//  throw WarningException("Error setting Daemon socket options");
-		
+		int res = 0;	
 		res = bind(m_deamon_sock, (struct sockaddr *)&addr, sizeof(addr));
 		if (res == SOCKET_ERROR)
 			throw WarningException(sz_I2);
@@ -198,6 +195,9 @@ LRESULT CALLBACK Daemon::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 				{
 					struct sockaddr_in incoming;
 					int size_incoming=sizeof(incoming);
+					memset(&incoming, 0, sizeof(incoming));
+
+
 					SOCKET hNewSock;
 					hNewSock = accept(_this->m_deamon_sock, (struct sockaddr *)&incoming,&size_incoming);
 					WSAAsyncSelect(hNewSock, hwnd, 0, 0);
@@ -316,8 +316,8 @@ Daemon::~Daemon()
 	KillTimer(m_hwnd, m_timer);
 	RemoveTrayIcon();
 	DestroyMenu(m_hmenu);
-	if (m_deamon_sock!=NULL) shutdown(m_deamon_sock, SD_BOTH);
-	if (m_deamon_sock!=NULL) closesocket(m_deamon_sock);
+	if (m_deamon_sock != INVALID_SOCKET) shutdown(m_deamon_sock, SD_BOTH);
+	if (m_deamon_sock != INVALID_SOCKET) closesocket(m_deamon_sock);
 }
 
 

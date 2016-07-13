@@ -22,6 +22,7 @@
 #define MENU_SERVERINPUT_ENABLE_ONOFF 	"server_no_viewonly_on"
 #define CONNECTED_VNC 	"connected_vnc"
 #define CHANGE_CAPTION 	"chang_caption"
+#define MENU_SERVERSCALE_ENABLE_ONOFF 	"server_scale_onoff"
 
 class ClientConnection;
 

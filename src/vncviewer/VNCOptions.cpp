@@ -110,7 +110,7 @@ VNCOptions::VNCOptions()
     m_UseEnc[i] = false;
 
   m_UseEnc[rfbEncodingRaw] = true;
-  m_UseEnc[rfbEncodingCopyRect] = true;
+  m_UseEnc[rfbEncodingCopyRect] = false;
   m_UseEnc[rfbEncodingRRE] = true;
   m_UseEnc[rfbEncodingCoRRE] = true;
   m_UseEnc[rfbEncodingHextile] = true;
@@ -265,7 +265,10 @@ VNCOptions::VNCOptions()
 #endif
   char optionfile[MAX_PATH];
   GetDefaultOptionsFileName(optionfile);
-  if (!config_specified) Load(optionfile);
+  //at this point commandlines are not yet processed
+  //no need to check
+  //if (!config_specified) Load(optionfile);
+  Load(optionfile);
 }
 
 void VNCOptions::GetDefaultOptionsFileName(TCHAR *optionfile)

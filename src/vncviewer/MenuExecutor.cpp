@@ -54,6 +54,8 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 	int isViewOnlyButton = GetPrivateProfileInt(m_iniKey, MENU_VIEWONLY_ONOFF, 0, szFileName);
 	int isServerDisableViewOnlyButton = GetPrivateProfileInt(m_iniKey, MENU_SERVERINPUT_DISABLE_ONOFF, 0, szFileName);
 	int isServerEnableViewOnlyButton = GetPrivateProfileInt(m_iniKey, MENU_SERVERINPUT_ENABLE_ONOFF, 0, szFileName);
+	int isServerScaleOnOffButton = GetPrivateProfileInt(m_iniKey, MENU_SERVERSCALE_ENABLE_ONOFF, 0, szFileName);
+	
 	GetPrivateProfileString(m_iniKey, CHANGE_CAPTION, "", caption, MAX_PATH, szFileName);	
 	
 	try {
@@ -80,10 +82,20 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 			OutputDebugString("isStartButton on\n");
 		}
 		if (isSendCtrlAltDel) {
+			
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)ID_CONN_CTLALTDEL, (LPARAM)0);
 			WritePrivateProfileString(m_iniKey, MENU_CTRL_ALT_DEL_SEND, FUNTION_OFF, szFileName);
 			OutputDebugString("isSendCtrlAltDel on\n");
 		}
+
+		if (isServerScaleOnOffButton) {
+			pClient->m_opts.m_Directx = !pClient->m_opts.m_Directx;
+
+			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)WM_SIZE, (LPARAM)0);
+			WritePrivateProfileString(m_iniKey, MENU_SERVERSCALE_ENABLE_ONOFF, FUNTION_OFF, szFileName);
+			OutputDebugString("isServerScaleOnOffButton on\n");
+		}		
+
 		if (isClose) {
 			m_isClosed = true;
 			KillTimer(_hwnd, MENU_EXCUTOR_TIME_ID);

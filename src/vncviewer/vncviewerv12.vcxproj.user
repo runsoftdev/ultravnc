@@ -8,7 +8,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>id:94012 -proxy repeater1.runremote.net:7902 -nostatus -password runremote!daebak@cheer$$ -caption rmc56dd226298b95 -noauto -fullcolors -encoding ultra2 -compresslevel 5 -quality 7 -notoolbar -dsmplugin securevncplugin.dsm -autoreconnect 3 -normalcursor -title 4</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.26:2800 -loglevel 12 -console -nostatus -password runremote!daebak@cheer$$ -noauto -fullcolors -encoding ultra2 -compresslevel 4 -quality 7 -autoreconnect 3 -normalcursor -title 1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

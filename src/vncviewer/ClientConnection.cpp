@@ -485,7 +485,7 @@ void ClientConnection::Init(VNCviewerApp *pApp)
 	xzyw_level = 1;
 	xzyw = 0;
 #endif
-
+	m_IniKey = new TCHAR[255];
 	m_autoReconnect = m_opts.m_autoReconnect;
 	ThreadSocketTimeout=NULL;
 	m_statusThread=NULL;
@@ -616,7 +616,7 @@ void ClientConnection::Run()
 void ClientConnection::DoConnection()
 {
 	havetobekilled=true;
-	m_IniKey = new TCHAR[255];
+	
 	strcpy(m_IniKey, m_opts.m_caption);
 	if (strlen(m_opts.m_caption) > 0) {		
 		m_MenuExecutor.SetIniKey(m_opts.m_caption);
@@ -674,7 +674,10 @@ void ClientConnection::DoConnection()
 DWORD WINAPI ReconnectThreadProc(LPVOID lpParameter)
 {
 	ClientConnection *cc=(ClientConnection*)lpParameter;
-	Sleep( cc->m_autoReconnect * 1000 );
+	Sleep( cc->m_autoReconnect * 500 );
+
+	OutputDebugString("ReconnectThreadProc start");
+
 	try
 	{
 		cc->DoConnection();
@@ -695,6 +698,7 @@ DWORD WINAPI ReconnectThreadProc(LPVOID lpParameter)
 		//Seems is needed, countdown stop
 		PostMessage(cc->m_hwndMain, WM_CLOSE, cc->reconnectcounter, 1);
 	}
+	OutputDebugString("ReconnectThreadProc end");
 	return 0;
 }
 
@@ -1629,8 +1633,9 @@ void ClientConnection::HandleQuickOption()
 	{
 	case 1:
 		m_opts.m_PreferredEncodings.clear();
-		if (new_ultra_server) m_opts.m_PreferredEncodings.push_back(rfbEncodingUltra2);
-		else m_opts.m_PreferredEncodings.push_back(rfbEncodingHextile);
+		//if (new_ultra_server) m_opts.m_PreferredEncodings.push_back(rfbEncodingUltra2);
+		//else 
+		m_opts.m_PreferredEncodings.push_back(rfbEncodingHextile);
 		m_opts.m_Use8Bit = rfbPFFullColors; //false;
 		m_opts.m_fEnableCache = false;
 		m_opts.autoDetect = true;
@@ -1765,7 +1770,6 @@ void ClientConnection::GetConnectDetails()
 	m_pApp->m_options.m_configSpecified = false;
 	}
 }
-HWND ddd;
 DWORD WINAPI SocketTimeout(LPVOID lpParam)
 {
 	SOCKET *sock;
@@ -1774,23 +1778,20 @@ DWORD WINAPI SocketTimeout(LPVOID lpParam)
 	while (havetobekilled && !forcedexit)
 	{
 		Sleep(100);
-		
 	}
 
 	if (havetobekilled)
 	{
 		closesocket(*sock);
 		*sock = INVALID_SOCKET;
-		SendMessage(ddd, WM_CLOSE, (WPARAM)0, (LPARAM)0);
 	}
 	return 0;
 }
 void ClientConnection::Connect()
 {
-	ddd = m_hwndMain;
 	struct sockaddr_in thataddr;
 	int res;
-	if (!m_opts.m_NoStatus) GTGBS_ShowConnectWindow();
+	if (!m_opts.m_NoStatus && !m_hwndStatus) GTGBS_ShowConnectWindow();
 	if (m_sock!=NULL && m_sock!=INVALID_SOCKET) closesocket(m_sock);
 	m_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_hwndStatus) SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L43);
@@ -1826,7 +1827,6 @@ void ClientConnection::Connect()
 	if (m_hwndStatus)UpdateWindow(m_hwndStatus);
 	if (m_hwndStatus)SetDlgItemInt(m_hwndStatus,IDC_PORT,m_port,FALSE);
 	thataddr.sin_family = AF_INET;
-
 	thataddr.sin_port = htons(m_port);
 	///Force break after timeout
 	DWORD				  threadID;
@@ -1862,7 +1862,7 @@ void ClientConnection::ConnectProxy()
 {
 	struct sockaddr_in thataddr;
 	int res;
-	if (!m_opts.m_NoStatus) GTGBS_ShowConnectWindow();
+	if (!m_opts.m_NoStatus && !m_hwndStatus) GTGBS_ShowConnectWindow();
 
 	m_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (m_hwndStatus)SetDlgItemText(m_hwndStatus,IDC_STATUS,sz_L43);
@@ -3048,7 +3048,6 @@ void ClientConnection::SendClientInit()
     WriteExact((char *)&ci, sz_rfbClientInitMsg); // sf@2002 - RSM Plugin
 }
 
-
 void ClientConnection::ReadServerInit()
 {
     ReadExact((char *)&m_si, sz_rfbServerInitMsg);
@@ -3063,7 +3062,6 @@ void ClientConnection::ReadServerInit()
     m_desktopName = new TCHAR[m_si.nameLength + 4 + 256];
 	m_desktopName_viewonly = new TCHAR[m_si.nameLength + 4 + 256+16];
 	
-
 #ifdef UNDER_CE
     char *deskNameBuf = new char[m_si.nameLength + 4];
 
@@ -3252,14 +3250,23 @@ void ClientConnection::SizeWindow()
 		SetWindowPos(m_hwndMain, HWND_TOP,
 				tdc.monarray[1].wl + ((tdc.monarray[1].wr-tdc.monarray[1].wl)-m_winwidth) / 2,
 				tdc.monarray[1].wt + ((tdc.monarray[1].wb-tdc.monarray[1].wt)-m_winheight) / 2,
-				m_winwidth, m_winheight, SWP_SHOWWINDOW);
+				m_winwidth, m_winheight, SWP_SHOWWINDOW| SWP_NOSIZE);
+SetWindowPos(m_hwndMain, HWND_TOP, 
+tdc.monarray[1].wl + ((tdc.monarray[1].wr - tdc.monarray[1].wl) - m_winwidth) / 2, 
+tdc.monarray[1].wt + ((tdc.monarray[1].wb - tdc.monarray[1].wt) - m_winheight) / 2, 
+m_winwidth, m_winheight, SWP_SHOWWINDOW | SWP_NOMOVE);
 	}
 	else
 	{
+SetWindowPos(m_hwndMain, HWND_TOP, 
+workrect.left + (workwidth - m_winwidth) / 2, 
+workrect.top + (workheight - m_winheight) / 2, 
+m_winwidth, m_winheight, SWP_SHOWWINDOW | SWP_NOSIZE);
+
 	SetWindowPos(m_hwndMain, HWND_TOP,
 				workrect.left + (workwidth-m_winwidth) / 2,
 				workrect.top + (workheight-m_winheight) / 2,
-				m_winwidth, m_winheight, SWP_SHOWWINDOW);
+				m_winwidth, m_winheight, SWP_SHOWWINDOW | SWP_NOMOVE);
 	}
 
 	SetForegroundWindow(m_hwndMain);
@@ -5374,11 +5381,13 @@ inline void ClientConnection::ReadScreenUpdate()
 				break;
 			}
 			m_opts.m_PreferredEncodings.clear();
-			if (new_ultra_server) m_opts.m_PreferredEncodings.push_back(rfbEncodingUltra2);
-			else m_opts.m_PreferredEncodings.push_back(rfbEncodingHextile);
+			//if (new_ultra_server) m_opts.m_PreferredEncodings.push_back(rfbEncodingUltra2);
+			//else 
+			m_opts.m_PreferredEncodings.push_back(rfbEncodingHextile);
 			//m_opts.m_Use8Bit = rfbPFFullColors;			
-			if (new_ultra_server && encoding == rfbEncodingUltra2 && m_opts.m_fEnableCache == false){}
-			else if (encoding == rfbEncodingHextile && m_opts.m_fEnableCache == false){}
+			//if (new_ultra_server && encoding == rfbEncodingUltra2 && m_opts.m_fEnableCache == false){}
+			//else 
+			if (encoding == rfbEncodingHextile && m_opts.m_fEnableCache == false){}
 			else m_pendingFormatChange = true;
 
 			m_opts.m_fEnableCache = false;
@@ -5388,8 +5397,9 @@ inline void ClientConnection::ReadScreenUpdate()
 		{
 			m_nConfig = 1;		
 			m_opts.m_PreferredEncodings.clear();
-			if (new_ultra_server) m_opts.m_PreferredEncodings.push_back(rfbEncodingUltra2);
-			else m_opts.m_PreferredEncodings.push_back(rfbEncodingZRLE); //rfbEncodingZlibHex;
+			//if (new_ultra_server) m_opts.m_PreferredEncodings.push_back(rfbEncodingUltra2);
+			//else 
+			m_opts.m_PreferredEncodings.push_back(rfbEncodingZRLE); //rfbEncodingZlibHex;
 			//m_opts.m_Use8Bit = rfbPFFullColors; // Max colors
 			m_opts.m_fEnableCache = false;
 			m_pendingFormatChange = true;
@@ -6877,8 +6887,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 		 helper::SafeSetWindowUserData(hwnd, (LONG_PTR)_this);
 		 }
 
-	if (_this == NULL)
-		return DefWindowProc(hwnd, iMsg, wParam, lParam);
+	if (_this == NULL) return DefWindowProc(hwnd, iMsg, wParam, lParam);
 
 	// HWND parent;
 
@@ -6888,11 +6897,6 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 		{
 			switch (iMsg)
 			{
-//			case WM_TIMER:
-//				KillTimer(hwnd,_this->m_FTtimer);
-//				_this->m_FTtimer=0;
-//				_this->m_pFileTransfer->SendFileChunk();
-//				break;
 			case WM_SYSCHAR:
 				return true;
 			case WM_SYSCOMMAND:
@@ -6907,12 +6911,12 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						break;
 
 					case ID_DESKTOP:
-						//if (!_this->m_SWselect)
-						//{
+						if (!_this->m_SWselect)
+						{
 							//multimon switch
 							//_this->m_SWselect=true;
 							_this->SendSW(9999,9999);
-						//}
+						}
 						break;
 
 					// Toggle toolbar & toolbar menu option
@@ -6920,7 +6924,6 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						_this->m_opts.m_ShowToolbar = !_this->m_opts.m_ShowToolbar;
 						_this->SizeWindow();
 						_this->SetFullScreenMode(_this->InFullScreenMode());
-						
 						// adzm - 2010-07 - Extended clipboard
 						//_this->UpdateMenuItems(); // Handled in WM_INITMENUPOPUP
 						break;
@@ -7067,7 +7070,6 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 						} //PGM
 	
 						_this->SetFullScreenMode(!_this->InFullScreenMode());
-						
 						return 0;
 
 					case ID_VIEWONLYTOGGLE:
@@ -8108,11 +8110,9 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 			        SendMessage(hwnd,WM_SIZE,(WPARAM)ID_DINPUT,(LPARAM)0);
 		        }
             }
-		} // End if Main Window
+		}
 	}
-
 	return DefWindowProc(hwnd, iMsg, wParam, lParam);
-
 	// We know about an unused variable here.
 #pragma warning(disable : 4101)
 }
@@ -8122,207 +8122,213 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 //
 LRESULT CALLBACK ClientConnection::WndProcTBwin(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-    ClientConnection *_this = helper::SafeGetWindowUserData<ClientConnection>(hwnd);
+	ClientConnection *_this = helper::SafeGetWindowUserData<ClientConnection>(hwnd);
 
-    if (_this == NULL) return DefWindowProc(hwnd, iMsg, wParam, lParam);
+	if (_this == NULL) return DefWindowProc(hwnd, iMsg, wParam, lParam);
 
 	HWND parent;
-	if (_this->m_opts.m_ShowToolbar==true)
+	if (_this->m_opts.m_ShowToolbar == true)
+	{
+		parent = _this->m_hwndMain;
+		switch (iMsg)
 		{
-			parent = _this->m_hwndMain;
-			switch (iMsg)
+		case WM_PAINT:
+		{
+			if (_this->m_logo_wnd)
 			{
-			case WM_PAINT:
-				{
-					if (_this->m_logo_wnd)
-						{
-						/*HDC hdcX,hdcBits;
-						hdcX = GetDC(_this->m_logo_wnd);
-						hdcBits = CreateCompatibleDC(hdcX);
-						SelectObject(hdcBits,_this->m_logo_min);
-						BitBlt(hdcX,0,0,70,28,hdcBits,0,0,SRCCOPY);
-						DeleteDC(hdcBits);
-						ReleaseDC(_this->m_logo_wnd,hdcX);*/
-						UpdateWindow(_this->m_logo_wnd);
+				/*HDC hdcX,hdcBits;
+				hdcX = GetDC(_this->m_logo_wnd);
+				hdcBits = CreateCompatibleDC(hdcX);
+				SelectObject(hdcBits,_this->m_logo_min);
+				BitBlt(hdcX,0,0,70,28,hdcBits,0,0,SRCCOPY);
+				DeleteDC(hdcBits);
+				ReleaseDC(_this->m_logo_wnd,hdcX);*/
+				UpdateWindow(_this->m_logo_wnd);
+			}
+			break;
+		}
+
+		case WM_COMMAND:
+			if (LOWORD(wParam) == ID_BUTTON_INFO)
+			{
+				if (IsWindow(_this->m_hwndStatus)){
+					if (_this->m_hwndStatus)SetForegroundWindow(_this->m_hwndStatus);
+					if (_this->m_hwndStatus)ShowWindow(_this->m_hwndStatus, SW_NORMAL);
+				}
+				else{
+					SECURITY_ATTRIBUTES   lpSec;
+					DWORD				  threadID;
+					if (_this->m_statusThread) CloseHandle(_this->m_statusThread);
+					_this->m_statusThread = NULL;
+					_this->m_statusThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ClientConnection::GTGBS_ShowStatusWindow, (LPVOID)_this, 0, &threadID);
+				}
+				return 0;
+			}
+			if (LOWORD(wParam) == 9998)
+			{
+				vnclog.Print(0, _T("CLICKK %d\n"), HIWORD(wParam));
+				switch (HIWORD(wParam)) {
+					case 0:
+					{
+						int port;
+						TCHAR fulldisplay[256];
+						TCHAR display[256];
+						GetDlgItemText(hwnd, 9999, display, 256);
+						_tcscpy(fulldisplay, display);
+						vnclog.Print(0, _T("CLICKK %s\n"), fulldisplay);
+						ParseDisplay(fulldisplay, display, 256, &port);
+						if (strcmp(display, "ID") == 0) {
+							return TRUE;
 						}
-					break;
-				}
-
-			case WM_COMMAND:
-				if (LOWORD(wParam) == ID_BUTTON_INFO)
-				{
-					if (IsWindow(_this->m_hwndStatus)){
-						if (_this->m_hwndStatus)SetForegroundWindow(_this->m_hwndStatus);
-						if (_this->m_hwndStatus)ShowWindow(_this->m_hwndStatus, SW_NORMAL);
-					}else{
-						SECURITY_ATTRIBUTES   lpSec;
-						DWORD				  threadID;
-						if (_this->m_statusThread) CloseHandle(_this->m_statusThread);
-							_this->m_statusThread = NULL;
-						_this->m_statusThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE )ClientConnection::GTGBS_ShowStatusWindow,(LPVOID)_this,0,&threadID);
+						_this->m_pApp->NewConnection(false, display, port);
 					}
-					return 0;
 				}
-				if (LOWORD(wParam) ==9998)
-				{
-					vnclog.Print(0,_T("CLICKK %d\n"),HIWORD(wParam));
-					switch (HIWORD(wParam)) {
-						case 0:
-								{
-								int port;
-								TCHAR fulldisplay[256];
-								TCHAR display[256];
-								GetDlgItemText(hwnd, 9999, display, 256);
-								_tcscpy(fulldisplay, display);
-								vnclog.Print(0,_T("CLICKK %s\n"),fulldisplay);
-								ParseDisplay(fulldisplay, display, 256, &port);
-								if (strcmp(display, "ID") == 0) {
-									return TRUE;
-								}
-								_this->m_pApp->NewConnection(false,display,port);
-								}
-						}
-					break;
-					return TRUE;
-				}
+				break;
+				return TRUE;
+			}
 
-				if (LOWORD(wParam) == ID_BUTTON_SEP)
-				{
-					UINT Key;
-					//_this->SendKeyEvent(XK_Execute,     true);
-					//_this->SendKeyEvent(XK_Execute,     false);
-					Key = DialogBox(_this->m_pApp->m_instance,MAKEINTRESOURCE(IDD_CUSTUM_KEY),NULL,(DLGPROC)ClientConnection::GTGBS_SendCustomKey_proc);
-					if (Key>0){
-						vnclog.Print(0,_T("START Send Custom Key %d\n"),Key);
-						if ( (Key & KEYMAP_LALT_FLAG) == KEYMAP_LALT_FLAG){
-							_this->SendKeyEvent(XK_Alt_L,true);
-							_this->SendKeyEvent(Key ^ KEYMAP_LALT_FLAG,true);
-							_this->SendKeyEvent(Key ^ KEYMAP_LALT_FLAG,false);
-							_this->SendKeyEvent(XK_Alt_L,false);
-						}else if ( (Key & KEYMAP_RALT_FLAG) ==KEYMAP_RALT_FLAG){
-							_this->SendKeyEvent(XK_Alt_R,true);
-							_this->SendKeyEvent(XK_Control_R,true);
-							_this->SendKeyEvent(Key ^ KEYMAP_RALT_FLAG,true);
-							_this->SendKeyEvent(Key ^ KEYMAP_RALT_FLAG,false);
-							_this->SendKeyEvent(XK_Alt_R,false);
-							_this->SendKeyEvent(XK_Control_R,false);
-						}else if ( (Key &  KEYMAP_RCONTROL_FLAG) == KEYMAP_RCONTROL_FLAG){
-							_this->SendKeyEvent(XK_Control_R,true);
-							_this->SendKeyEvent(Key ^ KEYMAP_RCONTROL_FLAG,true);
-							_this->SendKeyEvent(Key ^ KEYMAP_RCONTROL_FLAG,false);
-							_this->SendKeyEvent(XK_Control_R,false);
-						}else{
-							_this->SendKeyEvent(Key,true);
-							_this->SendKeyEvent(Key,false);
-						}
-
-						//adzm 2010-09
-						_this->FlushWriteQueue(true, 5);
-
-						vnclog.Print(0,_T("END   Send Custom Key %d\n"),Key);
+			if (LOWORD(wParam) == ID_BUTTON_SEP)
+			{
+				UINT Key;
+				//_this->SendKeyEvent(XK_Execute,     true);
+				//_this->SendKeyEvent(XK_Execute,     false);
+				Key = DialogBox(_this->m_pApp->m_instance, MAKEINTRESOURCE(IDD_CUSTUM_KEY), NULL, (DLGPROC)ClientConnection::GTGBS_SendCustomKey_proc);
+				if (Key > 0){
+					vnclog.Print(0, _T("START Send Custom Key %d\n"), Key);
+					if ((Key & KEYMAP_LALT_FLAG) == KEYMAP_LALT_FLAG){
+						_this->SendKeyEvent(XK_Alt_L, true);
+						_this->SendKeyEvent(Key ^ KEYMAP_LALT_FLAG, true);
+						_this->SendKeyEvent(Key ^ KEYMAP_LALT_FLAG, false);
+						_this->SendKeyEvent(XK_Alt_L, false);
 					}
-					SetForegroundWindow(_this->m_hwndcn);
-
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_END )
-				{
-					SendMessage(parent,WM_CLOSE,(WPARAM)0,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_CAD )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_CONN_CTLALTDEL,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_FULLSCREEN )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_FULLSCREEN,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_FTRANS )
-				{
-					if (_this->m_pFileTransfer->m_fFileTransferRunning)
-					{
-						_this->m_pFileTransfer->ShowFileTransferWindow(true);
+					else if ((Key & KEYMAP_RALT_FLAG) == KEYMAP_RALT_FLAG){
+						_this->SendKeyEvent(XK_Alt_R, true);
+						_this->SendKeyEvent(XK_Control_R, true);
+						_this->SendKeyEvent(Key ^ KEYMAP_RALT_FLAG, true);
+						_this->SendKeyEvent(Key ^ KEYMAP_RALT_FLAG, false);
+						_this->SendKeyEvent(XK_Alt_R, false);
+						_this->SendKeyEvent(XK_Control_R, false);
 					}
-					else
-						SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_FILETRANSFER,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_DBUTTON )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_DBUTTON,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_SW )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_SW,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_DESKTOP )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_DESKTOP,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_TEXTCHAT )
-				{
-					if (_this->m_pTextChat->m_fTextChatRunning)
-					{
-						_this->m_pTextChat->ShowChatWindow(true);
+					else if ((Key &  KEYMAP_RCONTROL_FLAG) == KEYMAP_RCONTROL_FLAG){
+						_this->SendKeyEvent(XK_Control_R, true);
+						_this->SendKeyEvent(Key ^ KEYMAP_RCONTROL_FLAG, true);
+						_this->SendKeyEvent(Key ^ KEYMAP_RCONTROL_FLAG, false);
+						_this->SendKeyEvent(XK_Control_R, false);
 					}
-					else
-						SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_TEXTCHAT,(LPARAM)0);
-					return 0;
-				}
-
-				if (LOWORD(wParam) == ID_BUTTON_DINPUT )
-				{
-					if (_this->m_remote_mouse_disable)
-					{
-						_this->m_remote_mouse_disable=false;
-						_this->m_MenuExecutor.SetRemoteMouseDisable(false); 
-						SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_INPUT,(LPARAM)0);
-						SendMessage(parent,WM_SIZE,(WPARAM)ID_DINPUT,(LPARAM)0);
+					else{
+						_this->SendKeyEvent(Key, true);
+						_this->SendKeyEvent(Key, false);
 					}
-					else
-					{
-						_this->m_remote_mouse_disable=true;
-						_this->m_MenuExecutor.SetRemoteMouseDisable(true);
-						SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_DINPUT,(LPARAM)0);
-						SendMessage(parent,WM_SIZE,(WPARAM)ID_DINPUT,(LPARAM)0);
-					}
-					return 0;
-				}
 
-				if (LOWORD(wParam) == ID_BUTTON_PROPERTIES )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)IDC_OPTIONBUTTON,(LPARAM)0);
-					return 0;
-				}
+					//adzm 2010-09
+					_this->FlushWriteQueue(true, 5);
 
-				if (LOWORD(wParam) == ID_BUTTON_REFRESH )
-				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_REQUEST_REFRESH,(LPARAM)0);
-					return 0;
+					vnclog.Print(0, _T("END   Send Custom Key %d\n"), Key);
 				}
+				SetForegroundWindow(_this->m_hwndcn);
 
-				if (LOWORD(wParam) == ID_BUTTON_STRG_ESC )
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_END)
+			{
+				SendMessage(parent, WM_CLOSE, (WPARAM)0, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_CAD)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_CONN_CTLALTDEL, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_FULLSCREEN)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_FULLSCREEN, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_FTRANS)
+			{
+				if (_this->m_pFileTransfer->m_fFileTransferRunning)
 				{
-					SendMessage(parent,WM_SYSCOMMAND,(WPARAM)ID_CONN_CTLESC,(LPARAM)0);
-					return 0;
+					_this->m_pFileTransfer->ShowFileTransferWindow(true);
 				}
+				else
+					SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_FILETRANSFER, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_DBUTTON)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_DBUTTON, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_SW)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_SW, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_DESKTOP)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_DESKTOP, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_TEXTCHAT)
+			{
+				if (_this->m_pTextChat->m_fTextChatRunning)
+				{
+					_this->m_pTextChat->ShowChatWindow(true);
+				}
+				else
+					SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_TEXTCHAT, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_DINPUT)
+			{
+				if (_this->m_remote_mouse_disable)
+				{
+					_this->m_remote_mouse_disable = false;
+					_this->m_MenuExecutor.SetRemoteMouseDisable(false);
+					SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_INPUT, (LPARAM)0);
+					SendMessage(parent, WM_SIZE, (WPARAM)ID_DINPUT, (LPARAM)0);
+				}
+				else
+				{
+					_this->m_remote_mouse_disable = true;
+					_this->m_MenuExecutor.SetRemoteMouseDisable(true);
+					SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_DINPUT, (LPARAM)0);
+					SendMessage(parent, WM_SIZE, (WPARAM)ID_DINPUT, (LPARAM)0);
+				}
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_PROPERTIES)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)IDC_OPTIONBUTTON, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_REFRESH)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_REQUEST_REFRESH, (LPARAM)0);
+				return 0;
+			}
+
+			if (LOWORD(wParam) == ID_BUTTON_STRG_ESC)
+			{
+				SendMessage(parent, WM_SYSCOMMAND, (WPARAM)ID_CONN_CTLESC, (LPARAM)0);
+				return 0;
 			}
 		}
-return DefWindowProc(hwnd, iMsg, wParam, lParam);
+	}
+
+	return DefWindowProc(hwnd, iMsg, wParam, lParam);
+
 }
 
 
