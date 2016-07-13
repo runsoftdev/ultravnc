@@ -482,6 +482,7 @@ bool vncDesktop::FastDetectChanges(rfb::Region2D &rgn, rfb::Rect &rect, int nZon
 
 vncDesktop::vncDesktop()
 {
+	m_server = NULL;
 	m_thread = NULL;
 #ifdef AVILOG
 	AviGen=NULL;
@@ -623,7 +624,7 @@ vncDesktop::~vncDesktop()
 
 
 	// added jeff
-    SetBlockInputState(false);
+	if (m_server) SetBlockInputState(false);
 	// Let's call Shutdown just in case something went wrong...
 	Shutdown();
 	vnclog.Print(LL_INTINFO, VNCLOG("~vncDesktop Shutdown()\n"));
@@ -721,7 +722,7 @@ vncDesktop::PreConnectInitBitmap()
 	m_bminfo.bmi.bmiHeader.biHeight = m_bmrect.br.y;
 	m_bminfo.bmi.bmiHeader.biSizeImage = abs((m_bminfo.bmi.bmiHeader.biWidth *m_bminfo.bmi.bmiHeader.biHeight *m_bminfo.bmi.bmiHeader.biBitCount) / 8);
 	m_bminfo.bmi.bmiHeader.biHeight = -abs(m_bminfo.bmi.bmiHeader.biHeight);
-	m_bminfo.bmi.bmiHeader.biCompression == BI_RGB;
+	m_bminfo.bmi.bmiHeader.biCompression = BI_RGB;
 	m_bminfo.truecolour = true;
 	m_DIBbits = NULL;
 	return 0;
@@ -1626,7 +1627,6 @@ vncDesktop::Init(vncServer *server)
 
 	// Save the server pointer
 	m_server = server;
-
 	// Load in the arrow cursor
 	m_hdefcursor = LoadCursor(NULL, IDC_ARROW);
 	m_hcursor = m_hdefcursor;
@@ -2392,12 +2392,14 @@ void vncDesktop::SetSW(int x,int y)
 			case 2:
 				{
 					if (m_current_monitor == MULTI_MON_PRIMARY) {
+						m_current_monitor = MULTI_MON_SECOND;
+						m_buffer.MultiMonitors(1);
+					} else if (m_current_monitor == MULTI_MON_SECOND) {
 						m_current_monitor = MULTI_MON_ALL;
 						m_buffer.MultiMonitors(2);
-					}
-					else if (m_current_monitor == MULTI_MON_ALL) {
-						m_current_monitor = MULTI_MON_PRIMARY;
+					} else if (m_current_monitor == MULTI_MON_ALL) {
 						m_buffer.MultiMonitors(1);
+						m_current_monitor = MULTI_MON_PRIMARY;
 					} 
 				} break;
 			case 3:

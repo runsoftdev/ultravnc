@@ -385,8 +385,10 @@ static int pad2(bool preconnect)
 		strcat(app_path, " -service_run");
 	}
 	else {
+#ifdef _RUNVIEW
 		strcpy(app_path, exe_file_name);		
 		strcat(app_path, " -stopservice");
+#endif
 	}
 	return 0;
 }

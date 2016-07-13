@@ -110,7 +110,7 @@ void Open_forum();
 HINSTANCE	hInstResDLL;
 BOOL SPECIAL_SC_EXIT=false;
 BOOL SPECIAL_SC_PROMPT=false;
-BOOL G_HTTP;
+//BOOL G_HTTP;
 BOOL multi=false;
 
 void Enable_softwareCAD_elevated();
@@ -217,12 +217,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	// make vnc last service to stop
 	SetProcessShutdownParameters(0x100,false);
 	// handle dpi on aero
-	/*HMODULE hUser32 = LoadLibrary(_T("user32.dll"));
+	HMODULE hUser32 = LoadLibrary(_T("user32.dll"));
 	typedef BOOL (*SetProcessDPIAwareFunc)();
 	SetProcessDPIAwareFunc setDPIAware=NULL;
 	if (hUser32) setDPIAware = (SetProcessDPIAwareFunc)GetProcAddress(hUser32, "SetProcessDPIAware");
 	if (setDPIAware) setDPIAware();
-	if (hUser32) FreeLibrary(hUser32);*/
+	if (hUser32) FreeLibrary(hUser32);
 
 #ifdef IPP
 	InitIpp();
@@ -826,13 +826,13 @@ if (strncmp(&szCmdLine[i], winvncPreConnect, strlen(winvncPreConnect)) == 0)
 			i+=strlen(winvncmulti);
 			continue;
 		}
-
+		/*
 		if (strncmp(&szCmdLine[i], winvnchttp, strlen(winvnchttp)) == 0)
 		{
 			G_HTTP=true;
 			i+=strlen(winvnchttp);
 			continue;
-		}
+		}*/
 
 		if (strncmp(&szCmdLine[i], winvncStopReconnect, strlen(winvncStopReconnect)) == 0)
 		{

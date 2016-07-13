@@ -4530,6 +4530,21 @@ vncClientThread::run(void *arg)
 	vnclog.Print(LL_CLIENTS, VNCLOG("client disconnected : %s (%hd)\n"),
 									m_client->GetClientName(),
 									m_client->GetClientId());
+
+	char myInifile[MAX_PATH];
+	char WORKDIR[MAX_PATH];
+	if (GetModuleFileName(NULL, WORKDIR, MAX_PATH))
+	{
+		char* p = strrchr(WORKDIR, '\\');
+		if (p == NULL) return;
+		*p = '\0';
+	}
+	strcpy(myInifile, "");
+	strcat(myInifile, WORKDIR);//set the directory
+	strcat(myInifile, "\\");
+	strcat(myInifile, "Config.ini");
+	WritePrivateProfileString("Connect", "Status", "OFF", myInifile);
+	
 	//////////////////
 	// LOG it also in the event
 	//////////////////

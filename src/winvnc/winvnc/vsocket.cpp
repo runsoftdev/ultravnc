@@ -151,11 +151,6 @@ VSocket::VSocket()
 	//adzm 2010-09
 	m_fPluginStreamingIn = false;
 	m_fPluginStreamingOut = false;
-	s_hIPHlp = ::LoadLibrary("Iphlpapi.dll");
-	if(s_hIPHlp ){
-		s_pGetPerTcpConnectionEStats = (t_GetPerTcpConnectionEStats) ::GetProcAddress(s_hIPHlp, "GetPerTcpConnectionEStats");
-		s_pSetPerTcpConnectionEStats = (t_SetPerTcpConnectionEStats) ::GetProcAddress(s_hIPHlp, "SetPerTcpConnectionEStats");
-	  }
 	G_SENDBUFFER=G_SENDBUFFER_EX;
 }
 
@@ -167,21 +162,17 @@ VSocket::~VSocket()
   Close();
   if (m_pNetRectBuf != NULL)
  	delete [] m_pNetRectBuf;
-
-  if(s_hIPHlp ) 
-	  FreeLibrary(s_hIPHlp);
-
 }
 
 ////////////////////////////
-#include "httpconnect.h"
+/*#include "httpconnect.h"
 VBool VSocket::Http_CreateConnect(const VString address)
 {
 	httpconnect http_class;
 	sock=http_class.Get_https_socket("443",address);
 	if (sock==0) return false;
 	else return true;
-}
+}*/
 
 VBool
 VSocket::Create()
@@ -454,7 +445,7 @@ VSocket::Resolve(const VString address)
   if (addr == INADDR_NONE)
     {
       // No, so get the actual IP address of the host name specified
-      struct hostent *pHost;
+      struct hostent *pHost=NULL;
       pHost = gethostbyname(address);
       if (pHost != NULL)
 	  {
@@ -472,9 +463,8 @@ VSocket::Resolve(const VString address)
 
 ////////////////////////////
 
-// adzm 2010-08
-VBool
-VSocket::SetDefaultSocketOptions()
+// adzm 2010-08VBool
+int VSocket::SetDefaultSocketOptions()
 {
 	VBool result = VTrue;
 
@@ -512,40 +502,88 @@ VSocket::SetDefaultSocketOptions()
 	}
 
 	assert(result);
-
-	{
-	sockaddr_in skaddr={0};
-	int	iSockSize=sizeof(sockaddr_in); 		
-	//initialise socket row value
-	getsockname(sock,(sockaddr*)&skaddr,&iSockSize);
-	m_SocketInfo.dwState =MIB_TCP_STATE_ESTAB;
-	m_SocketInfo.dwLocalAddr=skaddr.sin_addr.S_un.S_addr;
-	m_SocketInfo.dwLocalPort=skaddr.sin_port;
-	getpeername(sock,(sockaddr*)&skaddr,&iSockSize);
-	m_SocketInfo.dwRemoteAddr=skaddr.sin_addr.S_un.S_addr;
-	m_SocketInfo.dwRemotePort=skaddr.sin_port;
-
-	PUCHAR rw = NULL;
-	TCP_ESTATS_SND_CONG_RW_v0	  enableInfo={0};
-	ULONG iRet, lSize = 0;
-	//enable tcp stats 
-	rw = (PUCHAR) & enableInfo;
-	enableInfo.EnableCollection=TRUE;
-	lSize = sizeof (TCP_ESTATS_SND_CONG_RW_v0); 
-	if (s_pSetPerTcpConnectionEStats)
-	{
-	iRet = s_pSetPerTcpConnectionEStats((PMIB_TCPROW) &m_SocketInfo, TcpConnectionEstatsSndCong, rw, 0, lSize, 0);
-	CanUseFlow=false;
-	if (iRet==ERROR_SUCCESS) CanUseFlow=true;
-	}
-	else CanUseFlow=true;
-  } 
-
 	return result;
-}
+} 
 
 ////////////////////////////
+#ifdef IPV6V4
+VBool
+VSocket::SetTimeout(VCard32 msecs)
+{
+	if (G_ipv6_allowed)
+		return SetTimeout6(msecs);
+	else
+	 return SetTimeout4(msecs);
+}
+VBool
+VSocket::SetTimeout4(VCard32 msecs)
+{
+	if (LOBYTE(winsockVersion) < 2)
+		return VFalse;
+	int timeout=msecs;
+	if (setsockopt(sock4, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
+	{
+		return VFalse;
+	}
+	if (setsockopt(sock4, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
+	{
+		return VFalse;
+	}
+	return VTrue;
+}
 
+VBool VSocket::SetSendTimeout(VCard32 msecs)
+{
+	if (G_ipv6_allowed)
+		return SetTimeout6(msecs);
+	else
+		return SetTimeout4(msecs);
+}
+
+VBool VSocket::SetRecvTimeout(VCard32 msecs)
+{
+	if (G_ipv6_allowed)
+		return SetTimeout6(msecs);
+	else
+		return SetTimeout4(msecs);
+}
+
+VBool VSocket::SetSendTimeout4(VCard32 msecs)
+{
+	return SetTimeout4 (msecs);
+}
+
+VBool VSocket::SetRecvTimeout4(VCard32 msecs)
+{
+	return SetTimeout4 (msecs);
+}
+VBool
+VSocket::SetTimeout6(VCard32 msecs)
+{
+	if (LOBYTE(winsockVersion) < 2)
+		return VFalse;
+	int timeout=msecs;
+	if (setsockopt(sock6, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
+	{
+		return VFalse;
+	}
+	if (setsockopt(sock6, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
+	{
+		return VFalse;
+	}
+	return VTrue;
+}
+
+VBool VSocket::SetSendTimeout6(VCard32 msecs)
+{
+	return SetTimeout6(msecs);
+}
+
+VBool VSocket::SetRecvTimeout6(VCard32 msecs)
+{
+	return SetTimeout6(msecs);
+}
+#else
 VBool
 VSocket::SetTimeout(VCard32 msecs)
 {
@@ -565,38 +603,14 @@ VSocket::SetTimeout(VCard32 msecs)
 
 VBool VSocket::SetSendTimeout(VCard32 msecs)
 {
-#if 1
     return SetTimeout (msecs);
-#else
-	if (LOBYTE(winsockVersion) < 2)
-		return VFalse;
-	int timeout=msecs;
-
-	if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
-	{
-		return VFalse;
-	}
-
-	return VTrue;
-#endif
 }
 
 VBool VSocket::SetRecvTimeout(VCard32 msecs)
 {
-#if 1
     return SetTimeout (msecs);
-#else
-	if (LOBYTE(winsockVersion) < 2)
-		return VFalse;
-	int timeout=msecs;
-	if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
-	{
-		return VFalse;
-	}
-	return VTrue;
-#endif
 }
-
+#endif
 ////////////////////////////
 VInt
 VSocket::Send(const char *buff, const VCard bufflen)
@@ -1137,32 +1151,9 @@ int val =0;
 //method to get congestion window
 bool VSocket::GetOptimalSndBuf()
 {
-  if (!CanUseFlow) 
-	  {
 		  G_SENDBUFFER=	G_SENDBUFFER_EX;
 		  return TRUE;
-		}
 
-   ULONG							iRet, lSize = 0;
-   PUCHAR							rw = NULL;
-   TCP_ESTATS_SND_CONG_ROD_v0		 cwInfo={0};
-
-   if(s_pSetPerTcpConnectionEStats==0)return FALSE;
-
-   lSize= sizeof (cwInfo);
-   rw = (PUCHAR) & cwInfo;
-   iRet = s_pGetPerTcpConnectionEStats(&m_SocketInfo,TcpConnectionEstatsSndCong,NULL,0,0,NULL,0,0,rw,0,lSize);
-
-   if(iRet!=ERROR_SUCCESS)
-   {
-	   G_SENDBUFFER=	G_SENDBUFFER_EX;
-	   return TRUE;
-   }
-
-   if (cwInfo.CurCwnd<9000 && cwInfo.CurCwnd>0) 
-		G_SENDBUFFER= cwInfo.CurCwnd; 
-
-	return TRUE;
 }
 
 

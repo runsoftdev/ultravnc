@@ -432,7 +432,7 @@ vncEncodeMgr::SetEncoding(CARD32 encoding,BOOL reinitialize)
 	{
 		//This is not supported, jpeg require 32bit buffers
 		//to avoif a server crash we switch to zrle encoding
-		encoding=rfbEncodingZRLE;
+		encoding = rfbEncodingHextile;
 	}
 
 	if (reinitialize)
