@@ -584,8 +584,8 @@ ViewerDirectxClass:: Preupdate2(unsigned char * bits)
 
 			if (FAILED(pD3DDevice9->Reset(&d3dpp)))
 			{
-			devicelost=true;
-			return NULL;
+				devicelost=true;
+				return NULL;
 			}
 		}
 
@@ -593,8 +593,8 @@ ViewerDirectxClass:: Preupdate2(unsigned char * bits)
 
 		if (!surface)
 			{
-			devicelost=true;
-			return NULL;
+				devicelost=true;
+				return NULL;
 			}
 
 		D3DLOCKED_RECT lock;
@@ -616,16 +616,16 @@ ViewerDirectxClass:: Afterupdate()
 
 #ifdef _DEBUG
 	char			szText[256];
-				sprintf(szText,"After update1 2\n");
-				OutputDebugString(szText);
+	sprintf(szText,"After update1 2\n");
+	OutputDebugString(szText);
 #endif
 	if (devicelost==true) return true;
 	if (directxlocked==false) return true;
 	if (!surface) return false;
 #ifdef _DEBUG
 //	char			szText[256];
-				sprintf(szText,"After update2 2\n");
-				OutputDebugString(szText);
+	sprintf(szText,"After update2 2\n");
+	OutputDebugString(szText);
 #endif
 	    ///copy pixels
 		surface->UnlockRect();

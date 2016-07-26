@@ -8,7 +8,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>192.168.0.26:2800 -loglevel 12 -console -nostatus -password runremote!daebak@cheer$$ -noauto -fullcolors -encoding ultra2 -compresslevel 4 -quality 7 -autoreconnect 3 -normalcursor -title 1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.0.32:2800 -loglevel 12 -console -nostatus -password runremote!daebak@cheer$$ -noauto -fullcolors -encoding ultra2 -compresslevel 4 -quality 7 -autoreconnect 3 -normalcursor -title 1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

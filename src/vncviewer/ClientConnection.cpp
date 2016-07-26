@@ -6882,10 +6882,10 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 {
      ClientConnection *_this= (ClientConnection*)helper::SafeGetWindowUserData<ClientConnection>(hwnd);
 	 if( iMsg==WM_CREATE )
-		 {
+	{
 		 _this = (ClientConnection*)((CREATESTRUCT*)lParam)->lpCreateParams;
 		 helper::SafeSetWindowUserData(hwnd, (LONG_PTR)_this);
-		 }
+	}
 
 	if (_this == NULL) return DefWindowProc(hwnd, iMsg, wParam, lParam);
 
@@ -7011,6 +7011,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 								_this->m_nServerScale = _this->m_opts.m_nServerScale;
 								if (_this->m_nServerScale != nOldServerScale)
 								{
+									OutputDebugString("_this->SendServerScale\n");
 									_this->SendServerScale(_this->m_nServerScale);
 								}
 								else
@@ -7019,13 +7020,16 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 										prev_scale_den != _this->m_opts.m_scale_den)
 									{
 										// Resize the window if scaling factors were changed
+										OutputDebugString("_this->SizeWindow\n");
 										_this->SizeWindow(/*false*/);
 										InvalidateRect(hwnd, NULL, TRUE);
 										// Make the window corresponds to the requested state
 										_this->RealiseFullScreenMode();
 									}
-									if (fOldToolbarState != _this->m_opts.m_ShowToolbar)
+									if (fOldToolbarState != _this->m_opts.m_ShowToolbar) {
+										OutputDebugString("_this->SizeWindow2\n");
 										_this->SizeWindow();
+									}
 									_this->m_pendingFormatChange = true;
 								}
 
@@ -7036,9 +7040,11 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 							// adzm - 2010-07 - Extended clipboard
 							if ( (bOldViewOnly != _this->m_opts.m_ViewOnly) || (bOldDisableClipboard != _this->m_opts.m_DisableClipboard) )
 							{
+								OutputDebugString("_this->SizeWindow\n");
 								_this->UpdateRemoteClipboardCaps();
 
 								if (!_this->m_opts.m_ViewOnly && !_this->m_opts.m_DisableClipboard) {
+									OutputDebugString("_this->UpdateRemoteClipboard\n");
 									_this->UpdateRemoteClipboard(); // update the clipboard if we are no longer view only and the clipboard is enabled
 								}
 							}
@@ -7047,7 +7053,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 								 _this->m_nConfig = 0;
 							_this->OldEncodingStatusWindow = -2; // force update in status window
 							_this->m_fOptionsOpen = false;
-
+							OutputDebugString("end IDC_OPTIONBUTTON\n");
 							return 0;
 						}
 
@@ -7809,6 +7815,7 @@ LRESULT CALLBACK ClientConnection::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, 
 				case WM_WINDOWPOSCHANGED:
 				case WM_SIZE:
 					{
+						OutputDebugString("WM_SIZE");
 						// Calculate window dimensions
 						RECT rect;
 						RECT Rtb;

@@ -90,8 +90,11 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 
 		if (isServerScaleOnOffButton) {
 			pClient->m_opts.m_Directx = !pClient->m_opts.m_Directx;
-
+			pClient->OldEncodingStatusWindow = -2;
+			pClient->m_pendingFormatChange = true;
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)WM_SIZE, (LPARAM)0);
+			SendMessage(pClient->m_hwndMain, WM_SIZE, (WPARAM)ID_DINPUT, (LPARAM)0);
+			
 			WritePrivateProfileString(m_iniKey, MENU_SERVERSCALE_ENABLE_ONOFF, FUNTION_OFF, szFileName);
 			OutputDebugString("isServerScaleOnOffButton on\n");
 		}		
@@ -116,23 +119,27 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 			
 			PostQuitMessage(0);
 		}
+
 		if (isDisplayOptimize) {			
 			
 			WritePrivateProfileString(m_iniKey, MENU_DISPLAY_OPTIMIZE, FUNTION_OFF, szFileName);
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)8899, (LPARAM)0);
 			OutputDebugString("isDisplayOptimize on\n");
 		}
+		
 		if (isOneByOneScale) {
 			
 			WritePrivateProfileString(m_iniKey, MENU_ONE_BY_ONE_SCALE, FUNTION_OFF, szFileName);
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)ID_NORMALSCREEN2, (LPARAM)0);
 			OutputDebugString("isOneByOneScale on\n");
 		}
+		
 		if (isFullScreen) {
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)ID_FULLSCREEN, (LPARAM)0);
 			WritePrivateProfileString(m_iniKey, MENU_FULLSCREEN, FUNTION_OFF, szFileName);
 			OutputDebugString("isFullScreen on\n");
 		}
+		
 		if (isSelectMonitor) {
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)ID_DESKTOP, (LPARAM)0);
 			WritePrivateProfileString(m_iniKey, MENU_SELECT_MONITOR, FUNTION_OFF, szFileName);

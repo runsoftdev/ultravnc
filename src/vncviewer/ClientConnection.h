@@ -482,7 +482,7 @@ private:
 	void CheckXZNetRectBufferSize(int nBufSize);
 #endif
 	//
-	int EncodingStatusWindow,OldEncodingStatusWindow;
+	
 
     // 21 March 2008 jdp
     void ReadServerState();
@@ -645,7 +645,7 @@ private:
 	// mid-connection format change requested
 
 	// sf@2002 - v1.1.0
-	bool m_pendingFormatChange;
+	
 	bool m_pendingScaleChange;
 	bool m_pendingCacheInit;
 
@@ -817,6 +817,8 @@ public:
 	bool new_ultra_server;
 	TCHAR* m_IniKey;
 	TCHAR *m_desktopName;
+	int EncodingStatusWindow, OldEncodingStatusWindow;
+	bool m_pendingFormatChange;
 };
 
 // Some handy classes for temporary GDI object selection
