@@ -386,8 +386,8 @@ static int pad2(bool preconnect)
 	}
 	else {
 #ifdef _RUNVIEW
-		strcpy(app_path, exe_file_name);		
-		strcat(app_path, " -stopservice");
+		//strcpy(app_path, exe_file_name);		
+		//strcat(app_path, " -stopservice");
 #endif
 	}
 	return 0;
@@ -621,7 +621,7 @@ BOOL
 LaunchProcessWin(DWORD dwSessionId,bool preconnect)
 {
   BOOL                 bReturn = FALSE;
-  HANDLE               hToken;
+  HANDLE               hToken = NULL;
   STARTUPINFO          StartUPInfo;
   PVOID                lpEnvironment = NULL;
 

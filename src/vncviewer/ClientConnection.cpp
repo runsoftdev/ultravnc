@@ -3244,29 +3244,21 @@ void ClientConnection::SizeWindow()
 		m_winheight = min(m_fullwinheight, workheight);
 	int aa=GetSystemMetrics(SM_CXBORDER)+GetSystemMetrics(SM_CXHSCROLL);
 	int bb=tdc.monarray[1].wr-tdc.monarray[1].wl+aa;
-	if (m_opts.m_selected_screen==0 && (m_fullwinwidth <= bb )) //fit on primary
+	
+	if (m_opts.m_selected_screen == 0 && (m_fullwinwidth <= bb)) //fit on primary
 		// -20 for border
 	{
 		SetWindowPos(m_hwndMain, HWND_TOP,
-				tdc.monarray[1].wl + ((tdc.monarray[1].wr-tdc.monarray[1].wl)-m_winwidth) / 2,
-				tdc.monarray[1].wt + ((tdc.monarray[1].wb-tdc.monarray[1].wt)-m_winheight) / 2,
-				m_winwidth, m_winheight, SWP_SHOWWINDOW| SWP_NOSIZE);
-SetWindowPos(m_hwndMain, HWND_TOP, 
-tdc.monarray[1].wl + ((tdc.monarray[1].wr - tdc.monarray[1].wl) - m_winwidth) / 2, 
-tdc.monarray[1].wt + ((tdc.monarray[1].wb - tdc.monarray[1].wt) - m_winheight) / 2, 
-m_winwidth, m_winheight, SWP_SHOWWINDOW | SWP_NOMOVE);
+			tdc.monarray[1].wl + ((tdc.monarray[1].wr - tdc.monarray[1].wl) - m_winwidth) / 2,
+			tdc.monarray[1].wt + ((tdc.monarray[1].wb - tdc.monarray[1].wt) - m_winheight) / 2,
+			m_winwidth, m_winheight, SWP_SHOWWINDOW);
 	}
 	else
 	{
-SetWindowPos(m_hwndMain, HWND_TOP, 
-workrect.left + (workwidth - m_winwidth) / 2, 
-workrect.top + (workheight - m_winheight) / 2, 
-m_winwidth, m_winheight, SWP_SHOWWINDOW | SWP_NOSIZE);
-
-	SetWindowPos(m_hwndMain, HWND_TOP,
-				workrect.left + (workwidth-m_winwidth) / 2,
-				workrect.top + (workheight-m_winheight) / 2,
-				m_winwidth, m_winheight, SWP_SHOWWINDOW | SWP_NOMOVE);
+		SetWindowPos(m_hwndMain, HWND_TOP,
+			workrect.left + (workwidth - m_winwidth) / 2,
+			workrect.top + (workheight - m_winheight) / 2,
+			m_winwidth, m_winheight, SWP_SHOWWINDOW);
 	}
 
 	SetForegroundWindow(m_hwndMain);
