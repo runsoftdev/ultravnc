@@ -326,16 +326,12 @@ protected:
 	BOOL SendLastRect(); // Tight
 
 	void TriggerUpdateThread();
-
 	void PollWindow(HWND hwnd);
-
 
 	CARD32 m_state;
 	CARD32 m_value;
-	bool m_want_update_state; 
+	bool m_want_update_state;
 	int unlockcounter;
-
-
 	// Specialised client-side UpdateTracker
 protected:
 

@@ -2615,9 +2615,11 @@ void vncServer::StopReconnectAll()
         client = GetClient(*i);
         if (!client)
             continue;
-
+				
         client->m_Autoreconnect=false;
+		//RemoveClient(client->GetClientId());
 	}
+	
 }
 
 void vncServer::SetFTTimeout(int msecs)
