@@ -319,8 +319,12 @@ DWORD WINAPI Cadthread(LPVOID lpParam)
        /////////////////////
 	if(OSversion.dwMajorVersion==6)//&& OSversion.dwMinorVersion>=1) //win7  // test win7 +Vista
 	{
-
+#ifdef _RUNVIEW
 		if (hShutdownEventcad==NULL ) hShutdownEventcad = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraCad");
+#else
+		if (hShutdownEventcad == NULL) hShutdownEventcad = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraCad2");
+#endif
+		
 		if (hShutdownEventcad!=NULL ) SetEvent(hShutdownEventcad);
 		if (old_desktop) SetThreadDesktop(old_desktop);
 		if (desktop) CloseDesktop(desktop);
@@ -337,7 +341,12 @@ DWORD WINAPI Cadthread(LPVOID lpParam)
 			  }
      if (isLUAon != 1 && OSversion.dwMajorVersion==6) 
 	 {
+#ifdef _RUNVIEW
 		 if (hShutdownEventcad==NULL ) hShutdownEventcad = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraCad");
+#else
+		 if (hShutdownEventcad == NULL) hShutdownEventcad = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraCad2");
+#endif
+		 
 		 if (hShutdownEventcad!=NULL ) SetEvent(hShutdownEventcad);
 		 if (old_desktop) SetThreadDesktop(old_desktop);
 		 if (desktop) CloseDesktop(desktop);

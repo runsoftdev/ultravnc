@@ -39,7 +39,7 @@ HANDLE stopServiceEvent=0;
 extern HANDLE hEvent;
 static char service_path[MAX_PATH];
 void monitor_sessions();
-void monitor_sessions_RDP();
+//void monitor_sessions_RDP();
 void Restore_after_reboot();
 
 #ifdef _RUNVIEW
@@ -53,6 +53,7 @@ void Restore_after_reboot();
 void disconnect_remote_sessions();
 char cmdtext[256];
 extern int clear_console;
+extern bool  RDPMODE;
 
 bool IsWin2000()
 {
@@ -106,13 +107,8 @@ static void WINAPI service_main(DWORD argc, LPTSTR* argv) {
         serviceStatus.dwCurrentState=SERVICE_RUNNING;
         SetServiceStatus(serviceStatusHandle, &serviceStatus);
 
-Restore_after_reboot();
-		//IniFile myIniFile;
-		//bool  RDPMODE = true;
-		//RDPMODE = myIniFile.ReadInt("admin", "rdpmode", 0);
-		//if (RDPMODE)
-			monitor_sessions_RDP();
-		//else monitor_sessions();
+		Restore_after_reboot();
+			monitor_sessions();
 
         /* service was stopped */
         serviceStatus.dwCurrentState=SERVICE_STOP_PENDING;

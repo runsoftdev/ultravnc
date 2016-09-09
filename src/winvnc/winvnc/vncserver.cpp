@@ -172,7 +172,6 @@ vncServer::vncServer()
 	m_lock_on_exit = 0;
 	m_connect_pri = 0;
 	m_disableTrayIcon = FALSE;
-	m_Rdpmode = FALSE;
 	m_AllowEditClients = FALSE;
 
 	// Set the input options
@@ -629,9 +628,6 @@ vncServer::Authenticated(vncClientId clientid)
 			// Yes, so remove the client and add it to the auth list
 			m_unauthClients.erase(i);
 
-			// Add the client to the auth list
-			m_authClients.push_back(clientid);
-
 			// Create the screen handler if necessary
 			if (m_desktop == NULL)
 			{
@@ -641,7 +637,6 @@ vncServer::Authenticated(vncClientId clientid)
 				{
 					client->Kill();
 					authok = FALSE;
-					//m_authClients.erase(i);
 					break;
 				}
 				// Preset toggle prim/sec/both
@@ -659,13 +654,16 @@ vncServer::Authenticated(vncClientId clientid)
 					authok = FALSE;
 					delete m_desktop;
 					m_desktop = NULL;
-					//m_authClients.erase(i);
+
 					break;
 				}
 			}
 
 			// Tell the client about this new buffer
 			client->SetBuffer(&(m_desktop->m_buffer));
+
+			// Add the client to the auth list
+			m_authClients.push_back(clientid);
 
 			break;
 		}
@@ -940,23 +938,6 @@ bool vncServer::IsThereAUltraEncodingClient()
 	}
 	return false;
 }
-
-bool vncServer::IsEncoderSet()
-{
-	vncClientList::iterator i;
-	bool fFound = false;
-	omni_mutex_lock l(m_clientsLock, 25);
-
-	for (i = m_authClients.begin(); i != m_authClients.end(); i++)
-	{
-		if (GetClient(*i)->IsEncoderSet())
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 
 bool vncServer::IsThereFileTransBusy()
 {
@@ -2399,23 +2380,6 @@ vncServer::GetDisableTrayIcon()
 {
 	return m_disableTrayIcon;
 }
-
-BOOL
-vncServer::SetRdpmode(BOOL Rdpmode)
-{
-	if (Rdpmode != m_Rdpmode)
-	{
-		m_Rdpmode = Rdpmode;
-	}
-	return TRUE;
-}
-
-BOOL
-vncServer::GetRdpmode()
-{
-	return m_Rdpmode;
-}
-
 BOOL
 vncServer::SetAllowEditClients(BOOL AllowEditClients)
 {
@@ -2617,9 +2581,7 @@ void vncServer::StopReconnectAll()
             continue;
 				
         client->m_Autoreconnect=false;
-		//RemoveClient(client->GetClientId());
 	}
-	
 }
 
 void vncServer::SetFTTimeout(int msecs)

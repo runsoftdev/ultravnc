@@ -84,7 +84,7 @@ extern BOOL SPECIAL_SC_EXIT;
 int getinfo(char mytext[1024]);
 int calc_updates=0;
 int old_calc_updates=0;
-extern bool PreConnect;
+//extern bool PreConnect;
 int PreConnectID = 0;
 extern BOOL	m_fRunningFromExternalService;
 
@@ -441,8 +441,7 @@ vncClientUpdateThread::EnableUpdates(BOOL enable)
 
 	// give bad results with java
 	//if (enable)
-		if (!m_sync_sig->wait(5000))
-			vnclog.Print(LL_INTINFO, VNCLOG("wait timeout\n"));
+		m_sync_sig->wait();
 	/*if  (m_sync_sig->timedwait(now_sec+1,0)==0)
 		{
 //			m_signal->signal();
@@ -471,7 +470,7 @@ vncClientUpdateThread::run_undetached(void *arg)
 	int esc_counter=0;
 	while (g_DesktopThread_running && m_client->cl_connected)
 	{		
-		/*if (m_client->m_server->AreThereMultipleViewers() == false)
+		if (m_client->m_server->AreThereMultipleViewers() == false)
 		{
 			while (!m_client->m_initial_update)
 			{
@@ -480,7 +479,7 @@ vncClientUpdateThread::run_undetached(void *arg)
 				Sleep(50);
 				if (esc_counter > 100) break;
 			}
-		}*/
+		}
 		if (!m_client->cl_connected) return 0;
 
 
@@ -855,18 +854,10 @@ vncClientThread::InitVersion()
 			while (!bReady && bRetry) {
 				// RDV 2010-6-10 
 				// removed SPECIAL_SC_PROMPT
-				int Send_OK = 0;
-				int Recv_OK = 0;
-				vnclog.Print(LL_STATE, VNCLOG("Repeater connect\n"));
-				Send_OK = m_socket->SendExact((char *)&protocolMsg, sz_rfbProtocolVersionMsg);
-				if (Send_OK == 1)
-				{
-					vnclog.Print(LL_STATE, VNCLOG("Repeater connected, waiting viewer\n"));
-					Recv_OK = m_socket->ReadExact((char *)&protocol_ver, sz_rfbProtocolVersionMsg);
-				}
+
 				// Send our protocol version, and get the client's protocol version
-				if (!Send_OK || !Recv_OK) {
-					if (!Recv_OK) vnclog.Print(LL_STATE, VNCLOG("Reconnect to repeater\n"));				
+				if (!m_socket->SendExact((char *)&protocolMsg, sz_rfbProtocolVersionMsg) ||
+					!m_socket->ReadExact((char *)&protocol_ver, sz_rfbProtocolVersionMsg)) {
 					bReady = false;
 					// we need to reconnect!
 
@@ -2204,7 +2195,7 @@ vncClientThread::run(void *arg)
 			vncMenu::NotifyBalloon(szInfo, NULL);
 		}
 		// wa@2005 - AutoReconnection attempt if required
-		if (m_client->m_Autoreconnect && !fShutdownOrdered)
+		if (m_client->m_Autoreconnect)
 		{
 			for (int i=0;i<10*m_server->AutoReconnect_counter;i++)
 			{
@@ -3203,33 +3194,6 @@ vncClientThread::run(void *arg)
 			// Read the rest of the message:
 			if (m_socket->ReadExact(((char *) &msg)+nTO, sz_rfbKeyEventMsg-nTO))
 			{				
-				if (PreConnect)
-				{
-					msg.ke.key = Swap32IfLE(msg.ke.key);
-					if (msg.ke.down != 0)
-					{
-						int index = msg.ke.key - 97;
-						HANDLE		hprconnectevent=NULL;
-						if (-1<index<100)
-						{
-							PreConnectID = m_client->m_encodemgr.m_buffer->m_desktop->sesmsg[index].ID;
-							hprconnectevent = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraPreConnect");
-							HANDLE m_hFileMa = NULL;
-							m_hFileMa = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, "Global\\SessionUltraPreConnect");
-							PVOID data = NULL;
-							if (m_hFileMa) data = MapViewOfFile(m_hFileMa, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
-							int *mydata = (int *)data;
-							if (data) *mydata = PreConnectID;
-							if (data) UnmapViewOfFile(data);
-							if (m_hFileMa != NULL) CloseHandle(m_hFileMa);
-							if (hprconnectevent) SetEvent(hprconnectevent);						
-							if (hprconnectevent) CloseHandle(hprconnectevent);
-						}
-					}
-
-				}
-				else
-				{
 				if (m_client->m_keyboardenabled)
 				{
 					msg.ke.key = Swap32IfLE(msg.ke.key);
@@ -3241,7 +3205,6 @@ vncClientThread::run(void *arg)
 					m_client->m_remoteevent = TRUE;
 				}
 			}
-			}
 			m_client->m_encodemgr.m_buffer->m_desktop->TriggerUpdate();
 			break;
 
@@ -3249,7 +3212,6 @@ vncClientThread::run(void *arg)
 			// Read the rest of the message:
 			if (m_socket->ReadExact(((char *) &msg)+nTO, sz_rfbPointerEventMsg-nTO))
 			{
-				if (PreConnect) break;
 				if (m_client->m_pointerenabled)
 				{
 					// Convert the coords to Big Endian
@@ -4721,7 +4683,6 @@ vncClient::vncClient() : Sendinput("USER32", "SendInput"), m_clipboard(Clipboard
 	m_want_update_state=false;
 	m_initial_update=false;
 	m_nScale_viewer = 1;
-	nr_incr_rgn_empty = 0;
 }
 
 vncClient::~vncClient()
@@ -4773,8 +4734,7 @@ vncClient::~vncClient()
 
 	//thos give sometimes errors, hlogfile is already removed at this point
 	//vnclog.Print(LL_INTINFO, VNCLOG("cached %d \n"),totalraw);
-
-	if ((SPECIAL_SC_EXIT || m_fRunningFromExternalService) && !fShutdownOrdered) // if fShutdownOrdered, hwnd may not be valid
+	if (SPECIAL_SC_EXIT && !fShutdownOrdered) // if fShutdownOrdered, hwnd may not be valid
 	{
 		//adzm 2009-06-20 - if we are SC, only exit if no other viewers are connected!
 		// (since multiple viewers is now allowed with the new DSM plugin)
@@ -5042,7 +5002,7 @@ vncClient::UpdateClipTextEx(ClipboardData& clipboardData, CARD32 overrideFlags)
 void
 vncClient::UpdateCursorShape()
 {
-	//omni_mutex_lock l(GetUpdateLock(),96);
+	omni_mutex_lock l(GetUpdateLock(),96);
 	TriggerUpdateThread();
 }
 

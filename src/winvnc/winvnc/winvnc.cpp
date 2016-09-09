@@ -129,7 +129,7 @@ void Secure_Plugin(char *szPlugin);
 //HACK to use name in autoreconnect from service with dyn dns
 char dnsname[255];
 VNC_OSVersion VNCOS;
-extern bool PreConnect;
+//extern bool PreConnect;
 // winvnc.exe will also be used for helper exe
 // This allow us to minimize the number of seperate exe
 bool
@@ -217,12 +217,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	// make vnc last service to stop
 	SetProcessShutdownParameters(0x100,false);
 	// handle dpi on aero
-	HMODULE hUser32 = LoadLibrary(_T("user32.dll"));
+	/*HMODULE hUser32 = LoadLibrary(_T("user32.dll"));
 	typedef BOOL (*SetProcessDPIAwareFunc)();
 	SetProcessDPIAwareFunc setDPIAware=NULL;
 	if (hUser32) setDPIAware = (SetProcessDPIAwareFunc)GetProcAddress(hUser32, "SetProcessDPIAware");
 	if (setDPIAware) setDPIAware();
-	if (hUser32) FreeLibrary(hUser32);
+	if (hUser32) FreeLibrary(hUser32);*/
 
 #ifdef IPP
 	InitIpp();
@@ -345,13 +345,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 	{
 		szCmdLine[i] = tolower(szCmdLine[i]);
 	}
-
 	BOOL argfound = FALSE;
 	for (i = 0; i < strlen(szCmdLine); i++)
 	{
 		if (szCmdLine[i] <= ' ')
 			continue;
-
 		argfound = TRUE;
 
 		if (strncmp(&szCmdLine[i], winvncSettingshelper, strlen(winvncSettingshelper)) == 0)
@@ -380,7 +378,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 		if (strncmp(&szCmdLine[i], winvncKill, strlen(winvncKill)) == 0)
 		{
 			static HANDLE		hShutdownEventTmp;
+#ifdef _RUNVIEW
 			hShutdownEventTmp = OpenEvent(EVENT_ALL_ACCESS, FALSE, "Global\\SessionEventUltra");
+#else
+			hShutdownEventTmp = OpenEvent(EVENT_ALL_ACCESS, FALSE, "Global\\SessionEventUltra2");
+#endif
+			
 			SetEvent(hShutdownEventTmp);
 			CloseHandle(hShutdownEventTmp);
 
@@ -783,7 +786,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 if (strncmp(&szCmdLine[i], winvncPreConnect, strlen(winvncPreConnect)) == 0)
 		{			
 			i += strlen(winvncPreConnect);
-			PreConnect = true;
+			//PreConnect = true;
 			continue;
 		}
 		if (strncmp(&szCmdLine[i], winvncStartService, strlen(winvncStartService)) == 0)
@@ -1307,8 +1310,14 @@ int WinVNCAppMain()
 
 	// sf@2007 - New impersonation thread stuff for tray icon & menu
 	// Subscribe to shutdown event
+#ifdef _RUNVIEW
 	hShutdownEvent = OpenEvent(EVENT_ALL_ACCESS, FALSE, "Global\\SessionEventUltra");
 	hShutdownEventcad = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraCad");
+#else
+	hShutdownEvent = OpenEvent(EVENT_ALL_ACCESS, FALSE, "Global\\SessionEventUltra2");
+	hShutdownEventcad = OpenEvent(EVENT_MODIFY_STATE, FALSE, "Global\\SessionEventUltraCad2");
+#endif
+	
 	if (hShutdownEvent) ResetEvent(hShutdownEvent);
 	vnclog.Print(LL_STATE, VNCLOG("***************** SDEvent created \n"));
 	// Create the timer that looks periodicaly for shutdown event

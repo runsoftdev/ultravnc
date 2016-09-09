@@ -64,7 +64,12 @@ const UINT MENU_TRAYICON_BALLOON_MSG = RegisterWindowMessage("RunRemote.TrayIcon
 
 const UINT FileTransferSendPacketMessage = RegisterWindowMessage("RunRemote.Viewer.FileTransferSendPacketMessage");
 
+#ifdef _RUNVIEW
 const char *MENU_CLASS_NAME = "RunRemote";
+#else
+const char *MENU_CLASS_NAME = "RunRemoteSupport";
+#endif
+
 
 BOOL g_restore_ActiveDesktop = FALSE;
 bool RunningAsAdministrator ();
@@ -344,7 +349,7 @@ vncMenu::vncMenu(vncServer *server)
 	ResetEvent(hEvent);
 	*/
 
-	SetTimer(m_hwnd, 1, 1000, NULL);
+	SetTimer(m_hwnd, 1, 2000, NULL);
 
 
 	// sf@2002
@@ -1705,12 +1710,13 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				ret = GlobalGetAtomName( (ATOM)lParam, szId, sizeof( szId ) );
 				GlobalDeleteAtom( (ATOM)lParam );
 			}
-			char m_pref_passwd[MAXPWLEN];
+			/*char m_pref_passwd[MAXPWLEN];
 			IniFile myIniFile;
 			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
 			_this->m_server->SetPassword(m_pref_passwd);
 			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
 			_this->m_server->AutoReconnect(true);
+			*/
 			
 			if ( ret > 0 )
 				_this->m_server->AutoReconnectId(szId);

@@ -35,9 +35,7 @@ bool g_update_triggered;
 DWORD WINAPI hookwatch(LPVOID lpParam);
 extern bool stop_hookwatch;
 void testBench();
-char g_hookstring[16]="";
-
-bool PreConnect = false;
+char g_hookstring[16]=""; 
 
 inline bool
 ClipRect(int *x, int *y, int *w, int *h,
@@ -694,11 +692,7 @@ bool vncDesktopThread::handle_display_change(HANDLE& threadHandle, rfb::Region2D
 						{
 							vnclog.Print(LL_INTERR, VNCLOG("Format changed\n"));
 							m_server->UpdatePalette(false); // changed no lock ok
-							//UpdateLocalFormat without updatelock can cause stuck in m_signal->wait(), because not returning from mutex->lock()
-							//the synchonisation of EnableUpdates(TRUE|FALSE) does not work without getting the UpdateLock.
-							//this is a weakness in the vnc server implementation
-							//we had the problem on XP, running in a virtual machine of win7 virtualbox.
-							m_server->UpdateLocalFormat(true); // must have the update lock
+							m_server->UpdateLocalFormat(false); // changed no lock ok
 					}
 
 					if (screensize_changed) 
@@ -950,15 +944,6 @@ vncDesktopThread::run_undetached(void *arg)
 	m_desktop->m_hookinited = FALSE;
 	m_desktop->m_bitmappointer = FALSE;
 
-	int esc_counter = 0;
-	while (!m_server->All_clients_initialalized())
-	{
-	Sleep(100);
-	esc_counter++;
-	if (esc_counter > 50) break;
-	vnclog.Print(LL_INTERR, VNCLOG("Wait for viewer init \n"));
-	}
-
 	// Set driver cursor state
 	XRichCursorEnabled= (FALSE != m_desktop->m_server->IsXRichCursorEnabled());
 	if (!XRichCursorEnabled && m_desktop->m_videodriver) m_desktop->m_videodriver->HardwareCursor();
@@ -984,15 +969,9 @@ vncDesktopThread::run_undetached(void *arg)
 	int waiting_update=0;
 	SetEvent(m_desktop->restart_event);
 	///
-	//Sleep(1000);
+	Sleep(1000);
 	rgncache.assign_union(rfb::Region2D(m_desktop->m_Cliprect));
 
-	if (PreConnect)
-	{
-		//m_desktop->m_buffer.WriteMessageOnScreenPreConnect();
-	}
-	else
-	{
 	if (m_desktop->VideoBuffer() && m_desktop->m_hookdriver && !VNCOS.OS_WIN8)
 		{
 			m_desktop->m_buffer.GrabRegion(rgncache,true,true);
@@ -1001,7 +980,7 @@ vncDesktopThread::run_undetached(void *arg)
 		{
 			m_desktop->m_buffer.GrabRegion(rgncache,false,true);
 		}
-	}
+
 	//telling running viewers to wait until first update, done
 	if  (m_server->MaxCpu() <50)
 		{
@@ -1310,7 +1289,7 @@ vncDesktopThread::run_undetached(void *arg)
 										// Back added, no need to stop polling during move
 										if ((cpuUsage < m_server->MaxCpu()/2))
 										{
-										if (!m_desktop->m_hookdriver && !m_server->SingleWindow() && !s_moved && !m_desktop->startedw8)
+										if (!m_desktop->m_hookdriver && !m_server->SingleWindow() && !s_moved) 
 											s_moved=m_desktop->CalcCopyRects(updates);
 										}
 										
@@ -1328,12 +1307,6 @@ vncDesktopThread::run_undetached(void *arg)
 										if ((newtick-oldtick2) != 0) itoa(1000/((newtick-oldtick2)),tempchar,10);
 										oldtick2=newtick;
 										m_desktop->m_buffer.WriteMessageOnScreen(tempchar);*/
-										if (PreConnect)
-										{
-											if (m_desktop->m_server->IsEncoderSet()) m_desktop->m_buffer.WriteMessageOnScreenPreConnect();
-										}
-										else
-										{
 										if (m_desktop->VideoBuffer() && m_desktop->m_hookdriver)
 											{
 												m_desktop->m_buffer.GrabRegion(rgncache,true,capture);
@@ -1342,7 +1315,11 @@ vncDesktopThread::run_undetached(void *arg)
 											{
 												m_desktop->m_buffer.GrabRegion(rgncache,false,capture);
 											}
-										}
+/*#ifdef _DEBUG
+										char			szText[256];
+										sprintf(szText," capture %i\n",capture);
+										OutputDebugString(szText);		
+#endif*/
 										capture=true;
 											
 										// sf@2002 - v1.1.x - Mouse handling
@@ -1358,7 +1335,7 @@ vncDesktopThread::run_undetached(void *arg)
 														}
 
 											}
-										if (m_desktop->m_server->IsXRichCursorEnabled())// && (!m_desktop->m_UltraEncoder_used  || VNCOS.OS_WIN8) )
+										if (m_desktop->m_server->IsXRichCursorEnabled() && (!m_desktop->m_UltraEncoder_used  || VNCOS.OS_WIN8) )
 											{
 												if (m_desktop->m_hcursor != m_desktop->m_hOldcursor || m_desktop->m_buffer.IsShapeCleared())
 														{
