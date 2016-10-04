@@ -1403,7 +1403,6 @@ void ClientConnection::CreateDisplay()
 	//WatchClipboard();  
 #endif // DEBUG
 
-
 	//Added by: Lars Werner (http://lars.werner.no)
 	if (TitleBar.GetSafeHwnd() == NULL) {
 		TitleBar.Create(m_pApp->m_instance, m_hwndMain);		

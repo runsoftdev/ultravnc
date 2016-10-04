@@ -1856,8 +1856,13 @@ BOOL vncClientThread::AuthVnc(std::string& auth_message)
 				vnclog.Print(LL_SOCKERR, VNCLOG("Failed to receive challenge response from client\n"));
 				return FALSE;
             }
+			
+			//vncPasswd::ToText plain2(response);
+			//vnclog.Print(LL_INTINFO, "Password authentication plain: %s", plain); //PGM
+			//vnclog.Print(LL_INTINFO, "Password authentication response: %s", plain2); //PGM
+
 			// Encrypt the challenge bytes
-			vncEncryptBytes((BYTE *)&challenge, plain);
+			vncEncryptBytes((BYTE *)&challenge, plain);			
 
 			auth_ok = TRUE;
 			// Compare them to the response

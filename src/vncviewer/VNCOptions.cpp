@@ -205,7 +205,7 @@ VNCOptions::VNCOptions()
   m_oldplugin=false;
   //g_disable_sponsor= false;
   m_fUseProxy = false;
-  m_selected_screen=1;
+  m_selected_screen=0;
   m_szDSMPluginFilename[0] = '\0';
   m_caption[0] = '\0';
   m_title[0] = '\0';

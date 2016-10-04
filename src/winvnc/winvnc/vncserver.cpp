@@ -523,6 +523,17 @@ vncClientId vncServer::AddClient(VSocket *socket,
 		return -1;
 	}
 
+#ifdef _RUNVIEW						
+	char m_pref_passwd[MAXPWLEN];
+	IniFile myIniFile;
+	myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
+
+	vnclog.Print(LL_INTINFO, "############### AddClient::Password changed"); //PGM
+
+	SetPassword(m_pref_passwd);
+	EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
+#endif
+
 	m_clientmap[clientid] = client;
 
 	// Add the client to unauth the client list

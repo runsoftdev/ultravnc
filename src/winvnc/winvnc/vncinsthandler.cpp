@@ -31,8 +31,12 @@
 #include "vncinsthandler.h"
 
 // Name of the mutex
-
+#ifdef _RUNVIEW
+const char mutexname[] = "RunRemoteViewer_Win32_Instance_Mutex";
+#else
 const char mutexname [] = "RunRemote_Win32_Instance_Mutex";
+#endif
+
 
 // The class methods
 vncInstHandler::vncInstHandler()

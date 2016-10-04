@@ -29,11 +29,9 @@ extern Log vnclog;
 #include "multimon.h"
 
 //***************************************************************************************
-
 // CTitleBar *TitleBarThis=NULL; // Added Jef Fix
 
 //***************************************************************************************
-
 CTitleBar::CTitleBar()
 {
 	hInstance=NULL;
@@ -53,7 +51,6 @@ CTitleBar::CTitleBar(HINSTANCE hInst, HWND ParentWindow)
 }
 
 //***************************************************************************************
-
 CTitleBar::~CTitleBar()
 {
 	DeleteObject(Font);
@@ -65,7 +62,6 @@ CTitleBar::~CTitleBar()
 }
 
 //***************************************************************************************
-
 void CTitleBar::Init()
 {
 	SlideDown=TRUE; //Slide down at startup
@@ -96,7 +92,6 @@ void CTitleBar::Init()
 }
 
 //***************************************************************************************
-
 void CTitleBar::Create(HINSTANCE hInst, HWND ParentWindow)
 {
 	hInstance=hInst;
@@ -139,16 +134,16 @@ void CTitleBar::CreateDisplay()
 		HeightPlacement=0;
 
 	m_hWnd = CreateWindow(_T("FSTITLEBAR"),
-			      /*_T("Titlebar")*/NULL,
-			      winstyle,
-			      CenterX,
-			      HeightPlacement,
-			      tbWidth,       // x-size
-			      tbHeigth,      // y-size
-			      Parent,        // Parent handle
-			      NULL,          // Menu handle
-			      hInstance,
-			      NULL);
+						  /*_T("Titlebar")*/NULL,
+						  winstyle,
+						  CenterX,
+						  HeightPlacement,
+						  tbWidth,       // x-size
+						  tbHeigth,      // y-size
+						  Parent,        // Parent handle
+						  NULL,          // Menu handle
+						  hInstance,
+						  NULL);
 
     helper::SafeSetWindowUserData(m_hWnd, (LONG_PTR)this);
 	//Set region to window so it is non rectangular
@@ -285,6 +280,7 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 					0,
 					0,
 					SRCCOPY);
+
 			if (hbrOld) SelectObject(hdcMem,hbrOld);
             DeleteDC(hdcMem); 
             return TRUE; 
@@ -309,31 +305,49 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 
 				//Redraw window to show the new gfx...
 				::RedrawWindow(TitleBarThis->Pin, NULL, NULL, TRUE);
+				OutputDebugString(">>>> TitleBar::tbIDC_PIN\n");
 			}
 
 			//If default = true we'll send usally showwindow and close messages
-			if(tbDefault==TRUE)
+			if (tbDefault == TRUE)
 			{
-				if(LOWORD(wParam) == tbIDC_CLOSE)
+				if (LOWORD(wParam) == tbIDC_CLOSE) {
 					::SendMessage(TitleBarThis->Parent, WM_CLOSE, NULL, 0);
-				if(LOWORD(wParam) == tbIDC_MAXIMIZE)
-				{
+					OutputDebugString("------------tbIDC_CLOSE-------------------");
+				}
+
+				if (LOWORD(wParam) == tbIDC_MAXIMIZE)
+				{					
+
 					//if(::IsZoomed(TitleBarThis->Parent)==TRUE)
-						ShowWindow(TitleBarThis->Parent, SW_RESTORE);
+					ShowWindow(TitleBarThis->Parent, SW_RESTORE);
 					/*else
 						ShowWindow(TitleBarThis->Parent, SW_MAXIMIZE);*/
 				}
-				if(LOWORD(wParam) == tbIDC_MINIMIZE)
+
+				if (LOWORD(wParam) == tbIDC_MINIMIZE) {
 					ShowWindow(TitleBarThis->Parent, SW_MINIMIZE);
+					OutputDebugString(">>>> TitleBar::tbIDC_MINIMIZE ---------");
+				}
 			}
 			else //default = false - send custom message on buttons
 			{
-				if(LOWORD(wParam) == tbIDC_CLOSE)
+
+				if (LOWORD(wParam) == tbIDC_CLOSE) {
 					::SendMessage(TitleBarThis->Parent, tbWM_CLOSE, NULL, NULL);
-				if(LOWORD(wParam) == tbIDC_MAXIMIZE)
+					OutputDebugString("------------tbWM_CLOSE - send custom message on buttons-------------------");
+				}
+				if (LOWORD(wParam) == tbIDC_MAXIMIZE) {
 					::SendMessage(TitleBarThis->Parent, tbWM_MAXIMIZE, NULL, NULL);
-				if(LOWORD(wParam) == tbIDC_MINIMIZE)
+					ShowWindow(TitleBarThis->Parent, SW_RESTORE);
+					OutputDebugString(">>>> TitleBar::ShowWindow(TitleBarThis->Parent, SW_RESTORE)\n");					
+					SendMessage(TitleBarThis->Parent, WM_SYSCOMMAND, (WPARAM)ID_NORMALSCREEN2, (LPARAM)0);
+					OutputDebugString(">>>> TitleBar::ID_NORMALSCREEN2\n");
+					OutputDebugString("------------tbIDC_MAXIMIZE - send custom message on buttons-------------------");
+				}
+				if (LOWORD(wParam) == tbIDC_MINIMIZE) {
 					::SendMessage(TitleBarThis->Parent, tbWM_MINIMIZE, NULL, NULL);
+				}
 			}
         }
 
@@ -341,33 +355,33 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 		{
 			UINT IDNum=LOWORD(wParam);
 		
-			if(IDNum>=tbWMCOMMANDIDStart&&IDNum<tbWMCOMMANDIDEnd) //The ID is in range for a menuclick
+			if(IDNum >= tbWMCOMMANDIDStart && IDNum < tbWMCOMMANDIDEnd) //The ID is in range for a menuclick
 			{
-				UINT Num=IDNum-tbWMCOMMANDIDStart;
+				UINT Num = IDNum - tbWMCOMMANDIDStart;
 
 				//When the close,minimize, maximize is not present just send! :)
-				if(tbLastIsStandard==FALSE)
-					::SendMessage(TitleBarThis->Parent, WM_USER+tbWMUSERID+Num, NULL,NULL);
-				else //Handle close, minimize and maximize
-				{
+				if (tbLastIsStandard == FALSE) {
+					::SendMessage(TitleBarThis->Parent, WM_USER + tbWMUSERID + Num, NULL, NULL);
+				}
+				else {//Handle close, minimize and maximize				
 					HMENU Menu=LoadMenu(TitleBarThis->hInstance,MAKEINTRESOURCE (tbMENUID));
 					HMENU SubMenu=GetSubMenu(Menu,0);;
 
-					UINT Total=0;
+					UINT Total = 0;
 
 					//Get the real number of entries (exluding seperators)
-					for(int i=0;i<GetMenuItemCount(SubMenu);i++)
+					for(int i = 0 ; i<GetMenuItemCount(SubMenu) ; i++)
 					{
 						int res=::GetMenuString(SubMenu, i, NULL, 0, MF_BYPOSITION);
 						if(res!=0)
 							Total++;
 					}
 
-					if(Num==Total-1) //Close button
+					if(Num == Total - 1) //Close button
 						::SendMessage(TitleBarThis->m_hWnd,WM_COMMAND,MAKEWPARAM(tbIDC_CLOSE,BN_CLICKED),NULL);
-					else if(Num==Total-2) //Minimize button
+					else if(Num == Total - 2) //Minimize button
 						::SendMessage(TitleBarThis->m_hWnd,WM_COMMAND,MAKEWPARAM(tbIDC_MINIMIZE,BN_CLICKED),NULL);
-					else if(Num==Total-3) //Maximize button
+					else if(Num == Total - 3) //Maximize button
 						::SendMessage(TitleBarThis->m_hWnd,WM_COMMAND,MAKEWPARAM(tbIDC_MAXIMIZE,BN_CLICKED),NULL);
 					else
 						::SendMessage(TitleBarThis->Parent, WM_USER+tbWMUSERID+Num, NULL,NULL);
@@ -390,12 +404,20 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 
 	case WM_LBUTTONDBLCLK:
 			//If the default entries on the context menu is activated then doubleclick is restore :)
-			if(tbLastIsStandard==TRUE)
-				::SendMessage(TitleBarThis->m_hWnd,WM_COMMAND,MAKEWPARAM(tbIDC_MAXIMIZE,BN_CLICKED),NULL);
+		if (tbLastIsStandard == TRUE) {
+			::SendMessage(TitleBarThis->m_hWnd, WM_COMMAND, MAKEWPARAM(tbIDC_MAXIMIZE, BN_CLICKED), NULL);
+			OutputDebugString("------------WM_LBUTTONDBLCLK-------------------");
+			ShowWindow(TitleBarThis->Parent, SW_RESTORE);
+			OutputDebugString(">>>> TitleBar::ShowWindow(TitleBarThis->Parent, SW_RESTORE)\n");			
+			SendMessage(TitleBarThis->Parent, WM_SYSCOMMAND, (WPARAM)ID_NORMALSCREEN2, (LPARAM)0);
+			OutputDebugString(">>>> TitleBar::ID_NORMALSCREEN2\n");
+			
+		}
 		break;
 
 	case WM_RBUTTONDOWN:
 		{
+			OutputDebugString("------------WM_RBUTTONDOWN-------------------");
 			HMENU Menu=LoadMenu(TitleBarThis->hInstance,MAKEINTRESOURCE (tbMENUID));
 			HMENU SubMenu=GetSubMenu(Menu,0);;
 
@@ -405,7 +427,7 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 			int Pos=0;
 
 			//Set ID values to each item
-			for(int i=0;i<GetMenuItemCount(SubMenu);i++)
+			for(int i = 0 ; i < GetMenuItemCount(SubMenu) ; i++)
 			{
 				TCHAR Text[MAX_PATH];
 				ZeroMemory(Text,sizeof(Text));
@@ -422,7 +444,7 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 			if(tbLastIsStandard==TRUE)
 			{
 				int RealPos=0;
-				for(int i=0;i<GetMenuItemCount(SubMenu);i++)
+				for(int i=0 ; i < GetMenuItemCount(SubMenu) ; i++)
 				{
 					TCHAR Text[MAX_PATH];
 					ZeroMemory(Text,sizeof(Text));
@@ -451,7 +473,7 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 		{
 			UINT TimerID=(UINT)wParam;
 			
-			if(TimerID==tbScrollTimerID)
+			if(TimerID == tbScrollTimerID)
 			{
 				RECT lpRect;
 				::GetWindowRect(TitleBarThis->m_hWnd, &lpRect);
@@ -483,7 +505,7 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 			}
 
 			//Check mouse cordinates and hide if the mouse haven't been in the window for a few seconds
-			if(TimerID==tbAutoScrollTimer)
+			if(TimerID == tbAutoScrollTimer)
 			{
 				RECT lpRect;
 				POINT pt;
@@ -494,15 +516,15 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 				{
 					TitleBarThis->IntAutoHideCounter++;
 
-					if(TitleBarThis->IntAutoHideCounter==tbAutoScrollTime)
+					if(TitleBarThis->IntAutoHideCounter == tbAutoScrollTime)
 					{
-						TitleBarThis->SlideDown=FALSE;
+						TitleBarThis->SlideDown = FALSE;
 						::SetTimer(TitleBarThis->m_hWnd, tbScrollTimerID, tbScrollDelay, NULL);
 					}
 				}
 				else
 				{
-					TitleBarThis->IntAutoHideCounter=0;
+					TitleBarThis->IntAutoHideCounter = 0;
 				}
 			}
 
@@ -514,7 +536,6 @@ LRESULT CALLBACK CTitleBar::WndProc(HWND hwnd, UINT iMsg,
 }
 
 //***************************************************************************************
-
 void CTitleBar::LoadPictures()
 {
 	hClose=LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_CLOSE));
@@ -627,7 +648,6 @@ void CTitleBar::SetText(LPTSTR TextOut)
 }
 
 //***************************************************************************************
-
 void CTitleBar::DisplayWindow(BOOL Show, BOOL SetHideFlag)
 {
 	IntAutoHideCounter=0;
@@ -677,8 +697,7 @@ void CTitleBar::DisplayWindow(BOOL Show, BOOL SetHideFlag)
 // 7 May 2008 jdp
 void CTitleBar::MoveToMonitor(HMONITOR hMonitor)
 {
-    int dx;
-    int dy;
+    int dx, dy;
 
     HMONITOR hOrigMonitor = ::MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTOPRIMARY);
     // don't do anything if we're on the same monitor
@@ -695,8 +714,7 @@ void CTitleBar::MoveToMonitor(HMONITOR hMonitor)
     // ... and calculate the offsets of our origin from the desktop's origin
     dx = wndRect.left - mi.rcMonitor.left;
     dy = wndRect.top - mi.rcMonitor.top;
-
-
+	
     // now calculate our new origin relative to the new monitor.
     GetMonitorInfo(hMonitor, &mi);
     int x = mi.rcMonitor.left + (  mi.rcMonitor.right-mi.rcMonitor.left) / 2 - tbWidth / 2;

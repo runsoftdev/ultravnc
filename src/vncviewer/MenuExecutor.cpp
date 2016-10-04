@@ -121,14 +121,12 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 		}
 
 		if (isDisplayOptimize) {			
-			
 			WritePrivateProfileString(m_iniKey, MENU_DISPLAY_OPTIMIZE, FUNTION_OFF, szFileName);
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)8899, (LPARAM)0);
 			OutputDebugString("isDisplayOptimize on\n");
 		}
 		
-		if (isOneByOneScale) {
-			
+		if (isOneByOneScale) {			
 			WritePrivateProfileString(m_iniKey, MENU_ONE_BY_ONE_SCALE, FUNTION_OFF, szFileName);
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)ID_NORMALSCREEN2, (LPARAM)0);
 			OutputDebugString("isOneByOneScale on\n");
@@ -180,6 +178,7 @@ void CMenuExecutor::OnTimerEventResolve(ClientConnection*pClient)
 			OutputDebugString("isHideBackground on\n");
 			WritePrivateProfileString(m_iniKey, MENU_HIDE_BACKGROUND, FUNTION_OFF, szFileName);
 		}
+
 		if (isRefresh) {
 			SendMessage(pClient->m_hwndMain, WM_SYSCOMMAND, (WPARAM)ID_REQUEST_REFRESH, (LPARAM)0);
 			WritePrivateProfileString(m_iniKey, MENU_REFRESH, FUNTION_OFF, szFileName);

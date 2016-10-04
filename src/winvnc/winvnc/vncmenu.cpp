@@ -65,7 +65,7 @@ const UINT MENU_TRAYICON_BALLOON_MSG = RegisterWindowMessage("RunRemote.TrayIcon
 const UINT FileTransferSendPacketMessage = RegisterWindowMessage("RunRemote.Viewer.FileTransferSendPacketMessage");
 
 #ifdef _RUNVIEW
-const char *MENU_CLASS_NAME = "RunRemote";
+const char *MENU_CLASS_NAME = "RunRemoteControl";
 #else
 const char *MENU_CLASS_NAME = "RunRemoteSupport";
 #endif
@@ -1710,13 +1710,15 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 				ret = GlobalGetAtomName( (ATOM)lParam, szId, sizeof( szId ) );
 				GlobalDeleteAtom( (ATOM)lParam );
 			}
-			/*char m_pref_passwd[MAXPWLEN];
+
+#ifdef _RUNVIEW						
+			char m_pref_passwd[MAXPWLEN];
 			IniFile myIniFile;
 			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
+			vnclog.Print(LL_INTINFO, "############### MENU_AUTO_RECONNECT_MSG::Password changed"); //PGM
 			_this->m_server->SetPassword(m_pref_passwd);
-			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
-			_this->m_server->AutoReconnect(true);
-			*/
+			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));			
+#endif
 			
 			if ( ret > 0 )
 				_this->m_server->AutoReconnectId(szId);
@@ -1725,6 +1727,16 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 		}
 		if ( iMsg == MENU_REPEATER_ID_MSG )
  		{
+#ifdef _RUNVIEW						
+			char m_pref_passwd[MAXPWLEN];
+			IniFile myIniFile;
+			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
+			
+			vnclog.Print(LL_INTINFO, "############### MENU_REPEATER_ID_MSG::Password changed"); //PGM
+
+			_this->m_server->SetPassword(m_pref_passwd);
+			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
+#endif
 			char szId[MAX_PATH] = {0};
 			UINT ret = 0;
 			if ( lParam != 0 )
@@ -1743,7 +1755,16 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 
 		if (iMsg == MENU_ADD_CLIENT_MSG || iMsg == MENU_ADD_CLIENT_MSG_INIT)
 		{
+#ifdef _RUNVIEW						
+			char m_pref_passwd[MAXPWLEN];
+			IniFile myIniFile;
+			myIniFile.ReadPassword(m_pref_passwd, MAXPWLEN);
 
+			vnclog.Print(LL_INTINFO, "############### MENU_ADD_CLIENT_MSG::Password changed"); //PGM
+			
+			_this->m_server->SetPassword(m_pref_passwd);
+			_this->m_server->EnableDSMPlugin(myIniFile.ReadInt("admin", "UseDSMPlugin", false));
+#endif
 			if (iMsg == MENU_ADD_CLIENT_MSG_INIT) 
 				_this->m_server->AutoReconnectAdr("");
 
@@ -1836,11 +1857,12 @@ LRESULT CALLBACK vncMenu::WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lP
 			// This way we can call this message again later to reconnect with the same values
 			if ((_this->m_server->AutoReconnect() || _this->m_server->IdReconnect()) && strlen(_this->m_server->AutoReconnectAdr()) == 0)
 			{
-				if (strlen(dnsname)>0) _this->m_server->AutoReconnectAdr(dnsname);
+				if (strlen(dnsname)>0) 
+					_this->m_server->AutoReconnectAdr(dnsname);
 				else
 					_this->m_server->AutoReconnectAdr(szAdrName);
-				strcpy(dnsname, "");
 
+				strcpy(dnsname, "");
 				_this->m_server->AutoReconnectPort(nport);
 			}
 

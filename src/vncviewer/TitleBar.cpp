@@ -318,8 +318,13 @@ LRESULT CALLBACK CTitleBarMenu::WndProc(HWND hwnd, UINT iMsg,
 					::SendMessage(TitleBarThis->Parent, WM_CLOSE, NULL, 0);
 				if(LOWORD(wParam) == tbIDC_MAXIMIZE)
 				{
+					ShowWindow(TitleBarThis->Parent, SW_RESTORE);
+					OutputDebugString("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TitleBar::ShowWindow(TitleBarThis->Parent, SW_RESTORE)\n");
+					Sleep(2000);
+					SendMessage(TitleBarThis->Parent, WM_SYSCOMMAND, (WPARAM)ID_NORMALSCREEN2, (LPARAM)0);
+					OutputDebugString("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TitleBar::ID_NORMALSCREEN2\n");
 					//if(::IsZoomed(TitleBarThis->Parent)==TRUE)
-						ShowWindow(TitleBarThis->Parent, SW_RESTORE);
+						//ShowWindow(TitleBarThis->Parent, SW_RESTORE);
 					/*else
 						ShowWindow(TitleBarThis->Parent, SW_MAXIMIZE);*/
 				}
